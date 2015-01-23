@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="lib/|node_modules/rest/|node_modules/rest/client/|node_modules/rest/interceptor/|node_modules/rest/interceptor/ie/|node_modules/rest/mime/|node_modules/rest/mime/type/application/|node_modules/rest/mime/type/multipart/|node_modules/rest/mime/type/text/|node_modules/rest/node_modules/when/|node_modules/rest/node_modules/when/es6-shim/|node_modules/rest/node_modules/when/lib/|node_modules/rest/node_modules/when/lib/decorators/|node_modules/rest/node_modules/when/monitor/|node_modules/rest/node_modules/when/node/|node_modules/rest/node_modules/when/unfold/|node_modules/rest/parsers/|node_modules/rest/test/|node_modules/rest/test/client/|node_modules/rest/test/client/fixtures/|node_modules/rest/test/interceptor/|node_modules/rest/test/interceptor/ie/|node_modules/rest/test/mime/|node_modules/rest/test/mime/type/application/|node_modules/rest/test/mime/type/multipart/|node_modules/rest/test/mime/type/text/|node_modules/rest/test/util/|node_modules/rest/util/|test/" including="node_modules" kind="src" path=""/>
+	<classpathentry kind="src" path="lib"/>
+	<classpathentry excluding="interceptor/|test/client/fixtures/|test/interceptor/|node_modules/when/es6-shim/|node_modules/when/unfold/|interceptor/ie/|mime/type/application/|test/client/|test/|parsers/|test/mime/type/application/|util/|test/mime/type/text/|node_modules/when/|node_modules/when/monitor/|mime/|test/mime/|mime/type/multipart/|client/|node_modules/when/lib/|test/mime/type/multipart/|mime/type/text/|test/util/|node_modules/when/node/|test/interceptor/ie/|node_modules/when/lib/decorators/" kind="src" path="node_modules/rest"/>
+	<classpathentry kind="src" path="node_modules/rest/client"/>
+	<classpathentry excluding="ie/" kind="src" path="node_modules/rest/interceptor"/>
+	<classpathentry kind="src" path="node_modules/rest/interceptor/ie"/>
+	<classpathentry excluding="type/application/|type/multipart/|type/text/" kind="src" path="node_modules/rest/mime"/>
+	<classpathentry kind="src" path="node_modules/rest/mime/type/application"/>
+	<classpathentry kind="src" path="node_modules/rest/mime/type/multipart"/>
+	<classpathentry kind="src" path="node_modules/rest/mime/type/text"/>
+	<classpathentry excluding="es6-shim/|unfold/|monitor/|lib/|node/|lib/decorators/" kind="src" path="node_modules/rest/node_modules/when"/>
+	<classpathentry kind="src" path="node_modules/rest/node_modules/when/es6-shim"/>
+	<classpathentry excluding="decorators/" kind="src" path="node_modules/rest/node_modules/when/lib"/>
+	<classpathentry kind="src" path="node_modules/rest/node_modules/when/lib/decorators"/>
+	<classpathentry kind="src" path="node_modules/rest/node_modules/when/monitor"/>
+	<classpathentry kind="src" path="node_modules/rest/node_modules/when/node"/>
+	<classpathentry kind="src" path="node_modules/rest/node_modules/when/unfold"/>
+	<classpathentry kind="src" path="node_modules/rest/parsers"/>
+	<classpathentry excluding="client/fixtures/|interceptor/|client/|mime/type/application/|mime/type/text/|mime/|mime/type/multipart/|util/|interceptor/ie/" kind="src" path="node_modules/rest/test"/>
+	<classpathentry excluding="fixtures/" kind="src" path="node_modules/rest/test/client"/>
+	<classpathentry kind="src" path="node_modules/rest/test/client/fixtures"/>
+	<classpathentry excluding="ie/" kind="src" path="node_modules/rest/test/interceptor"/>
+	<classpathentry kind="src" path="node_modules/rest/test/interceptor/ie"/>
+	<classpathentry excluding="type/application/|type/text/|type/multipart/" kind="src" path="node_modules/rest/test/mime"/>
+	<classpathentry kind="src" path="node_modules/rest/test/mime/type/application"/>
+	<classpathentry kind="src" path="node_modules/rest/test/mime/type/multipart"/>
+	<classpathentry kind="src" path="node_modules/rest/test/mime/type/text"/>
+	<classpathentry kind="src" path="node_modules/rest/test/util"/>
+	<classpathentry kind="src" path="node_modules/rest/util"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.wst.jsdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path=""/>
+</classpath>
