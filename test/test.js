@@ -1,7 +1,8 @@
 // TODO: store this in the creds file, VCAP, etc
 var projectId = 'MyProject';
 var apiKey = '34EF-45FF-AB12-DC78';
-var url = 'http://localhost:9131/translate/';
+//var url = 'http://localhost:9131/translate/';
+var url = 'http://ultra6.sanjose.ibm.com:9080/translation-service/v1/';
 
 var taas = require('../index.js')({ url: url, api: apiKey, project: projectId });
 
