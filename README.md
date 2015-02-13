@@ -13,3 +13,9 @@ To use ( quickstart )
         npm install
         npm run
 ```
+
+
+You can also do:
+```
+        set TAAS_API_URL=http://127.0.0.1:9131/translate
+```
