@@ -16,7 +16,6 @@
   "author": "Steven R. Loomis <srloomis@us.ibm.com>",
   "license": "Commercial",
   "dependencies": {
-    "fetch-swagger-schema": "^0.1.2",
-    "swagger-node-client": "^0.2.2"
+    "swagger-client": "^2.1.4-M1"
   }
 }
