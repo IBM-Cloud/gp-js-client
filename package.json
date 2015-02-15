@@ -1,10 +1,12 @@
 {
+  "private": true,
   "name": "taas-nodejs-client",
   "version": "1.0.0",
   "description": "NodeJS client for Translation-as-a-Service",
   "main": "index.js",
   "scripts": {
-    "test": "node test/test.js"
+    "test": "node test/test.js",
+    "mocha": "mocha"
   },
   "repository": {
     "type": "git",
@@ -17,5 +19,9 @@
   "license": "Commercial",
   "dependencies": {
     "swagger-client": "^2.1.4-M1"
-  }
+  },
+  "devDependencies": {
+      "chai": "*",
+      "mocha": "*"
+  }, "//": "Just for testing"
 }

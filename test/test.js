@@ -2,6 +2,7 @@
 var projectId = process.env.TAAS_PROJECT || 'MyProject';
 var apiKey = process.env.TAAS_API_KEY || 'admin8';
 var url = process.env.TAAS_API_URL || 'https://gaas-dev.stage1.mybluemix.net/translate/';
+var expect = require('chai').expect;
 
 var taas = require('../index.js')({ url: url, api: apiKey, project: projectId });
 /*
@@ -15,40 +16,48 @@ var sourceData = [
     {"key": "key2", "value": "Second string to translate"}
 ];
 
+var unexpectedErr = function(response, parent) {
+    expect(response.status,'HTTP err status').to.not.be.ok;
+};
+
 taas._fetchApi(function() {
-    console.log("Projects:");
-    console.log(taas._api.projects.getProjectList({"api-key": apiKey}));
-    console.log("Create:");
-    console.log(taas._api.projects.createProject({"api-key": apiKey, 
-                                                 body: {
-                                                     id: projectId,
-                                                     sourceLanguage: "en",
-                                                     targetLanguages: ["de","fr"]
-                                                 }}));
-    console.log("Projects again:");
-    console.log(taas._api.projects.getProjectList({"api-key": apiKey}));
-    console.log("Inject data:");
-    console.log(taas._api.projects.updateResourceData({"api-key": apiKey,
-                                                       projectID: projectId,
-                                                       languageID: "en",
-                                                       body: {
-                                                           resourceData: {
-                                                               hello: "Hello",
-                                                               bye: "Goodbye"
-                                                           }
-                                                       }}));
-    console.log("verify data en:");
-    console.log(taas._api.projects.getResourceData({"api-key": apiKey,
-                                                    projectID: projectId,
-                                                    languageID: "en"}));
-    console.log("verify data de:");
-    console.log(taas._api.projects.getResourceData({"api-key": apiKey,
-                                                    projectID: projectId,
-                                                    languageID: "de"}));
-    console.log("verify data fr:");
-    console.log(taas._api.projects.getResourceData({"api-key": apiKey,
-                                                    projectID: projectId,
-                                                    languageID: "fr"}));
+    expect(taas._api.ready).to.equal(true);
+
+    taas._api.projects.getProjectList({"api-key": apiKey}, function(list) {
+        console.log("Proj: " + JSON.stringify(list));
+    }, unexpectedErr);
+    
+    // console.log("Create:");
+    // console.log(taas._api.projects.createProject({"api-key": apiKey, 
+    //                                              body: {
+    //                                                  id: projectId,
+    //                                                  sourceLanguage: "en",
+    //                                                  targetLanguages: ["de","fr"]
+    //                                              }}));
+    // console.log("Projects again:");
+    // console.log(taas._api.projects.getProjectList({"api-key": apiKey}));
+    // console.log("Inject data:");
+    // console.log(taas._api.projects.updateResourceData({"api-key": apiKey,
+    //                                                    projectID: projectId,
+    //                                                    languageID: "en",
+    //                                                    body: {
+    //                                                        resourceData: {
+    //                                                            hello: "Hello",
+    //                                                            bye: "Goodbye"
+    //                                                        }
+    //                                                    }}));
+    // console.log("verify data en:");
+    // console.log(taas._api.projects.getResourceData({"api-key": apiKey,
+    //                                                 projectID: projectId,
+    //                                                 languageID: "en"}));
+    // console.log("verify data de:");
+    // console.log(taas._api.projects.getResourceData({"api-key": apiKey,
+    //                                                 projectID: projectId,
+    //                                                 languageID: "de"}));
+    // console.log("verify data fr:");
+    // console.log(taas._api.projects.getResourceData({"api-key": apiKey,
+    //                                                 projectID: projectId,
+    //                                                 languageID: "fr"}));
 
 }, console.error, []);
 
