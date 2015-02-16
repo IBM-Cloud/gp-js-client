@@ -1,8 +1,11 @@
 // TODO: store this in the creds file, VCAP, etc
 var projectId = process.env.TAAS_PROJECT || 'MyProject';
 var apiKey = process.env.TAAS_API_KEY || 'admin8';
-var url = process.env.TAAS_API_URL || 'https://gaas-dev.stage1.mybluemix.net/translate/';
+var url = process.env.TAAS_API_URL || 'http://127.0.0.1:9131/translate'; // 'https://gaas-dev.stage1.mybluemix.net/translate/';
 var expect = require('chai').expect;
+
+
+var assert = require('assert');
 
 var taas = require('../index.js')({ url: url, api: apiKey, project: projectId });
 /*
@@ -16,28 +19,81 @@ var sourceData = [
     {"key": "key2", "value": "Second string to translate"}
 ];
 
-var unexpectedErr = function(response, parent) {
-    expect(response.status,'HTTP err status').to.not.be.ok;
-};
 
-taas._fetchApi(function() {
-    expect(taas._api.ready).to.equal(true);
-
-    taas._api.projects.getProjectList({"api-key": apiKey}, function(list) {
-        console.log("Proj: " + JSON.stringify(list));
-    }, unexpectedErr);
+describe('taas-client', function() {
+    describe('getInfo', function() {
+        it('should contain English', function(done) {
+            taas.getInfo({}, function good(resp) {
+                expect(resp.status).to.equal('success');
+                expect(resp.supportedTranslation).to.include.keys('en');
+                done();
+            }, done);
+        });
+    });
+    describe('getProjectList', function() {
+        it('should return an empty list', function(done) {
+            taas.getProjectList({}, function good(resp) {
+                expect(resp.status).to.equal('success');
+                expect(resp.projects).to.be.empty;
+                done();
+            }, done);
+        });
+    });
     
-    // console.log("Create:");
-    // console.log(taas._api.projects.createProject({"api-key": apiKey, 
-    //                                              body: {
-    //                                                  id: projectId,
-    //                                                  sourceLanguage: "en",
-    //                                                  targetLanguages: ["de","fr"]
-    //                                              }}));
-    // console.log("Projects again:");
-    // console.log(taas._api.projects.getProjectList({"api-key": apiKey}));
-    // console.log("Inject data:");
-    // console.log(taas._api.projects.updateResourceData({"api-key": apiKey,
+    describe('createProject', function() {
+        it('should let us create', function(done) {
+            taas.createProject({ body: {id: 'MyProject', sourceLanguage: 'en', targetLanguages: ['es','fr']}}, function good(resp) {
+                expect(resp.status).to.equal('success');
+                done();
+            }, done);
+        });
+    });
+
+
+    describe('getProjectList', function() {
+        it('should return our project in the list', function(done) {
+            taas.getProjectList({}, function good(resp) {
+                expect(resp.status).to.equal('success');
+                expect(resp.projects.length).to.equal(1);
+                expect(resp.projects[0].id).to.equal('MyProject');
+                expect(resp.projects[0].sourceLanguage).to.equal('en');
+                done();
+            }, done);
+        });
+    });
+
+    describe('deleteProject', function() {
+        it('should let us deleted', function(done) {
+            taas.deleteProject({ projectID: 'MyProject' }, function good(resp) {
+                expect(resp.status).to.equal('success');
+                done();
+            }, done);
+        });
+    });
+
+    describe('getProjectList', function() {
+        it('should return an empty list again', function(done) {
+            taas.getProjectList({}, function good(resp) {
+                expect(resp.status).to.equal('success');
+                expect(resp.projects).to.be.empty;
+                done();
+            }, done);
+        });
+    });
+
+});
+
+        // console.log("Create:");
+        // console.log(taas._api.projects.createProject({"api-key": apiKey, 
+        //                                              body: {
+        //                                                  id: projectId,
+        //                                                  sourceLanguage: "en",
+        //                                                  targetLanguages: ["de","fr"]
+        //                                              }}));
+        // console.log("Projects again:");
+        // console.log(taas._api.projects.getProjectList({"api-key": apiKey}));
+        // console.log("Inject data:");
+        // console.log(taas._api.projects.updateResourceData({"api-key": apiKey,
     //                                                    projectID: projectId,
     //                                                    languageID: "en",
     //                                                    body: {
@@ -59,7 +115,6 @@ taas._fetchApi(function() {
     //                                                 projectID: projectId,
     //                                                 languageID: "fr"}));
 
-}, console.error, []);
 
 
 //taas.translate({source: sourceLoc, target: targLoc, data: sourceData}, function OKAY(x) {

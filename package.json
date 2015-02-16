@@ -5,8 +5,7 @@
   "description": "NodeJS client for Translation-as-a-Service",
   "main": "index.js",
   "scripts": {
-    "test": "node test/test.js",
-    "mocha": "mocha"
+    "mocha": "mocha -t 4s"
   },
   "repository": {
     "type": "git",
