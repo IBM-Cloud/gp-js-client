@@ -19,3 +19,11 @@ You can also do:
 ```
         set TAAS_API_URL=http://127.0.0.1:9131/translate
 ```
+
+# TESTS
+
+First you must 'delete the db' and then 'create user `admin8`'. Details tbd.
+
+```
+        npm run mocha
+```
