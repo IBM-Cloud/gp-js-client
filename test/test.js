@@ -148,7 +148,7 @@ describe('taas-client', function() {
 
     describe('deleteLangauge(MyOtherProject) -de', function() {
         it('should let us delete German from 2nd project', function(done) {
-            taas.getProject({ projectID: 'MyOtherProject', languageID: 'de' }, function good(resp) {
+            taas.deleteLanguage({ projectID: 'MyOtherProject', languageID: 'de' }, function good(resp) {
                 expect(resp.status).to.equal('success');
                 done();
             }, done);
