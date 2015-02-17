@@ -40,7 +40,7 @@ describe('taas-client', function() {
             }, done);
         });
     });
-    describe('getProjectList', function() {
+    describe('getProjectList [expect: []]', function() {
         it('should return an empty list', function(done) {
             taas.getProjectList({}, function good(resp) {
                 expect(resp.status).to.equal('success');
@@ -50,7 +50,7 @@ describe('taas-client', function() {
         });
     });
     
-    describe('createProject', function() {
+    describe('createProject(MyProject)', function() {
         it('should let us create', function(done) {
             taas.createProject({ body: {id: 'MyProject', sourceLanguage: 'en', targetLanguages: ['es','fr']}}, function good(resp) {
                 expect(resp.status).to.equal('success');
@@ -60,7 +60,7 @@ describe('taas-client', function() {
     });
 
 
-    describe('getProjectList', function() {
+    describe('getProjectList [expect: MyProject]', function() {
         it('should return our project in the list', function(done) {
             taas.getProjectList({}, function good(resp) {
                 expect(resp.status).to.equal('success');
