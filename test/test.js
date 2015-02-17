@@ -121,7 +121,7 @@ describe('taas-client', function() {
         });
     });
 
-    describe('updateProject(MyOtherProject)', function() {
+    describe('updateProject(MyOtherProject) +it', function() {
         it('should let us change the target languages', function(done) {
             taas.updateProject({ projectID: 'MyOtherProject', 
                                  body: { newTargetLanguages: ["it"] }},
@@ -134,6 +134,54 @@ describe('taas-client', function() {
 
     describe('getProject(MyOtherProject)', function() {
         it('should let us query our 2nd project again', function(done) {
+            taas.getProject({ projectID: 'MyOtherProject' }, function good(resp) {
+                expect(resp.status).to.equal('success');
+                expect(resp.project.targetLanguages).to.include('de');
+                expect(resp.project.targetLanguages).to.include('it');
+                expect(resp.project.targetLanguages).to.include('zh-Hans');
+                expect(resp.project.targetLanguages).to.not.include('es');
+                expect(resp.project.targetLanguages).to.not.include('fr');
+                done();
+            }, done);
+        });
+    });
+
+    describe('deleteLangauge(MyOtherProject) -de', function() {
+        it('should let us delete German from 2nd project', function(done) {
+            taas.getProject({ projectID: 'MyOtherProject', languageID: 'de' }, function good(resp) {
+                expect(resp.status).to.equal('success');
+                done();
+            }, done);
+        });
+    });
+
+    describe('getProject(MyOtherProject)', function() {
+        it('should let us query our 2nd project yet again', function(done) {
+            taas.getProject({ projectID: 'MyOtherProject' }, function good(resp) {
+                expect(resp.status).to.equal('success');
+                expect(resp.project.targetLanguages).to.not.include('de');
+                expect(resp.project.targetLanguages).to.include('it');
+                expect(resp.project.targetLanguages).to.include('zh-Hans');
+                expect(resp.project.targetLanguages).to.not.include('es');
+                expect(resp.project.targetLanguages).to.not.include('fr');
+                done();
+            }, done);
+        });
+    });
+
+    describe('updateProject(MyOtherProject) +de', function() {
+        it('should let us change the target languages', function(done) {
+            taas.updateProject({ projectID: 'MyOtherProject', 
+                                 body: { newTargetLanguages: ["de"] }},
+                               function good(resp) {
+                                   expect(resp.status).to.equal('success');
+                                   done();
+                               }, done);
+            });
+    });
+
+    describe('getProject(MyOtherProject)', function() {
+        it('should let us query our 2nd project again again', function(done) {
             taas.getProject({ projectID: 'MyOtherProject' }, function good(resp) {
                 expect(resp.status).to.equal('success');
                 expect(resp.project.targetLanguages).to.include('de');
