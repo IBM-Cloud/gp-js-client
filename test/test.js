@@ -59,6 +59,16 @@ describe('taas-client', function() {
         });
     });
 
+    describe('updateResourceData(en)', function() {
+        it('should let us update some data', function(done) {
+            taas.updateResourceData({projectID: 'MyProject', languageID: 'en',
+                                     body: { data: sourceData, replace: false }},
+                                    function good(resp) {
+                                        expect(resp.status).to.be.equal('success');
+                                        done();
+                                    }, done);
+        });
+    });
 
     describe('getProjectList [expect: MyProject]', function() {
         it('should return our project in the list', function(done) {
@@ -223,18 +233,32 @@ describe('taas-client', function() {
         });
     });
 
-
-    describe('updateResourceData(en)', function() {
-        it('should let us update some data', function(done) {
-            taas.updateResourceData({projectID: 'MyProject', languageID: 'en',
-                                     body: { data: sourceData, replace: false }},
-                                    function good(resp) {
-                                        expect(resp.status).to.be.equal('success');
-                                        done();
-                                    }, done);
+    describe('getResourceData(en)', function() {
+        it('should return our resource data for English', function(done) {
+            taas.getResourceData({ projectID: 'MyProject', languageID: 'en'}, function good(resp) {
+                expect(resp.status).to.equal('success');
+                expect(resp.resourceData.translationStatus).to.equal('source-language');
+                expect(resp.resourceData.language).to.equal('en');
+                console.dir(resp);
+                done();
+            }, done);
         });
     });
 
+
+
+
+    describe('getResourceData(fr)', function() {
+        it('should return our resource data for French', function(done) {
+            taas.getResourceData({ projectID: 'MyProject', languageID: 'fr'}, function good(resp) {
+                expect(resp.status).to.equal('success');
+                expect(resp.resourceData.translationStatus).to.equal('completed');
+                expect(resp.resourceData.language).to.equal('fr');
+                console.dir(resp);
+                done();
+            }, done);
+        });
+    });
 
     describe('deleteProject', function() {
         it('should let us deleted', function(done) {
@@ -254,28 +278,8 @@ describe('taas-client', function() {
             }, done);
         });
     });
-
 });
 
-        // console.log("Create:");
-        // console.log(taas._api.projects.createProject({"api-key": apiKey, 
-        //                                              body: {
-        //                                                  id: projectId,
-        //                                                  sourceLanguage: "en",
-        //                                                  targetLanguages: ["de","fr"]
-        //                                              }}));
-        // console.log("Projects again:");
-        // console.log(taas._api.projects.getProjectList({"api-key": apiKey}));
-        // console.log("Inject data:");
-        // console.log(taas._api.projects.updateResourceData({"api-key": apiKey,
-    //                                                    projectID: projectId,
-    //                                                    languageID: "en",
-    //                                                    body: {
-    //                                                        resourceData: {
-    //                                                            hello: "Hello",
-    //                                                            bye: "Goodbye"
-    //                                                        }
-    //                                                    }}));
     // console.log("verify data en:");
     // console.log(taas._api.projects.getResourceData({"api-key": apiKey,
     //                                                 projectID: projectId,
@@ -289,13 +293,6 @@ describe('taas-client', function() {
     //                                                 projectID: projectId,
     //                                                 languageID: "fr"}));
 
-
-
-//taas.translate({source: sourceLoc, target: targLoc, data: sourceData}, function OKAY(x) {
-//    console.log('-'); console.log(x); console.log("RESPONSE: " + JSON.stringify(x.entity));
-//} , function ERR(x){ console.log("ERR:"); console.log(x);  });
-
-//taas.schema(console.log, console.err, []); // 
 
 // Local Variables:
 // compile-command: "cd c:/Users/IBM_ADMIN/git/taas-nodejs-client/ ; npm run test"
