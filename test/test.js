@@ -3,8 +3,7 @@ var projectId = process.env.TAAS_PROJECT || 'MyProject';
 var apiKey = process.env.TAAS_API_KEY || 'admin8';
 var url = process.env.TAAS_API_URL || 'http://127.0.0.1:9131/translate'; // 'https://gaas-dev.stage1.mybluemix.net/translate/';
 var expect = require('chai').expect;
-
-
+var http = require('http');
 var assert = require('assert');
 
 var taas = require('../index.js')({ url: url, api: apiKey, project: projectId });
@@ -18,6 +17,33 @@ var sourceData = {
     "key1": "First string to translate",
     "key2": "Second string to translate"
 };
+
+var useTempBroker = process.env.TAAS_TEMP_BROKER || false;
+
+if ( useTempBroker ) {
+    describe('SETUP', function() {
+        describe('delete old ' + apiKey, function() {
+            it('should let me delete', function(done) {
+                http.get(url+'/TemporaryBroker/users/'+apiKey+'?DELETE',
+                         function(d) {
+                             console.log('-> ' + d.statusCode); // dontcare
+                             done();
+                         })
+                    .on('error', done);
+            });
+        });
+        describe('create new ' + apiKey, function() {
+            it('should let me create', function(done) {
+                http.get(url+'/TemporaryBroker/users/'+apiKey+'?PUT',
+                         function(d) {
+                             expect(d.statusCode).to.equal(200);
+                             done();
+                         })
+                    .on('error', done);
+            });
+        });
+    });
+}
 
 /**
  * probably been written before!
@@ -244,9 +270,6 @@ describe('taas-client', function() {
             }, done);
         });
     });
-
-
-
 
     describe('getResourceData(fr)', function() {
         it('should return our resource data for French', function(done) {
