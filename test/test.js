@@ -3,7 +3,7 @@ var projectId = process.env.TAAS_PROJECT || 'MyProject';
 var apiKey = process.env.TAAS_API_KEY || 'admin8';
 var url = process.env.TAAS_API_URL || 'http://127.0.0.1:9131/translate'; // 'https://gaas-dev.stage1.mybluemix.net/translate/';
 var expect = require('chai').expect;
-var http = require('http');
+
 var assert = require('assert');
 
 var taas = require('../index.js')({ url: url, api: apiKey, project: projectId });
@@ -18,28 +18,46 @@ var sourceData = {
     "key2": "Second string to translate"
 };
 
+var http_or_https;
+if ( url.indexOf('https') === 0) {
+    http_or_https = require('https');
+} else { 
+    http_or_https = require('http');
+}
+
+describe('Check URL ' + url, function() {
+    it('Should let me fetch', function(done) {
+        http_or_https.get(url,
+                          function(d) {
+                             console.log('-> ' + d.statusCode); // dontcare
+                             done();
+                          })
+        .on('error', done);
+    });
+});
+
 var useTempBroker = process.env.TAAS_TEMP_BROKER || false;
 
 if ( useTempBroker ) {
-    describe('SETUP', function() {
+    describe('SETUP TemporaryBroker', function() {
         describe('delete old ' + apiKey, function() {
             it('should let me delete', function(done) {
-                http.get(url+'/TemporaryBroker/users/'+apiKey+'?DELETE',
+                http_or_https.get(url+'/TemporaryBroker/users/'+apiKey+'?DELETE',
                          function(d) {
                              console.log('-> ' + d.statusCode); // dontcare
                              done();
                          })
-                    .on('error', done);
+                    .on('error', function(x){console.error('err',x);done();});
             });
         });
         describe('create new ' + apiKey, function() {
             it('should let me create', function(done) {
-                http.get(url+'/TemporaryBroker/users/'+apiKey+'?PUT',
+                http_or_https.get(url+'/TemporaryBroker/users/'+apiKey+'?PUT',
                          function(d) {
                              expect(d.statusCode).to.equal(200);
                              done();
                          })
-                    .on('error', done);
+                    .on('error', function(x){console.error('err',x);done();});
             });
         });
     });
