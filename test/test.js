@@ -37,27 +37,29 @@ describe('Check URL ' + url, function() {
 });
 
 var useTempBroker = process.env.TAAS_TEMP_BROKER || false;
-
+var tbUrl = null;
 if ( useTempBroker ) {
     describe('SETUP TemporaryBroker', function() {
         describe('delete old ' + apiKey, function() {
+            tbUrl = url+'/TemporaryBroker/users/'+apiKey+'?DELETE';
             it('should let me delete', function(done) {
-                http_or_https.get(url+'/TemporaryBroker/users/'+apiKey+'?DELETE',
+                http_or_https.get(tbUrl,
                          function(d) {
                              console.log('-> ' + d.statusCode); // dontcare
                              done();
                          })
-                    .on('error', function(x){console.error('err',x);done();});
+                    .on('error', function(x){console.error('err:',tbUrl,x);done();});
             });
         });
         describe('create new ' + apiKey, function() {
             it('should let me create', function(done) {
-                http_or_https.get(url+'/TemporaryBroker/users/'+apiKey+'?PUT',
+                tbUrl = url+'/TemporaryBroker/users/'+apiKey+'?PUT';
+                http_or_https.get(tbUrl,
                          function(d) {
                              expect(d.statusCode).to.equal(200);
                              done();
                          })
-                    .on('error', function(x){console.error('err',x);done();});
+                    .on('error', function(x){console.error('err:',tbUrl,x);done();});
             });
         });
     });
@@ -96,7 +98,7 @@ describe('taas-client', function() {
     
     describe('createProject(MyProject)', function() {
         it('should let us create', function(done) {
-            taas.createProject({ body: {id: 'MyProject', sourceLanguage: 'en', targetLanguages: ['es','fr']}}, function good(resp) {
+            taas.createProject({ body: {id: 'MyProject', sourceLanguage: 'en', targetLanguages: ['es','qru']}}, function good(resp) {
                 expect(resp.status).to.equal('success');
                 done();
             }, done);
@@ -123,7 +125,7 @@ describe('taas-client', function() {
                 expect(projs).to.contain.keys('MyProject');
                 expect(resp.projects[0].sourceLanguage).to.equal('en');
                 expect(projs.MyProject.targetLanguages).to.include('es');
-                expect(projs.MyProject.targetLanguages).to.include('fr');
+                expect(projs.MyProject.targetLanguages).to.include('qru');
                 expect(projs.MyProject.targetLanguages).to.not.include('de');
                 expect(projs.MyProject.targetLanguages).to.not.include('zh-Hans');
                 done();
@@ -147,14 +149,14 @@ describe('taas-client', function() {
                 var projs = arrayToHash(resp.projects, 'id');
                 expect(projs).to.include.keys('MyProject');
                 expect(projs.MyProject.targetLanguages).to.include('es');
-                expect(projs.MyProject.targetLanguages).to.include('fr');
+                expect(projs.MyProject.targetLanguages).to.include('qru');
                 expect(projs.MyProject.targetLanguages).to.not.include('de');
                 expect(projs.MyProject.targetLanguages).to.not.include('zh-Hans');
                 expect(projs).to.include.keys('MyOtherProject');
                 expect(projs.MyOtherProject.targetLanguages).to.include('de');
                 expect(projs.MyOtherProject.targetLanguages).to.include('zh-Hans');
                 expect(projs.MyOtherProject.targetLanguages).to.not.include('es');
-                expect(projs.MyOtherProject.targetLanguages).to.not.include('fr');
+                expect(projs.MyOtherProject.targetLanguages).to.not.include('qru');
                 expect(resp.projects.length).to.equal(2);
                 done();
             }, done);
@@ -168,7 +170,7 @@ describe('taas-client', function() {
                 expect(resp.project.targetLanguages).to.include('de');
                 expect(resp.project.targetLanguages).to.include('zh-Hans');
                 expect(resp.project.targetLanguages).to.not.include('es');
-                expect(resp.project.targetLanguages).to.not.include('fr');
+                expect(resp.project.targetLanguages).to.not.include('qru');
                 expect(resp.project.targetLanguages).to.not.include('it');
                  done();
             }, done);
@@ -194,7 +196,7 @@ describe('taas-client', function() {
                 expect(resp.project.targetLanguages).to.include('it');
                 expect(resp.project.targetLanguages).to.include('zh-Hans');
                 expect(resp.project.targetLanguages).to.not.include('es');
-                expect(resp.project.targetLanguages).to.not.include('fr');
+                expect(resp.project.targetLanguages).to.not.include('qru');
                 done();
             }, done);
         });
@@ -217,7 +219,7 @@ describe('taas-client', function() {
                 expect(resp.project.targetLanguages).to.include('it');
                 expect(resp.project.targetLanguages).to.include('zh-Hans');
                 expect(resp.project.targetLanguages).to.not.include('es');
-                expect(resp.project.targetLanguages).to.not.include('fr');
+                expect(resp.project.targetLanguages).to.not.include('qru');
                 done();
             }, done);
         });
@@ -242,7 +244,7 @@ describe('taas-client', function() {
                 expect(resp.project.targetLanguages).to.include('it');
                 expect(resp.project.targetLanguages).to.include('zh-Hans');
                 expect(resp.project.targetLanguages).to.not.include('es');
-                expect(resp.project.targetLanguages).to.not.include('fr');
+                expect(resp.project.targetLanguages).to.not.include('qru');
                 done();
             }, done);
         });
@@ -291,11 +293,11 @@ describe('taas-client', function() {
 
     describe('getResourceData(fr)', function() {
         it('should return our resource data for French', function(done) {
-            taas.getResourceData({ projectID: 'MyProject', languageID: 'fr'}, function good(resp) {
+            taas.getResourceData({ projectID: 'MyProject', languageID: 'qru'}, function good(resp) {
                 console.dir(resp);
                 expect(resp.status).to.equal('success');
 //                expect(resp.resourceData.translationStatus).to.equal('completed');
-                expect(resp.resourceData.language).to.equal('fr');
+                expect(resp.resourceData.language).to.equal('qru');
                 done();
             }, done);
         });
