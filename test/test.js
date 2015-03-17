@@ -12,7 +12,7 @@ function removeTrailing(str, chr) {
     }
 };
 
-var url = removeTrailing(url, '/')+'/'; //make sure always ends with slash
+var url = removeTrailing(url, '/'); // strip trailing slash
 
 var expect = require('chai').expect;
 
@@ -38,8 +38,8 @@ if ( url.indexOf('https') === 0) {
 }
 
 describe('Check URL ' + url, function() {
-    it('Should let me fetch', function(done) {
-        http_or_https.get(url,
+    it('Should let me fetch landing page', function(done) {
+        http_or_https.get(url+'/', // trailing slash to avoid 302
                           function(d) {
                              console.log('-> ' + d.statusCode); // dontcare
                              done();
