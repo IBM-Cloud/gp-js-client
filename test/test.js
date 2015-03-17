@@ -37,7 +37,7 @@ if ( url.indexOf('https') === 0) {
     http_or_https = require('http');
 }
 
-describe('Check URL ' + url, function() {
+describe('Check URL ' + url+'/', function() {
     it('Should let me fetch landing page', function(done) {
         http_or_https.get(url+'/', // trailing slash to avoid 302
                           function(d) {
