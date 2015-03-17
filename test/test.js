@@ -2,6 +2,18 @@
 var projectId = process.env.TAAS_PROJECT || 'MyProject';
 var apiKey = process.env.TAAS_API_KEY || 'admin8';
 var url = process.env.TAAS_API_URL || 'http://127.0.0.1:9131/translate'; // 'https://gaas-dev.stage1.mybluemix.net/translate/';
+
+function removeTrailing(str, chr) {
+    if (!str || (str=="")) return str;
+    if (str[str.length-1] == chr) {
+        return str.substring(0, str.length-1);
+    } else {
+        return str;
+    }
+};
+
+var url = removeTrailing(url, '/')+'/'; //make sure always ends with slash
+
 var expect = require('chai').expect;
 
 var assert = require('assert');
