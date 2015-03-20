@@ -45,9 +45,32 @@ var gaas = require('gaas')({
 });
 ```
 
-The RESTful APIs can be called directly, or the convenience wrappers.
-The convenience wrappers are recommended, but not complete (or started) as of
-this writing.
+The RESTful APIs can be called directly, or the simple API.
+Using the simple API is recommended, however it is not YET complete.
+
+Using Simple APIs.
+==
+
+All of the APIs have this pattern:
+
+`gaas.function( { /*params*/ } ,  onSuccess, onFailure)`
+
+`onSuccess()` is given an object with various contents.
+
+`onFailure()` is called with an error message if it is an error.
+
+APIs
+===
+
+* 
+
+
+Using RESTful APIs
+==
+
+The RESTful APIs have the same pattern as the simple, except that:
+* the project ID is NOT set automatically
+* the API key IS set automatically.
 
 To use the RESTful APIs, you can call like this:
 
