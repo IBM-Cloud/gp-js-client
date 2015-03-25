@@ -33,6 +33,13 @@ The following snippet runs the unit tests, with a timeout of 16 seconds.
         npm run mocha -- -t 16s
 ```
 
+The following vars affect the tests (and some sample code)
+* `GAAS_PROJECT` = project name to use
+* `GAAS_API_KEY` = which api key to use
+* `GAAS_API_URL` = URL of the endpoint. Should end with "/translate".
+* `GAAS_TEMP_BROKER` = defaults to FALSE. If true, uses an old `/TemporaryBroker`.
+If false, will delete the old project before starting.
+
 Using
 ==
 
@@ -62,7 +69,7 @@ All of the APIs have this pattern:
 APIs
 ===
 
-* 
+* ``
 
 
 Using RESTful APIs

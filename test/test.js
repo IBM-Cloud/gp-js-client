@@ -3,6 +3,7 @@
 // Basic test of GAAS API
 
 var projectId = process.env.GAAS_PROJECT || process.env.TAAS_PROJECT || 'MyProject';
+var projectId2 = process.env.GAAS_PROJECT2 || 'MyOtherProject';
 var apiKey = process.env.GAAS_API_KEY || process.env.TAAS_API_KEY || 'admin8';
 var url = process.env.GAAS_API_URL || process.env.TAAS_API_URL || 'http://127.0.0.1:9131/translate'; // 'https://gaas-dev.stage1.mybluemix.net/translate/';
 
@@ -80,6 +81,23 @@ if ( useTempBroker && useTempBroker != 'false' && useTempBroker != 'FALSE' ) {
             });
         });
     });
+} else {
+    describe('cleaning up', function() {
+        it('Cleanup: Should delete '+projectId+' (ignoring errs)', function(done) {
+            try {
+                gaas.rest_deleteProject({ projectID: projectId }, function good(resp) {
+                    done();
+                }, function() {done();} );
+            } catch (e) { done(); }
+        });
+        it('Cleanup: Should delete '+projectId2+' (ignoring errs)', function(done) {
+            try {
+                gaas.rest_deleteProject({ projectID: projectId2 }, function good(resp) {
+                    done();
+                }, function() {done();} );
+            } catch (e) { done(); }
+        });
+    });
 }
 
 /**
@@ -115,7 +133,7 @@ describe('taas-client', function() {
     
     describe('createProject(MyProject)', function() {
         it('should let us create', function(done) {
-            gaas.rest_createProject({ body: {id: 'MyProject', sourceLanguage: 'en', targetLanguages: ['es','qru']}}, function good(resp) {
+            gaas.rest_createProject({ body: {id: projectId, sourceLanguage: 'en', targetLanguages: ['es','qru']}}, function good(resp) {
                 expect(resp.status).to.equal('success');
                 done();
             }, done);
@@ -124,7 +142,7 @@ describe('taas-client', function() {
 
     describe('updateResourceData(en)', function() {
         it('should let us update some data', function(done) {
-            gaas.rest_updateResourceData({projectID: 'MyProject', languageID: 'en',
+            gaas.rest_updateResourceData({projectID: projectId, languageID: 'en',
                                      body: { data: sourceData, replace: false }},
                                     function good(resp) {
                                         expect(resp.status).to.be.equal('success');
@@ -139,7 +157,7 @@ describe('taas-client', function() {
                 expect(resp.status).to.equal('success');
                 expect(resp.projects.length).to.equal(1);
                 var projs = arrayToHash(resp.projects, 'id');
-                expect(projs).to.contain.keys('MyProject');
+                expect(projs).to.contain.keys(projectId);
                 expect(resp.projects[0].sourceLanguage).to.equal('en');
                 expect(projs.MyProject.targetLanguages).to.include('es');
                 expect(projs.MyProject.targetLanguages).to.include('qru');
@@ -152,7 +170,7 @@ describe('taas-client', function() {
 
     describe('createProject', function() {
         it('should let us create another', function(done) {
-            gaas.rest_createProject({ body: {id: 'MyOtherProject', sourceLanguage: 'en', targetLanguages: ['de','zh-Hans']}}, function good(resp) {
+            gaas.rest_createProject({ body: {id: projectId2, sourceLanguage: 'en', targetLanguages: ['de','zh-Hans']}}, function good(resp) {
                 expect(resp.status).to.equal('success');
                 done();
             }, done);
@@ -164,12 +182,12 @@ describe('taas-client', function() {
             gaas.rest_getProjectList({}, function good(resp) {
                 expect(resp.status).to.equal('success');
                 var projs = arrayToHash(resp.projects, 'id');
-                expect(projs).to.include.keys('MyProject');
+                expect(projs).to.include.keys(projectId);
                 expect(projs.MyProject.targetLanguages).to.include('es');
                 expect(projs.MyProject.targetLanguages).to.include('qru');
                 expect(projs.MyProject.targetLanguages).to.not.include('de');
                 expect(projs.MyProject.targetLanguages).to.not.include('zh-Hans');
-                expect(projs).to.include.keys('MyOtherProject');
+                expect(projs).to.include.keys(projectId2);
                 expect(projs.MyOtherProject.targetLanguages).to.include('de');
                 expect(projs.MyOtherProject.targetLanguages).to.include('zh-Hans');
                 expect(projs.MyOtherProject.targetLanguages).to.not.include('es');
@@ -182,7 +200,7 @@ describe('taas-client', function() {
 
     describe('getProject(MyOtherProject)', function() {
         it('should let us query our 2nd project', function(done) {
-            gaas.rest_getProject({ projectID: 'MyOtherProject' }, function good(resp) {
+            gaas.rest_getProject({ projectID: projectId2 }, function good(resp) {
                 expect(resp.status).to.equal('success');
                 expect(resp.project.targetLanguages).to.include('de');
                 expect(resp.project.targetLanguages).to.include('zh-Hans');
@@ -196,7 +214,7 @@ describe('taas-client', function() {
 
     describe('updateProject(MyOtherProject) +it', function() {
         it('should let us change the target languages', function(done) {
-            gaas.rest_updateProject({ projectID: 'MyOtherProject', 
+            gaas.rest_updateProject({ projectID: projectId2, 
                                  body: { newTargetLanguages: ["it"] }},
                                function good(resp) {
                                    expect(resp.status).to.equal('success');
@@ -207,7 +225,7 @@ describe('taas-client', function() {
 
     describe('getProject(MyOtherProject)', function() {
         it('should let us query our 2nd project again', function(done) {
-            gaas.rest_getProject({ projectID: 'MyOtherProject' }, function good(resp) {
+            gaas.rest_getProject({ projectID: projectId2 }, function good(resp) {
                 expect(resp.status).to.equal('success');
                 expect(resp.project.targetLanguages).to.include('de');
                 expect(resp.project.targetLanguages).to.include('it');
@@ -221,7 +239,7 @@ describe('taas-client', function() {
 
     describe('deleteLangauge(MyOtherProject) -de', function() {
         it('should let us delete German from 2nd project', function(done) {
-            gaas.rest_deleteLanguage({ projectID: 'MyOtherProject', languageID: 'de' }, function good(resp) {
+            gaas.rest_deleteLanguage({ projectID: projectId2, languageID: 'de' }, function good(resp) {
                 expect(resp.status).to.equal('success');
                 done();
             }, done);
@@ -230,7 +248,7 @@ describe('taas-client', function() {
 
     describe('getProject(MyOtherProject)', function() {
         it('should let us query our 2nd project yet again', function(done) {
-            gaas.rest_getProject({ projectID: 'MyOtherProject' }, function good(resp) {
+            gaas.rest_getProject({ projectID: projectId2 }, function good(resp) {
                 expect(resp.status).to.equal('success');
                 expect(resp.project.targetLanguages).to.not.include('de');
                 expect(resp.project.targetLanguages).to.include('it');
@@ -244,7 +262,7 @@ describe('taas-client', function() {
 
     describe('updateProject(MyOtherProject) +de', function() {
         it('should let us change the target languages', function(done) {
-            gaas.rest_updateProject({ projectID: 'MyOtherProject', 
+            gaas.rest_updateProject({ projectID: projectId2, 
                                  body: { newTargetLanguages: ["de"] }},
                                function good(resp) {
                                    expect(resp.status).to.equal('success');
@@ -255,7 +273,7 @@ describe('taas-client', function() {
 
     describe('getProject(MyOtherProject)', function() {
         it('should let us query our 2nd project again again', function(done) {
-            gaas.rest_getProject({ projectID: 'MyOtherProject' }, function good(resp) {
+            gaas.rest_getProject({ projectID: projectId2 }, function good(resp) {
                 expect(resp.status).to.equal('success');
                 expect(resp.project.targetLanguages).to.include('de');
                 expect(resp.project.targetLanguages).to.include('it');
@@ -278,7 +296,7 @@ describe('taas-client', function() {
 
     describe('deleteProject', function() {
         it('should let us deleted', function(done) {
-            gaas.rest_deleteProject({ projectID: 'MyOtherProject' }, function good(resp) {
+            gaas.rest_deleteProject({ projectID: projectId2 }, function good(resp) {
                 expect(resp.status).to.equal('success');
                 done();
             }, done);
@@ -290,7 +308,7 @@ describe('taas-client', function() {
             gaas.rest_getProjectList({}, function good(resp) {
                 expect(resp.status).to.equal('success');
                 expect(resp.projects.length).to.equal(1);
-                expect(resp.projects[0].id).to.equal('MyProject');
+                expect(resp.projects[0].id).to.equal(projectId);
                 done();
             }, done);
         });
@@ -298,7 +316,7 @@ describe('taas-client', function() {
 
     describe('getResourceData(en)', function() {
         it('should return our resource data for English', function(done) {
-            gaas.rest_getResourceData({ projectID: 'MyProject', languageID: 'en'}, function good(resp) {
+            gaas.rest_getResourceData({ projectID: projectId, languageID: 'en'}, function good(resp) {
                 console.dir(resp);
                 expect(resp.status).to.equal('success');
                 //expect(resp.resourceData.translationStatus).to.equal('source-language');
@@ -310,7 +328,7 @@ describe('taas-client', function() {
 
     describe('getResourceData(fr)', function() {
         it('should return our resource data for French', function(done) {
-            gaas.rest_getResourceData({ projectID: 'MyProject', languageID: 'qru'}, function good(resp) {
+            gaas.rest_getResourceData({ projectID: projectId, languageID: 'qru'}, function good(resp) {
                 console.dir(resp);
                 expect(resp.status).to.equal('success');
 //                expect(resp.resourceData.translationStatus).to.equal('completed');
@@ -322,7 +340,7 @@ describe('taas-client', function() {
 
     describe('deleteProject', function() {
         it('should let us deleted', function(done) {
-            gaas.rest_deleteProject({ projectID: 'MyProject' }, function good(resp) {
+            gaas.rest_deleteProject({ projectID: projectId }, function good(resp) {
                 expect(resp.status).to.equal('success');
                 done();
             }, done);
