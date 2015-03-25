@@ -54,51 +54,22 @@ describe('Check URL ' + url+'/', function() {
     });
 });
 
-var useTempBroker = process.env.GAAS_TEMP_BROKER || process.env.TAAS_TEMP_BROKER || false;
-var tbUrl = null;
-if ( useTempBroker && useTempBroker != 'false' && useTempBroker != 'FALSE' ) {
-    describe('SETUP TemporaryBroker', function() {
-        describe('delete old ' + apiKey, function() {
-            tbUrl = url+'/TemporaryBroker/users/'+apiKey+'?DELETE';
-            it('should let me delete', function(done) {
-                http_or_https.get(tbUrl,
-                         function(d) {
-                             console.log('-> ' + d.statusCode); // dontcare
-                             done();
-                         })
-                    .on('error', function(x){console.error('err:',tbUrl,x);done();});
-            });
-        });
-        describe('create new ' + apiKey, function() {
-            it('should let me create', function(done) {
-                tbUrl = url+'/TemporaryBroker/users/'+apiKey+'?PUT';
-                http_or_https.get(tbUrl,
-                         function(d) {
-                             expect(d.statusCode).to.equal(200);
-                             done();
-                         })
-                    .on('error', function(x){console.error('err:',tbUrl,x);done();});
-            });
-        });
+describe('cleaning up', function() {
+    it('Cleanup: Should delete '+projectId+' (ignoring errs)', function(done) {
+        try {
+            gaas.rest_deleteProject({ projectID: projectId }, function good(resp) {
+                done();
+            }, function() {done();} );
+        } catch (e) { done(); }
     });
-} else {
-    describe('cleaning up', function() {
-        it('Cleanup: Should delete '+projectId+' (ignoring errs)', function(done) {
-            try {
-                gaas.rest_deleteProject({ projectID: projectId }, function good(resp) {
-                    done();
-                }, function() {done();} );
-            } catch (e) { done(); }
-        });
-        it('Cleanup: Should delete '+projectId2+' (ignoring errs)', function(done) {
-            try {
-                gaas.rest_deleteProject({ projectID: projectId2 }, function good(resp) {
-                    done();
-                }, function() {done();} );
-            } catch (e) { done(); }
-        });
+    it('Cleanup: Should delete '+projectId2+' (ignoring errs)', function(done) {
+        try {
+            gaas.rest_deleteProject({ projectID: projectId2 }, function good(resp) {
+                done();
+            }, function() {done();} );
+        } catch (e) { done(); }
     });
-}
+});
 
 /**
  * probably been written before!
