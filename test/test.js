@@ -266,7 +266,7 @@ describe('taas-client', function() {
     });
 
     describe('deleteProject', function() {
-        it('should let us deleted', function(done) {
+        it('should let us delete', function(done) {
             gaas.rest_deleteProject({ projectID: projectId2 }, function good(resp) {
                 expect(resp.status).to.equal('success');
                 done();
@@ -290,8 +290,22 @@ describe('taas-client', function() {
             gaas.rest_getResourceData({ projectID: projectId, languageID: 'en'}, function good(resp) {
                 console.dir(resp);
                 expect(resp.status).to.equal('success');
-                //expect(resp.resourceData.translationStatus).to.equal('source-language');
+                //expect(resp.resourceData.translationStatus).to.equal('sourceLanguage');
                 expect(resp.resourceData.language).to.equal('en');
+                done();
+            }, done);
+        });
+    });
+
+    describe('getResourceEntry(en)', function() {
+        it('should return our resource data for English', function(done) {
+            gaas.rest_getResourceEntry({ projectID: projectId, languageID: 'en', resKey: 'key1'}, function good(resp) {
+                console.dir(resp);
+                expect(resp.status).to.equal('success');
+                expect(resp.resourceEntry.translationStatus).to.equal('sourceLanguage');
+                expect(resp.resourceEntry.language).to.equal('en');
+                expect(resp.resourceEntry.key).to.equal('key1');
+                expect(resp.resourceEntry.value).to.equal(sourceData['key1']);
                 done();
             }, done);
         });
@@ -315,6 +329,21 @@ describe('taas-client', function() {
                 expect(resp.status).to.equal('success');
                 done();
             }, done);
+        });
+    });
+
+    describe('getResourceData(en)', function() {
+        it('should NOT return our resource data for our deleted project', function(done) {
+            gaas.rest_getResourceData({ projectID: projectId, languageID: 'en'}, function good(resp) {
+                console.dir(resp);
+                expect(resp.status).to.not.equal('success');
+                done();
+            }, function(x) {
+                if(x.obj) {
+                    console.dir(x.obj);
+                }
+                done(); // failed, as expected
+            });
         });
     });
 
