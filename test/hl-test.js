@@ -1,3 +1,4 @@
+/*global  */
 //* IBM Globalization
 //* IBM Confidential / Copyright (C) IBM Corp. 2015
 // High Level test of GAAS API
@@ -8,11 +9,14 @@ var assert = require('assert');
 
 var VERBOSE = process.env.GAAS_VERBOSE || false;
 
+var project =  process.env.GAAS_TEST_PROJECTID || ('GaasTestProject'+Math.random());
+var srcLang =  process.env.GAAS_TEST_SRCLANG || 'en';
+var targLang = process.env.GAAS_TEST_TARGLANG || 'qru';
+
 var opts = {
-  project: process.env.GAAS_TEST_PROJECTID || ('GaasTestProject'+Math.random())
 };
 
-describe('Setting up GaaS test, using GAAS_TEST_PROJECTID=' + opts.project, function() {
+describe('Setting up GaaS test, using GAAS_TEST_PROJECTID=' + project, function() {
   var vcapEnv = process.env.VCAP_SERVICES || null;
   var apiKeyEnv = process.env.GAAS_API_KEY || null;
   var urlEnv = process.env.GAAS_API_URL || null;
@@ -41,25 +45,44 @@ describe('Setting up GaaS test, using GAAS_TEST_PROJECTID=' + opts.project, func
 
 var GT = function gaasTest(method, path, fcn, input, good, bad) {
   it(method+' '+path+' gaas.'+fcn+'()', function(done) {
+    if(typeof(bad) === 'undefined') {
+      bad = function(){return false;}
+    }
     if ( VERBOSE ) {
       console.log('REQUEST');
       console.log('~~~ js');
       console.log(JSON.stringify(input));
       console.log('~~~');
     }
-    gaas[fcn](input, function(resp) {
+    if(typeof(gaas[fcn]) !== 'function') {
+      done(Error('Not a function: gaas.'+fcn));
+    } else {
+      gaas[fcn](input, function(resp) {
       if ( VERBOSE ) {
         console.log('RESPONSE');
         console.log('~~~ js');
         console.log(JSON.stringify(resp));
         console.log('~~~');
       }
-      good(done, resp);
-    }, function(err) {
-         if(!bad(err, done)) {
-           done(err);
-         }
-    });
+        good(done, resp);
+      }, function(err) {
+           if(!bad(err, done)) {
+             if(typeof(err) === 'string') {
+               done(Error(err));
+             } else if(typeof(err) === 'object') {
+               if(err.message) {
+                 done(Error(err.message));
+               } else if(err.error) {
+                 done(Error(err.error+' '+err.status));
+               } else {
+                 done(err);
+               }
+             } else {
+               done(err);
+             }
+           }
+         });
+    }
   });
 };
 
@@ -75,20 +98,108 @@ describe('Verifying that we can reach the server', function() {
 
 describe('Creating a project', function() {
   GT('POST', '/projects', 'createProject',
-     { id: opts.project },
+     {
+       id: project,
+       sourceLanguage: srcLang }, 
      function(done, resp) {
        expect(resp.status).to.equal('success');
        done();
      });
 });
 
-/*
-        'updateResourceData',   POST /projects/ID/LANG
-        'getProject',   GET /projects/ID
-        'updateProject', POST /projects/ID
-        'getProjectList', get /projects
-        'getResourceData', get /proejcts/ID/LANG
-        'getResourceEntry', get /projects/ID/LANG/KEY
-        'deleteLanguage',  DELETE /projects/ID/LANG
-        'deleteProject', DELETE /projects/ID
-*/
+describe('Get project info', function() {
+  GT('GET', '/projects/{project}', 'getProject',
+     {
+       projectID: project
+     },
+     function(done, resp) {
+       expect(resp.status).to.equal('success');
+       done();
+     });
+});       
+
+describe('Add a target langage', function() {
+  GT('POST', '/projects/{project}', 'updateProject',
+     {
+       projectID: project,
+       newTargetLanguages: [ targLang ]
+     },
+     function(done, resp) {
+       expect(resp.status).to.equal('success');
+       done();
+     });
+});       
+
+
+describe('Updating resource data', function() {
+  GT('POST', '/projects/{project}/{lang}', 'updateResourceData',
+     {
+       projectID: project,
+       languageID: srcLang,
+       data: { hello: 'Hello, World!' }
+     },
+     function(done, resp) {
+       expect(resp.status).to.equal('success');
+       done();
+     });
+});       
+
+
+
+describe('List all projects', function() {
+  GT('GET', '/projects', 'getProjectList',
+     {
+     },
+     function(done, resp) {
+       expect(resp.status).to.equal('success');
+       done();
+     });
+});       
+
+describe('Get all data for one project and language', function() {
+  GT('GET', '/projects/{project}/{language}', 'getResourceData',
+     {
+       projectID: project,
+       languageID: targLang
+     },
+     function(done, resp) {
+       expect(resp.status).to.equal('success');
+       done();
+     });
+});       
+
+describe('Retrieve a single key detail', function() {
+  GT('GET', '/projects/{project}/{language}/{key}', 'getResourceEntry',
+     {
+       projectID: project,
+       languageID: targLang,
+       key: 'hello'
+     },
+     function(done, resp) {
+       expect(resp.status).to.equal('success');
+       done();
+     });
+});       
+
+describe('Remove a target language', function() {
+  GT('DELETE', '/projects/{project}/{language}', 'deleteLanguage',
+     {
+       projectID: project,
+       languageID: targLang
+     },
+     function(done, resp) {
+       expect(resp.status).to.equal('success');
+       done();
+     });
+});       
+
+describe('Deleting project', function() {
+  GT('DELETE', '/projects/{project}', 'deleteProject',
+     {
+       projectID: project
+     },
+     function(done, resp) {
+       expect(resp.status).to.equal('success');
+       done();
+     });
+});
