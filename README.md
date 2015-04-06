@@ -3,9 +3,12 @@
 //* IBM Confidential / Copyright (C) IBM Corp. 2015
 -->
 
-Client for IBM Globalization-as-a-Service
+JavaScript Client for IBM Globalization-as-a-Service
 ===
 by Steven R. Loomis
+
+Presently, this only includes a Node.js client, but will eventually
+include other clients including browser-side.
 
 To use ( quickstart )
 
