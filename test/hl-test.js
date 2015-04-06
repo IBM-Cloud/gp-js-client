@@ -67,14 +67,28 @@ var GT = function gaasTest(method, path, fcn, input, good, bad) {
 describe('Verifying that we can reach the server', function() {
   GT('GET','/service', 'getInfo', {}, function(done, resp) {
     expect(resp.status).to.equal('success');
-    it('should contain English', function(done) {
-      expect(resp.supportedTranslation).to.include.keys('en');
-      done();
-    });
-    it('should translate to German', function(done) {
-      expect(resp.supportedTranslation.en).to.include('de');
-      done();
-    });
+    expect(resp.supportedTranslation).to.include.keys('en');
+    expect(resp.supportedTranslation.en).to.include('de');
     done();
   });
 });
+
+describe('Creating a project', function() {
+  GT('POST', '/projects', 'createProject',
+     { id: opts.project },
+     function(done, resp) {
+       expect(resp.status).to.equal('success');
+       done();
+     });
+});
+
+/*
+        'updateResourceData',   POST /projects/ID/LANG
+        'getProject',   GET /projects/ID
+        'updateProject', POST /projects/ID
+        'getProjectList', get /projects
+        'getResourceData', get /proejcts/ID/LANG
+        'getResourceEntry', get /projects/ID/LANG/KEY
+        'deleteLanguage',  DELETE /projects/ID/LANG
+        'deleteProject', DELETE /projects/ID
+*/

@@ -86,6 +86,7 @@ APIs
 ===
 
 ### gaas.getInfo
+See REST [`GET /service`](https://gaas.stage1.mybluemix.net/translate/swagger/index.html#!/service/getInfo)
 
 This function fetches general information about the server,
 including which translations are available.
@@ -109,6 +110,7 @@ Sample `resp`:
 supported languages. This example shows that English can be translated to German and Spanish.
 
 ### gaas.getProjectList
+See REST [`GET /projects`](https://gaas.stage1.mybluemix.net/translate/swagger/index.html#!/project/getProjectList)
 
 This function lists the projects currently available to your api key.
 
@@ -142,6 +144,7 @@ The response shows that this project has one language with a failed and one lang
 translation.
 
 ### gaas.createProject
+See REST [`POST /projects`](https://gaas.stage1.mybluemix.net/translate/swagger/index.html#!/project/createProject)
 
 This function creates a new project.
 
@@ -154,32 +157,116 @@ gaas.createProject({
 ~~~
 
 ### gaas.getProject
+See REST [`GET /projects/{projectID}`](https://gaas.stage1.mybluemix.net/translate/swagger/index.html#!/project/getProject)
 
 This function gets information about one project.
 
+~~~ js
+gaas.getProject({
+  id: "MyOtherProject",
+}, function onSuccess(resp){}, function onFailure(err){});
+~~~
+
+Sample `resp`:
+```
+ {}
+```
+
 ### gaas.updateProject
+See REST [`POST /projects/{projectID}`](https://gaas.stage1.mybluemix.net/translate/swagger/index.html#!/project/updateProject)
 
 Update project contents..
 
+~~~ js
+gaas.getProject({
+  id: "MyOtherProject",
+}, function onSuccess(resp){}, function onFailure(err){});
+~~~
+
+Sample `resp`:
+```
+ {}
+```
+
 ### gaas.deleteProject
+See REST [`DELETE /projects/{projectID}`](https://gaas.stage1.mybluemix.net/translate/swagger/index.html#!/project/deleteProject)
 
 Delete a project and all translations..
 
+~~~ js
+gaas.getProject({
+  id: "MyOtherProject",
+}, function onSuccess(resp){}, function onFailure(err){});
+~~~
+
+Sample `resp`:
+```
+ {}
+```
+
 ### gaas.getResourceData
+See REST [`GET /projects/{projectID}/{languageID}`](https://gaas.stage1.mybluemix.net/translate/swagger/index.html#!/project/getResourceData)
 
 Get the data for one translation
 
+~~~ js
+gaas.getProject({
+  id: "MyOtherProject",
+}, function onSuccess(resp){}, function onFailure(err){});
+~~~
+
+Sample `resp`:
+```
+ {}
+```
+
 ### gaas.updateResourceData
+See REST [`POST /projects/{projectID}/{languageID}`](https://gaas.stage1.mybluemix.net/translate/swagger/index.html#!/project/updateResourceData)
 
 Update one key's entry
 
+~~~ js
+gaas.getProject({
+  id: "MyOtherProject",
+}, function onSuccess(resp){}, function onFailure(err){});
+~~~
+
+Sample `resp`:
+```
+ {}
+```
+
 ### gaas.deleteLanguage
+See REST [`DELETE /projects/{projectID}/{languageID}`](https://gaas.stage1.mybluemix.net/translate/swagger/index.html#!/project/deleteLanguage)
 
 Delete a target language. Source language may not be deleted.
 
+~~~ js
+gaas.getProject({
+  id: "MyOtherProject",
+}, function onSuccess(resp){}, function onFailure(err){});
+~~~
+
+Sample `resp`:
+```
+ {}
+```
+
 ### gaas.getResourceEntry
+See REST [`GET /projects/{projectID}/{languageID}/{resKey}`](https://gaas.stage1.mybluemix.net/translate/swagger/index.html#!/project/getResourceEntry)
 
 Return a single key's entry
+
+~~~ js
+gaas.getProject({
+  id: "MyOtherProject",
+}, function onSuccess(resp){}, function onFailure(err){});
+~~~
+
+Sample `resp`:
+```
+ {}
+```
 
 Using RESTful APIs
 ==
@@ -195,7 +282,7 @@ The RESTful APIs have the same pattern as the simple, except that:
 To use the RESTful APIs, you can call like this:
 
 ```
-gaas.rest_getProjectList({}, function onSuccess(resp) {
+gaas.rest_getProjectList({/* params */}, function onSuccess(resp) {
   if(resp.status !== 'success') { /* it didnt work  */ }
   else {         
      console.log('Projects:');
@@ -204,7 +291,6 @@ gaas.rest_getProjectList({}, function onSuccess(resp) {
 }, function onFailure(err){console.log('Err:',err);}
 ```
 
-You can get a list of the available APIs like this:
+The variable `rest_help` has a list of operations. It could be printed out with this command:
 `console.dir(gaas.rest_help);`
 
-More details, TBD.
