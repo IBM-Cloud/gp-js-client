@@ -2,14 +2,14 @@
   "private": true,
   "name": "gaas",
   "version": "0.0.1",
-  "description": "NodeJS client for Globalization-as-a-Service",
+  "description": "JavaScript (Node.js, etc) client for Globalization-as-a-Service",
   "main": "index.js",
   "scripts": {
     "mocha": "mocha"
   },
   "repository": {
     "type": "git",
-    "url": "git:icu.sanjose.ibm.com:/git/taas-nodejs-client.git"
+    "url": "https://hub.jazz.net/git/steveatkin/gaas-nodejs-client"
   },
   "keywords": [
     "l10n"
