@@ -2,10 +2,6 @@
 //* IBM Confidential / Copyright (C) IBM Corp. 2015
 // Low Level test of GAAS API
 
-if(true) {
-  console.log('Note: skipping ll-test (for now)');
-} else {
-
 var projectId = process.env.GAAS_PROJECT || process.env.TAAS_PROJECT || 'MyProject';
 var projectId2 = process.env.GAAS_PROJECT2 || 'MyOtherProject';
 var apiKey = process.env.GAAS_API_KEY || process.env.TAAS_API_KEY || 'admin8';
@@ -20,7 +16,7 @@ function removeTrailing(str, chr) {
     }
 };
 
-var url = removeTrailing(url, '/'); // strip trailing slash
+url = removeTrailing(url, '/'); // strip trailing slash
 
 var expect = require('chai').expect;
 
@@ -374,8 +370,6 @@ describe('taas-client', function() {
     // console.log(gaas._api.projects.getResourceData({"api-key": apiKey,
     //                                                 projectID: projectId,
     //                                                 languageID: "fr"}));
-
-}
 // Local Variables:
 // compile-command: "cd c:/Users/IBM_ADMIN/git/taas-nodejs-client/ ; npm run test"
 // End:

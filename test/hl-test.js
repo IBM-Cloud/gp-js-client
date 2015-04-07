@@ -3,6 +3,8 @@
 //* IBM Confidential / Copyright (C) IBM Corp. 2015
 // High Level test of GAAS API
 
+return true;
+
 var gaas; // required, below
 var expect = require('chai').expect;
 var assert = require('assert');
