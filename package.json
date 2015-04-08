@@ -5,22 +5,23 @@
   "description": "JavaScript (Node.js, etc) client for Globalization-as-a-Service",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "mocha": "mocha"
   },
   "repository": {
     "type": "git",
-    "url": "https://hub.jazz.net/git/steveatkin/gaas-nodejs-client"
+    "url": "https://github.com/IBM-Bluemix/gaas-js-client"
   },
   "keywords": [
     "l10n"
   ],
   "author": "Steven R. Loomis <srloomis@us.ibm.com>",
-  "license": "Commercial",
+  "license": "Apache 2.0",
   "dependencies": {
     "swagger-client": "^2.1.4-M1"
   },
   "devDependencies": {
       "chai": "*",
       "mocha": "*"
-  }, "//": "Just for testing"
+  }
 }
