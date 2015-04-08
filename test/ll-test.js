@@ -1,11 +1,30 @@
-//* IBM Globalization
-//* IBM Confidential / Copyright (C) IBM Corp. 2015
-// Low Level test of GAAS API
+/*	
+ * Copyright IBM Corp. 2015
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-var projectId = process.env.GAAS_PROJECT || process.env.TAAS_PROJECT || 'MyProject';
-var projectId2 = process.env.GAAS_PROJECT2 || 'MyOtherProject';
-var apiKey = process.env.GAAS_API_KEY || process.env.TAAS_API_KEY || 'admin8';
-var url = process.env.GAAS_API_URL || process.env.TAAS_API_URL || 'http://127.0.0.1:9131/translate'; // 'https://gaas-dev.stage1.mybluemix.net/translate/';
+// Low Level test of GAAS API
+console.dir(module.filename);
+
+var projectId = process.env.GAAS_PROJECT  || 'MyLLProject'+Math.random();
+var projectId2 = process.env.GAAS_PROJECT2 || 'MyOtherLLProject'+Math.random();
+var apiKey = process.env.GAAS_API_KEY;
+var url = process.env.GAAS_API_URL;
+var vcapEnv = process.env.VCAP_SERVICES;
+var CLEANSLATE = false; // CLEANSLATE: assume no other projects
+
+
 
 function removeTrailing(str, chr) {
     if (!str || (str=="")) return str;
@@ -22,7 +41,7 @@ var expect = require('chai').expect;
 
 var assert = require('assert');
 
-var gaas = require('../index.js')({ url: url, api: apiKey, project: projectId });
+var gaas = require('../index.js')({ vcap: vcapEnv, url: url, api: apiKey, project: projectId });
 
 
 console.log('REST api list:');
@@ -35,6 +54,10 @@ var sourceData = {
     "key1": "First string to translate",
     "key2": "Second string to translate"
 };
+
+if ( ! url ) {
+  url = gaas._getUrl(); // fetch the URL from vcap, etc
+}
 
 var http_or_https;
 if ( url.indexOf('https') === 0) {
@@ -75,14 +98,16 @@ describe('cleaning up', function() {
  * probably been written before!
  */
 function arrayToHash(o, k) {
-    var res = {};
+  var res = {};
+  if(o) {
     for(var i in o) {
-        res[o[i][k]] = o[i];
+      res[o[i][k]] = o[i];
     }
-    return res;
+  }
+  return res;
 }
 
-describe('taas-client', function() {
+describe('gaas-client', function() {
     describe('getInfo', function() {
         it('should contain English', function(done) {
             gaas.rest_getInfo({}, function good(resp) {
@@ -92,16 +117,18 @@ describe('taas-client', function() {
             }, done);
         });
     });
-    describe('getProjectList [expect: []]', function() {
-        it('should return an empty list', function(done) {
+    describe('getProjectList', function() {
+        it('should not include ' + projectId + ' or ' + projectId2, function(done) {
             gaas.rest_getProjectList({}, function good(resp) {
-                expect(resp.status).to.equal('success');
-                expect(resp.projects).to.be.empty();
-                done();
+              expect(resp.status).to.equal('success');
+              expect(resp.projects).to.not.include(projectId);
+              expect(resp.projects).to.not.include(projectId2);
+              if(CLEANSLATE) expect(resp.projects).to.be.empty();
+              done();
             }, done);
         });
     });
-    
+
     describe('createProject(MyProject)', function() {
         it('should let us create', function(done) {
             gaas.rest_createProject({ body: {id: projectId, sourceLanguage: 'en', targetLanguages: ['es','qru']}}, function good(resp) {
@@ -126,14 +153,14 @@ describe('taas-client', function() {
         it('should return our project in the list', function(done) {
             gaas.rest_getProjectList({}, function good(resp) {
                 expect(resp.status).to.equal('success');
-                expect(resp.projects.length).to.equal(1);
+                if(CLEANSLATE) expect(resp.projects.length).to.equal(1);
                 var projs = arrayToHash(resp.projects, 'id');
                 expect(projs).to.contain.keys(projectId);
                 expect(resp.projects[0].sourceLanguage).to.equal('en');
-                expect(projs.MyProject.targetLanguages).to.include('es');
-                expect(projs.MyProject.targetLanguages).to.include('qru');
-                expect(projs.MyProject.targetLanguages).to.not.include('de');
-                expect(projs.MyProject.targetLanguages).to.not.include('zh-Hans');
+                expect(projs[projectId].targetLanguages).to.include('es');
+                expect(projs[projectId].targetLanguages).to.include('qru');
+                expect(projs[projectId].targetLanguages).to.not.include('de');
+                expect(projs[projectId].targetLanguages).to.not.include('zh-Hans');
                 done();
             }, done);
         });
@@ -154,16 +181,16 @@ describe('taas-client', function() {
                 expect(resp.status).to.equal('success');
                 var projs = arrayToHash(resp.projects, 'id');
                 expect(projs).to.include.keys(projectId);
-                expect(projs.MyProject.targetLanguages).to.include('es');
-                expect(projs.MyProject.targetLanguages).to.include('qru');
-                expect(projs.MyProject.targetLanguages).to.not.include('de');
-                expect(projs.MyProject.targetLanguages).to.not.include('zh-Hans');
+                expect(projs[projectId].targetLanguages).to.include('es');
+                expect(projs[projectId].targetLanguages).to.include('qru');
+                expect(projs[projectId].targetLanguages).to.not.include('de');
+                expect(projs[projectId].targetLanguages).to.not.include('zh-Hans');
                 expect(projs).to.include.keys(projectId2);
-                expect(projs.MyOtherProject.targetLanguages).to.include('de');
-                expect(projs.MyOtherProject.targetLanguages).to.include('zh-Hans');
-                expect(projs.MyOtherProject.targetLanguages).to.not.include('es');
-                expect(projs.MyOtherProject.targetLanguages).to.not.include('qru');
-                expect(resp.projects.length).to.equal(2);
+                expect(projs[projectId2].targetLanguages).to.include('de');
+                expect(projs[projectId2].targetLanguages).to.include('zh-Hans');
+                expect(projs[projectId2].targetLanguages).to.not.include('es');
+                expect(projs[projectId2].targetLanguages).to.not.include('qru');
+                if(CLEANSLATE) expect(resp.projects.length).to.equal(2);
                 done();
             }, done);
         });
@@ -275,11 +302,13 @@ describe('taas-client', function() {
     });
 
     describe('getProjectList', function() {
-        it('should return just our one project in the list', function(done) {
+        it('should return our project in the list', function(done) {
             gaas.rest_getProjectList({}, function good(resp) {
                 expect(resp.status).to.equal('success');
-                expect(resp.projects.length).to.equal(1);
-                expect(resp.projects[0].id).to.equal(projectId);
+                if(CLEANSLATE) expect(resp.projects.length).to.equal(1);
+                if(CLEANSLATE) expect(resp.projects[0].id).to.equal(projectId);
+                var projs = arrayToHash(resp.projects, 'id');
+                expect(projs).to.include.keys(projectId);
                 done();
             }, done);
         });
@@ -348,28 +377,15 @@ describe('taas-client', function() {
     });
 
     describe('getProjectList', function() {
-        it('should return an empty list again', function(done) {
+        it('should return an smaller list again', function(done) {
             gaas.rest_getProjectList({}, function good(resp) {
-                expect(resp.status).to.equal('success');
-                expect(resp.projects).to.be.empty;
-                done();
+              expect(resp.status).to.equal('success');
+              if(CLEANSLATE) expect(resp.projects).to.be.empty();
+              var projs = arrayToHash(resp.projects, 'id');
+              expect(resp.projects).to.not.include.keys(projectId);
+              expect(resp.projects).to.not.include.keys(projectId2);
+              done();
             }, done);
         });
     });
 });
-
-    // console.log("verify data en:");
-    // console.log(gaas._api.projects.getResourceData({"api-key": apiKey,
-    //                                                 projectID: projectId,
-    //                                                 languageID: "en"}));
-    // console.log("verify data de:");
-    // console.log(gaas._api.projects.getResourceData({"api-key": apiKey,
-    //                                                 projectID: projectId,
-    //                                                 languageID: "de"}));
-    // console.log("verify data fr:");
-    // console.log(gaas._api.projects.getResourceData({"api-key": apiKey,
-    //                                                 projectID: projectId,
-    //                                                 languageID: "fr"}));
-// Local Variables:
-// compile-command: "cd c:/Users/IBM_ADMIN/git/taas-nodejs-client/ ; npm run test"
-// End:
