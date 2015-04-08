@@ -15,7 +15,6 @@
  */
 
 // Low Level test of GAAS API
-console.dir(module.filename);
 
 var projectId = process.env.GAAS_PROJECT  || 'MyLLProject'+Math.random();
 var projectId2 = process.env.GAAS_PROJECT2 || 'MyOtherLLProject'+Math.random();
@@ -23,8 +22,9 @@ var apiKey = process.env.GAAS_API_KEY;
 var url = process.env.GAAS_API_URL;
 var vcapEnv = process.env.VCAP_SERVICES;
 var CLEANSLATE = false; // CLEANSLATE: assume no other projects
+var VERBOSE = process.env.GAAS_VERBOSE || false;
 
-
+if(VERBOSE) console.dir(module.filename);
 
 function removeTrailing(str, chr) {
     if (!str || (str=="")) return str;
@@ -44,8 +44,8 @@ var assert = require('assert');
 var gaas = require('../index.js')({ vcap: vcapEnv, url: url, api: apiKey, project: projectId });
 
 
-console.log('REST api list:');
-console.dir(gaas.rest_help);
+if(VERBOSE) console.log('REST api list:');
+if(VERBOSE) console.dir(gaas.rest_help);
 
 var sourceLoc = "en-US";
 var targLoc = "zh-Hans";
@@ -70,7 +70,7 @@ describe('Check URL ' + url+'/', function() {
     it('Should let me fetch landing page', function(done) {
         http_or_https.get(url+'/', // trailing slash to avoid 302
                           function(d) {
-                             console.log('-> ' + d.statusCode); // dontcare
+                            if(VERBOSE) console.log('-> ' + d.statusCode); // dontcare
                              done();
                           })
         .on('error', done);
@@ -317,7 +317,7 @@ describe('gaas-client', function() {
     describe('getResourceData(en)', function() {
         it('should return our resource data for English', function(done) {
             gaas.rest_getResourceData({ projectID: projectId, languageID: 'en'}, function good(resp) {
-                console.dir(resp);
+              if(VERBOSE) console.dir(resp);
                 expect(resp.status).to.equal('success');
                 //expect(resp.resourceData.translationStatus).to.equal('sourceLanguage');
                 expect(resp.resourceData.language).to.equal('en');
@@ -329,7 +329,7 @@ describe('gaas-client', function() {
     describe('getResourceEntry(en)', function() {
         it('should return our resource data for English', function(done) {
             gaas.rest_getResourceEntry({ projectID: projectId, languageID: 'en', resKey: 'key1'}, function good(resp) {
-                console.dir(resp);
+              if(VERBOSE) console.dir(resp);
                 expect(resp.status).to.equal('success');
                 expect(resp.resourceEntry.translationStatus).to.equal('sourceLanguage');
                 expect(resp.resourceEntry.language).to.equal('en');
@@ -343,7 +343,7 @@ describe('gaas-client', function() {
     describe('getResourceData(fr)', function() {
         it('should return our resource data for French', function(done) {
             gaas.rest_getResourceData({ projectID: projectId, languageID: 'qru'}, function good(resp) {
-                console.dir(resp);
+              if(VERBOSE) console.dir(resp);
                 expect(resp.status).to.equal('success');
 //                expect(resp.resourceData.translationStatus).to.equal('completed');
                 expect(resp.resourceData.language).to.equal('qru');
@@ -364,12 +364,12 @@ describe('gaas-client', function() {
     describe('getResourceData(en)', function() {
         it('should NOT return our resource data for our deleted project', function(done) {
             gaas.rest_getResourceData({ projectID: projectId, languageID: 'en'}, function good(resp) {
-                console.dir(resp);
+              if(VERBOSE) console.dir(resp);
                 expect(resp.status).to.not.equal('success');
                 done();
             }, function(x) {
                 if(x.obj) {
-                    console.dir(x.obj);
+                  if(VERBOSE) console.dir(x.obj);
                 }
                 done(); // failed, as expected
             });

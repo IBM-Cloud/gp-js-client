@@ -15,24 +15,20 @@
  */
 
 // High Level test of GAAS API
-console.dir(module.filename);
 
-return true;
+//return true;
 
 var gaas; // required, below
 var expect = require('chai').expect;
 var assert = require('assert');
 
 var VERBOSE = process.env.GAAS_VERBOSE || false;
-
-var project =  process.env.GAAS_TEST_PROJECTID || ('GaasTestProject'+Math.random());
-var srcLang =  process.env.GAAS_TEST_SRCLANG || 'en';
-var targLang = process.env.GAAS_TEST_TARGLANG || 'qru';
+if(VERBOSE) console.dir(module.filename);
 
 var opts = {
 };
 
-describe('Setting up GaaS test, using GAAS_TEST_PROJECTID=' + project, function() {
+describe('Setting up GaaS test', function() {
   var vcapEnv = process.env.VCAP_SERVICES || null;
   var apiKeyEnv = process.env.GAAS_API_KEY || null;
   var urlEnv = process.env.GAAS_API_URL || null;
@@ -41,7 +37,7 @@ describe('Setting up GaaS test, using GAAS_TEST_PROJECTID=' + project, function(
     opts.vcap = vcapEnv;
     it('requiring gaas with VCAP_SERVICES', function(done) {
       gaas = require('../index.js')(opts);
-      console.log( gaas._getUrl() );
+      if(VERBOSE) console.log( gaas._getUrl() );
       done();
     });
   } else if ( apiKeyEnv && urlEnv ) {
@@ -49,7 +45,7 @@ describe('Setting up GaaS test, using GAAS_TEST_PROJECTID=' + project, function(
       opts.api = apiKeyEnv;
       opts.url = urlEnv;
       gaas = require('../index.js')(opts);
-      console.log( gaas._getUrl() );
+      if(VERBOSE) console.log( gaas._getUrl() );
       done();
     });
   } else {
@@ -104,7 +100,7 @@ var GT = function gaasTest(method, path, fcn, input, good, bad) {
 
 // getInfo
 describe('Verifying that we can reach the server', function() {
-  GT('GET','/service', 'getInfo', {}, function(done, resp) {
+  GT('GET','/service', 'rest_getInfo', {}, function(done, resp) {
     expect(resp.status).to.equal('success');
     expect(resp.supportedTranslation).to.include.keys('en');
     expect(resp.supportedTranslation.en).to.include('de');
@@ -112,110 +108,3 @@ describe('Verifying that we can reach the server', function() {
   });
 });
 
-describe('Creating a project', function() {
-  GT('POST', '/projects', 'createProject',
-     {
-       id: project,
-       sourceLanguage: srcLang }, 
-     function(done, resp) {
-       expect(resp.status).to.equal('success');
-       done();
-     });
-});
-
-describe('Get project info', function() {
-  GT('GET', '/projects/{project}', 'getProject',
-     {
-       projectID: project
-     },
-     function(done, resp) {
-       expect(resp.status).to.equal('success');
-       done();
-     });
-});       
-
-describe('Add a target langage', function() {
-  GT('POST', '/projects/{project}', 'updateProject',
-     {
-       projectID: project,
-       newTargetLanguages: [ targLang ]
-     },
-     function(done, resp) {
-       expect(resp.status).to.equal('success');
-       done();
-     });
-});       
-
-
-describe('Updating resource data', function() {
-  GT('POST', '/projects/{project}/{lang}', 'updateResourceData',
-     {
-       projectID: project,
-       languageID: srcLang,
-       data: { hello: 'Hello, World!' }
-     },
-     function(done, resp) {
-       expect(resp.status).to.equal('success');
-       done();
-     });
-});       
-
-
-
-describe('List all projects', function() {
-  GT('GET', '/projects', 'getProjectList',
-     {
-     },
-     function(done, resp) {
-       expect(resp.status).to.equal('success');
-       done();
-     });
-});       
-
-describe('Get all data for one project and language', function() {
-  GT('GET', '/projects/{project}/{language}', 'getResourceData',
-     {
-       projectID: project,
-       languageID: targLang
-     },
-     function(done, resp) {
-       expect(resp.status).to.equal('success');
-       done();
-     });
-});       
-
-describe('Retrieve a single key detail', function() {
-  GT('GET', '/projects/{project}/{language}/{key}', 'getResourceEntry',
-     {
-       projectID: project,
-       languageID: targLang,
-       key: 'hello'
-     },
-     function(done, resp) {
-       expect(resp.status).to.equal('success');
-       done();
-     });
-});       
-
-describe('Remove a target language', function() {
-  GT('DELETE', '/projects/{project}/{language}', 'deleteLanguage',
-     {
-       projectID: project,
-       languageID: targLang
-     },
-     function(done, resp) {
-       expect(resp.status).to.equal('success');
-       done();
-     });
-});       
-
-describe('Deleting project', function() {
-  GT('DELETE', '/projects/{project}', 'deleteProject',
-     {
-       projectID: project
-     },
-     function(done, resp) {
-       expect(resp.status).to.equal('success');
-       done();
-     });
-});

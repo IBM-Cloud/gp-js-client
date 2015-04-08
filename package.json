@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "mocha": "mocha"
+    "mocha": "mocha --reporter dot"
   },
   "repository": {
     "type": "git",
