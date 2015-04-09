@@ -343,11 +343,6 @@ Sample `resp`:
  {}
 ```
 
-### gaas.rest_help
-
-The variable `rest_help` has a list of operations. It could be printed out with this command:
-`console.dir(gaas.rest_help);`
-
 LICENSE
 ===
 Apache 2.0. See [LICENSE.txt](LICENSE.txt)

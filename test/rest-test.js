@@ -43,10 +43,6 @@ var assert = require('assert');
 
 var gaas = require('../index.js')({ vcap: vcapEnv, url: url, api: apiKey, project: projectId });
 
-
-if(VERBOSE) console.log('REST api list:');
-if(VERBOSE) console.dir(gaas.rest_help);
-
 var sourceLoc = "en-US";
 var targLoc = "zh-Hans";
 
