@@ -20,7 +20,7 @@
   "license": "Apache 2.0",
   "devDependencies": {
     "chai": "^2.2.0",
-    "jsdoc-to-markdown": "^0.5.11",
+    "jsdoc-to-markdown": "^0.6.4",
     "mocha": "^2.2.4"
   },
   "dependencies": {

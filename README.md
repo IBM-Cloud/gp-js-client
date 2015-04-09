@@ -91,88 +91,116 @@ All language ids are IETF BCP47 codes.
 
 API reference
 ===
-**Author**: Steven R. Loomis  
-**Members**
+  **Author:** Steven R. Loomis  
 
 * [gaas](#module_gaas)
-  * [class: gaas~Client](#module_gaas..Client)
-    * [client.supportedTranslations(args, cb)](#module_gaas..Client#supportedTranslations)
-    * [client.ping(args, cb)](#module_gaas..Client#ping)
-    * [client.project(projectID, props)](#module_gaas..Client#project)
-    * [client.listProjects(params)](#module_gaas..Client#listProjects)
-  * [class: gaas~Project](#module_gaas..Project)
-    * [project.create()](#module_gaas..Project#create)
-    * [project.remove()](#module_gaas..Project#remove)
-    * [project.getInfo()](#module_gaas..Project#getInfo)
+  * [~Client](#module_gaas..Client)
+    * [.supportedTranslations(args, cb)](#module_gaas..Client#supportedTranslations)
+    * [.ping(args, cb)](#module_gaas..Client#ping)
+    * [.project(projectID, props)](#module_gaas..Client#project)
+    * [.listProjects(params)](#module_gaas..Client#listProjects)
+  * [~Project](#module_gaas..Project)
+    * [.create()](#module_gaas..Project#create)
+    * [.remove()](#module_gaas..Project#remove)
+    * [.getInfo()](#module_gaas..Project#getInfo)
+  * [~supportedTranslationsCallback](#module_gaas..supportedTranslationsCallback) : <code>function</code>
+  * [~listCallback](#module_gaas..listCallback) : <code>function</code>
 
 <a name="module_gaas..Client"></a>
-####class: gaas~Client
-**Members**
+### gaas~Client
+**Kind**: inner class of <code>[gaas](#module_gaas)</code>  
 
-* [class: gaas~Client](#module_gaas..Client)
-  * [client.supportedTranslations(args, cb)](#module_gaas..Client#supportedTranslations)
-  * [client.ping(args, cb)](#module_gaas..Client#ping)
-  * [client.project(projectID, props)](#module_gaas..Client#project)
-  * [client.listProjects(params)](#module_gaas..Client#listProjects)
+* [~Client](#module_gaas..Client)
+  * [.supportedTranslations(args, cb)](#module_gaas..Client#supportedTranslations)
+  * [.ping(args, cb)](#module_gaas..Client#ping)
+  * [.project(projectID, props)](#module_gaas..Client#project)
+  * [.listProjects(params)](#module_gaas..Client#listProjects)
 
 <a name="module_gaas..Client#supportedTranslations"></a>
-#####client.supportedTranslations(args, cb)
+#### client.supportedTranslations(args, cb)
 This function returns a map from source language(s) to target language(s).
 
-**Params**
+**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
 
-- args `object`  
-- cb <code>[supportedTranslationsCallback](#supportedTranslationsCallback)</code>  
+| Param | Type |
+| --- | --- |
+| args | <code>object</code> | 
+| cb | <code>supportedTranslationsCallback</code> | 
 
 <a name="module_gaas..Client#ping"></a>
-#####client.ping(args, cb)
+#### client.ping(args, cb)
 Do we have access to the server?
 
-**Params**
+**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
 
-- args `object` - (ignored)  
-- cb `callback`  
+| Param | Type | Description |
+| --- | --- | --- |
+| args | <code>object</code> | (ignored) |
+| cb | <code>callback</code> |  |
 
 <a name="module_gaas..Client#project"></a>
-#####client.project(projectID, props)
+#### client.project(projectID, props)
 Create a new Project object for further access.Note that this function doesn't create teh project or fetch any information.
 
-**Params**
+**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
 
-- projectID `string`  
-- props `object` - optional properties to set on the object  
+| Param | Type | Description |
+| --- | --- | --- |
+| projectID | <code>string</code> |  |
+| props | <code>object</code> | optional properties to set on the object |
 
 <a name="module_gaas..Client#listProjects"></a>
-#####client.listProjects(params)
+#### client.listProjects(params)
 List the projects available
 
-**Params**
+**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
+**Praram**: <code>listCallback</code>  
 
-- params `object` - currently not used  
+| Param | Type | Description |
+| --- | --- | --- |
+| params | <code>object</code> | currently not used |
 
 <a name="module_gaas..Project"></a>
-####class: gaas~Project
-**Members**
+### gaas~Project
+**Kind**: inner class of <code>[gaas](#module_gaas)</code>  
 
-* [class: gaas~Project](#module_gaas..Project)
-  * [project.create()](#module_gaas..Project#create)
-  * [project.remove()](#module_gaas..Project#remove)
-  * [project.getInfo()](#module_gaas..Project#getInfo)
+* [~Project](#module_gaas..Project)
+  * [.create()](#module_gaas..Project#create)
+  * [.remove()](#module_gaas..Project#remove)
+  * [.getInfo()](#module_gaas..Project#getInfo)
 
 <a name="module_gaas..Project#create"></a>
-#####project.create()
+#### project.create()
 Create the project
 
+**Kind**: instance method of <code>[Project](#module_gaas..Project)</code>  
 <a name="module_gaas..Project#remove"></a>
-#####project.remove()
+#### project.remove()
 Remove the project
 
+**Kind**: instance method of <code>[Project](#module_gaas..Project)</code>  
 <a name="module_gaas..Project#getInfo"></a>
-#####project.getInfo()
+#### project.getInfo()
 Get project info
 
+**Kind**: instance method of <code>[Project](#module_gaas..Project)</code>  
+<a name="module_gaas..supportedTranslationsCallback"></a>
+### gaas~supportedTranslationsCallback : <code>function</code>
+**Kind**: inner typedef of <code>[gaas](#module_gaas)</code>  
 
-  
+| Param | Type | Description |
+| --- | --- | --- |
+| err | <code>object</code> | if(err), error |
+| translations | <code>Object.&lt;string, Array.&lt;string&gt;&gt;</code> | source : [target...] languages |
+
+<a name="module_gaas..listCallback"></a>
+### gaas~listCallback : <code>function</code>
+**Kind**: inner typedef of <code>[gaas](#module_gaas)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| err | <code>object</code> | if(err), error |
+| projects | <code>Object.&lt;string, Project&gt;</code> | map from project ID to project object |
 
 REST APIs
 ===

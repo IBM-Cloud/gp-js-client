@@ -91,12 +91,11 @@ All language ids are IETF BCP47 codes.
 
 API reference
 ===
-{{heading-depth-set 2~}}
 {{#module name="gaas"~}}
   {{>body~}}
-  {{>exported~}}
-  {{/module}}
-  
+  {{>member-index~}}
+  {{>members~}}
+  {{/module~}}
 
 REST APIs
 ===
