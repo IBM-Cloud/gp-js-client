@@ -71,7 +71,8 @@ If you have a service bound as the name `IBM Globalization`,
 you can use this to fetch credentials from VCAP:
 
 ``` js
-var gaas = require('gaas')({ vcap: process.env.VCAP_SERVICES, project: 'MyProject'});
+var gaas = require('gaas');
+var Client = new gaas.Client({ vcap: process.env.VCAP_SERVICES, project: 'MyProject'});
 ```
 
 Using APIs
@@ -88,14 +89,14 @@ Many of the APIs have this pattern:
 
 All language ids are IETF BCP47 codes.
 
-API Reference: `gaas` client object
+API Reference: `Client` client object
 ===
 
-### gaas.supportedTranslations
+### Client.supportedTranslations
 
 This function returns a map from source language(s) to target language(s).
 
-    gaas.supportedTranslations( {}, function onSuccess(translations), function onFailure(err) );
+    Client.supportedTranslations( {}, function onSuccess(translations), function onFailure(err) );
 
 Result:
 
@@ -103,18 +104,18 @@ Result:
         en: [ 'fr', 'de', ... ]
     };
 
-### gaas.project
+### Client.project
 
 This function returns a new `Project` object that can be used for further access.
 *Note* that this function does not create the project or fetch any information - see [Project.create](#Project.create)
 
-    var myProject = gaas.project('MyProject');
+    var myProject = Client.project('MyProject');
 
-### gaas.listProjects
+### Client.listProjects
 
 This function fetches a map of Project objects corresponding to your current projects.
 
-    gaas.listProjects({}, onSuccess(projList), onFailure);
+    Client.listProjects({}, onSuccess(projList), onFailure);
 
 Result:
 
@@ -162,13 +163,13 @@ At present, the RESTful API docs are hosted
 [here](https://gaas.mybluemix.net/translate/swagger/index.html)
 and may be helpful reference.
 
-### gaas.rest_getInfo
+### Client.rest_getInfo
 See REST [`GET /service`](https://gaas.mybluemix.net/translate/swagger/index.html#!/service/getInfo)
 
 This function fetches general information about the server,
 including which translations are available.
 
-    gaas.rest_getInfo({}, function onSuccess(resp){}, function onFailure(err){});
+    Client.rest_getInfo({}, function onSuccess(resp){}, function onFailure(err){});
     
 Sample `resp`:
 ```
@@ -184,13 +185,13 @@ Sample `resp`:
 * `resp.supportedTranslation` - this is a map from source languages to an array of bcp47
 supported languages. This example shows that English can be translated to German and Spanish.
 
-### gaas.rest_getProjectList
+### Client.rest_getProjectList
 See REST [`GET /projects`](https://gaas.mybluemix.net/translate/swagger/index.html#!/project/getProjectList)
 
 This function lists the projects currently available to your api key.
 
 ~~~ js
-gaas.rest_getProjectList({}, function onSuccess(resp){}, function onFailure(err){});
+Client.rest_getProjectList({}, function onSuccess(resp){}, function onFailure(err){});
 ~~~
 
 Sample `resp`:
@@ -218,26 +219,26 @@ Sample `resp`:
 The response shows that this project has one language with a failed and one language with a complete
 translation.
 
-### gaas.rest_createProject
+### Client.rest_createProject
 See REST [`POST /projects`](https://gaas.mybluemix.net/translate/swagger/index.html#!/project/createProject)
 
 This function creates a new project.
 
 ~~~ js
-gaas.rest_createProject({
+Client.rest_createProject({
   id: "MyOtherProject",
   sourceLanguage: "en",
   targetLanguages: [ "es", "fr" ]
 }, function onSuccess(resp){}, function onFailure(err){});
 ~~~
 
-### gaas.rest_getProject
+### Client.rest_getProject
 See REST [`GET /projects/{projectID}`](https://gaas.mybluemix.net/translate/swagger/index.html#!/project/getProject)
 
 This function gets information about one project.
 
 ~~~ js
-gaas.rest_getProject({
+Client.rest_getProject({
   id: "MyOtherProject",
 }, function onSuccess(resp){}, function onFailure(err){});
 ~~~
@@ -247,13 +248,13 @@ Sample `resp`:
  {}
 ```
 
-### gaas.rest_updateProject
+### Client.rest_updateProject
 See REST [`POST /projects/{projectID}`](https://gaas.mybluemix.net/translate/swagger/index.html#!/project/updateProject)
 
 Update project contents..
 
 ~~~ js
-gaas.rest_getProject({
+Client.rest_getProject({
   id: "MyOtherProject",
 }, function onSuccess(resp){}, function onFailure(err){});
 ~~~
@@ -263,13 +264,13 @@ Sample `resp`:
  {}
 ```
 
-### gaas.rest_deleteProject
+### Client.rest_deleteProject
 See REST [`DELETE /projects/{projectID}`](https://gaas.mybluemix.net/translate/swagger/index.html#!/project/deleteProject)
 
 Delete a project and all translations..
 
 ~~~ js
-gaas.rest_getProject({
+Client.rest_getProject({
   id: "MyOtherProject",
 }, function onSuccess(resp){}, function onFailure(err){});
 ~~~
@@ -279,13 +280,13 @@ Sample `resp`:
  {}
 ```
 
-### gaas.rest_getResourceData
+### Client.rest_getResourceData
 See REST [`GET /projects/{projectID}/{languageID}`](https://gaas.mybluemix.net/translate/swagger/index.html#!/project/getResourceData)
 
 Get the data for one translation
 
 ~~~ js
-gaas.rest_getProject({
+Client.rest_getProject({
   id: "MyOtherProject",
 }, function onSuccess(resp){}, function onFailure(err){});
 ~~~
@@ -295,13 +296,13 @@ Sample `resp`:
  {}
 ```
 
-### gaas.rest_updateResourceData
+### Client.rest_updateResourceData
 See REST [`POST /projects/{projectID}/{languageID}`](https://gaas.mybluemix.net/translate/swagger/index.html#!/project/updateResourceData)
 
 Update one key's entry
 
 ~~~ js
-gaas.rest_getProject({
+Client.rest_getProject({
   id: "MyOtherProject",
 }, function onSuccess(resp){}, function onFailure(err){});
 ~~~
@@ -311,13 +312,13 @@ Sample `resp`:
  {}
 ```
 
-### gaas.rest_deleteLanguage
+### Client.rest_deleteLanguage
 See REST [`DELETE /projects/{projectID}/{languageID}`](https://gaas.mybluemix.net/translate/swagger/index.html#!/project/deleteLanguage)
 
 Delete a target language. Source language may not be deleted.
 
 ~~~ js
-gaas.rest_getProject({
+Client.rest_getProject({
   id: "MyOtherProject",
 }, function onSuccess(resp){}, function onFailure(err){});
 ~~~
@@ -327,13 +328,13 @@ Sample `resp`:
  {}
 ```
 
-### gaas.rest_getResourceEntry
+### Client.rest_getResourceEntry
 See REST [`GET /projects/{projectID}/{languageID}/{resKey}`](https://gaas.mybluemix.net/translate/swagger/index.html#!/project/getResourceEntry)
 
 Return a single key's entry
 
 ~~~ js
-gaas.rest_getProject({
+Client.rest_getProject({
   id: "MyOtherProject",
 }, function onSuccess(resp){}, function onFailure(err){});
 ~~~
