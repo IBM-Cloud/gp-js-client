@@ -45,7 +45,7 @@ View the VCAP credential information, and set it as a local parameter:
 
     set VCAP_SERVICES = { "IBM Globalization": [ { "name": "IBM Globalization", /* etc ....... */ } ]
     npm install
-    npm run test
+    npm test
 
 Alternately,  the following variables affect the tests (and some sample code) if `VCAP_SERVICES` is not used:
 
@@ -66,12 +66,9 @@ to set a default project name for operations.
      api: '<your API key>',
      project: '<your default project name>',
     });
-    
-The RESTful APIs can be called directly, or the simple API.
-Using the simple API is recommended, however it is not YET complete.
 
 If you have a service bound as the name `IBM Globalization`,
-you can do this to fetch credentials from VCAP:
+you can use this to fetch credentials from VCAP:
 
 ``` js
 var gaas = require('gaas')({ vcap: process.env.VCAP_SERVICES, project: 'MyProject'});
@@ -80,22 +77,44 @@ var gaas = require('gaas')({ vcap: process.env.VCAP_SERVICES, project: 'MyProjec
 Using APIs
 ==
 
-All of the APIs have this pattern:
+Many of the APIs have this pattern:
 
-`gaas.function( { /*params*/ } ,  onSuccess, onFailure)`
+`obj.function( { /*params*/ } ,  onSuccess, onFailure)`
 
 `onSuccess()` is given an object with various contents.
 
 `onFailure()` is called with an error message if it is an error.
 
-At present, the RESTful API docs are hosted
-[here](https://gaas.mybluemix.net/translate/swagger/index.html)
-and may be helpful reference.
 
 All language ids are IETF BCP47 codes.
 
-APIs
+API Reference: `gaas` client object
 ===
+
+### gaas.supportedTranslations
+
+This function returns a map from source language(s) to target language(s).
+
+    gaas.supportedTranslations( {}, function onSuccess(translations), function onFailure(err) );
+
+Result:
+
+    translations = {
+        en: [ 'fr', 'de', ... ]
+    };
+
+### gaas.project
+
+This function returns a new Project object that can be 
+
+REST APIs
+===
+
+These functions directly mirror the REST api on the Globalization service.
+
+At present, the RESTful API docs are hosted
+[here](https://gaas.mybluemix.net/translate/swagger/index.html)
+and may be helpful reference.
 
 ### gaas.rest_getInfo
 See REST [`GET /service`](https://gaas.mybluemix.net/translate/swagger/index.html#!/service/getInfo)

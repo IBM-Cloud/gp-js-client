@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-module.exports = require('./lib/taas-client.js');
+module.exports = require('./lib/client.js');
