@@ -40,7 +40,7 @@ describe('Setting up GaaS test', function() {
   if ( vcapEnv ) {
     opts.vcap = vcapEnv;
     it('requiring gaas with VCAP_SERVICES', function(done) {
-      gaas = new gaasLibrary.Client(opts);
+      gaas = gaasLibrary.getClient(opts);
       if(VERBOSE) console.log( gaas._getUrl() );
       done();
     });
@@ -48,7 +48,7 @@ describe('Setting up GaaS test', function() {
     it('requiring gaas with GAAS_API_KEY and GAAS_API_URL', function(done) {
       opts.api = apiKeyEnv;
       opts.url = urlEnv;
-      gaas = new gaasLibrary.Client(opts);
+      gaas = gaasLibrary.getClient(opts);
       if(VERBOSE) console.log( gaas._getUrl() );
       done();
     });

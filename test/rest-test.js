@@ -42,7 +42,7 @@ var expect = require('chai').expect;
 var assert = require('assert');
 
 var gaasLib = require('../index.js');
-var gaas = new gaasLib.Client({ vcap: vcapEnv, url: url, api: apiKey, project: projectId });
+var gaas = gaasLib.getClient({ vcap: vcapEnv, url: url, api: apiKey, project: projectId });
 
 var sourceLoc = "en-US";
 var targLoc = "zh-Hans";
