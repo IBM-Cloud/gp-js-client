@@ -89,68 +89,90 @@ Many of the APIs have this pattern:
 
 All language ids are IETF BCP47 codes.
 
-API Reference: `Client` object
+API reference
 ===
+**Author**: Steven R. Loomis  
+**Members**
 
-### Client.supportedTranslations
+* [gaas](#module_gaas)
+  * [class: gaas~Client](#module_gaas..Client)
+    * [client.supportedTranslations(args, cb)](#module_gaas..Client#supportedTranslations)
+    * [client.ping(args, cb)](#module_gaas..Client#ping)
+    * [client.project(projectID, props)](#module_gaas..Client#project)
+    * [client.listProjects(params)](#module_gaas..Client#listProjects)
+  * [class: gaas~Project](#module_gaas..Project)
+    * [project.create()](#module_gaas..Project#create)
+    * [project.remove()](#module_gaas..Project#remove)
+    * [project.getInfo()](#module_gaas..Project#getInfo)
 
+<a name="module_gaas..Client"></a>
+####class: gaas~Client
+**Members**
+
+* [class: gaas~Client](#module_gaas..Client)
+  * [client.supportedTranslations(args, cb)](#module_gaas..Client#supportedTranslations)
+  * [client.ping(args, cb)](#module_gaas..Client#ping)
+  * [client.project(projectID, props)](#module_gaas..Client#project)
+  * [client.listProjects(params)](#module_gaas..Client#listProjects)
+
+<a name="module_gaas..Client#supportedTranslations"></a>
+#####client.supportedTranslations(args, cb)
 This function returns a map from source language(s) to target language(s).
 
-    Client.supportedTranslations( {}, function onSuccess(translations), function onFailure(err) );
+**Params**
 
-Result:
+- args `object`  
+- cb <code>[supportedTranslationsCallback](#supportedTranslationsCallback)</code>  
 
-    translations = {
-        en: [ 'fr', 'de', ... ]
-    };
+<a name="module_gaas..Client#ping"></a>
+#####client.ping(args, cb)
+Do we have access to the server?
 
-### Client.project
+**Params**
 
-This function returns a new `Project` object that can be used for further access.
-*Note* that this function does not create the project or fetch any information - see [Project.create](#Project.create)
+- args `object` - (ignored)  
+- cb `callback`  
 
-    var myProject = Client.project('MyProject');
+<a name="module_gaas..Client#project"></a>
+#####client.project(projectID, props)
+Create a new Project object for further access.Note that this function doesn't create teh project or fetch any information.
 
-### Client.listProjects
+**Params**
 
-This function fetches a map of Project objects corresponding to your current projects.
+- projectID `string`  
+- props `object` - optional properties to set on the object  
 
-    Client.listProjects({}, onSuccess(projList), onFailure);
+<a name="module_gaas..Client#listProjects"></a>
+#####client.listProjects(params)
+List the projects available
 
-Result:
+**Params**
 
-    projList = {
-        MyProject: Project(...),
-        MyOtherProject: Project(...),
-        ...
-    };
+- params `object` - currently not used  
 
-API Reference: `Project` object
-===
+<a name="module_gaas..Project"></a>
+####class: gaas~Project
+**Members**
 
-### Project.id
+* [class: gaas~Project](#module_gaas..Project)
+  * [project.create()](#module_gaas..Project#create)
+  * [project.remove()](#module_gaas..Project#remove)
+  * [project.getInfo()](#module_gaas..Project#getInfo)
 
-This property returns the projectID of the project.
+<a name="module_gaas..Project#create"></a>
+#####project.create()
+Create the project
 
-### Project.create
+<a name="module_gaas..Project#remove"></a>
+#####project.remove()
+Remove the project
 
-This function creates the project
+<a name="module_gaas..Project#getInfo"></a>
+#####project.getInfo()
+Get project info
 
-    Project.create({}, onSuccess, onFailure);
 
-### Project.remove
-
-This function removes the project, immediately and irrevocably.
-
-    Project.remove({}, onSuccess, onFailure);
-
-### project.getInfo
-
-This function returns a new Project object, with the same `id` but
-populated with the current project status, `readerKey`, etc.
-
-    Project.getInfo({}, function onSuccess(newProj), onFailure);
-    console.log(newProj.readerKey);
+  
 
 REST APIs
 ===
