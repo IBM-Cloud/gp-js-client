@@ -18,8 +18,8 @@
 
 //return true;
 
-var gaasLibrary = require('../index.js'); // required, below
-var gaas;
+var gaas = require('../index.js'); // required, below
+var gaasClient;
 var expect = require('chai').expect;
 var assert = require('assert');
 
@@ -40,16 +40,16 @@ describe('Setting up GaaS test', function() {
   if ( vcapEnv ) {
     opts.vcap = vcapEnv;
     it('requiring gaas with VCAP_SERVICES', function(done) {
-      gaas = gaasLibrary.getClient(opts);
-      if(VERBOSE) console.log( gaas._getUrl() );
+      gaasClient = gaas.getClient(opts);
+      if(VERBOSE) console.log( gaasClient._getUrl() );
       done();
     });
   } else if ( apiKeyEnv && urlEnv ) {
     it('requiring gaas with GAAS_API_KEY and GAAS_API_URL', function(done) {
       opts.api = apiKeyEnv;
       opts.url = urlEnv;
-      gaas = gaasLibrary.getClient(opts);
-      if(VERBOSE) console.log( gaas._getUrl() );
+      gaasClient = gaas.getClient(opts);
+      if(VERBOSE) console.log( gaasClient._getUrl() );
       done();
     });
   } else {
@@ -59,96 +59,57 @@ describe('Setting up GaaS test', function() {
   }
 });
 
-var GT = function gaasTest(method, path, fcn, input, good, bad) {
-  it(method+' '+path+' gaas.'+fcn+'()', function(done) {
-    if(typeof(bad) === 'undefined') {
-      bad = function(){return false;}
-    }
-    if ( VERBOSE ) {
-      console.log('REQUEST');
-      console.log('~~~ js');
-      console.log(JSON.stringify(input));
-      console.log('~~~');
-    }
-    if(typeof(gaas[fcn]) !== 'function') {
-      done(Error('Not a function: gaas.'+fcn));
-    } else {
-      gaas[fcn](input, function(resp) {
-      if ( VERBOSE ) {
-        console.log('RESPONSE');
-        console.log('~~~ js');
-        console.log(JSON.stringify(resp));
-        console.log('~~~');
-      }
-        good(done, resp);
-      }, function(err) {
-           if(!bad(err, done)) {
-             if(typeof(err) === 'string') {
-               done(Error(err));
-             } else if(typeof(err) === 'object') {
-               if(err.message) {
-                 done(Error(err.message));
-               } else if(err.error) {
-                 done(Error(err.error+' '+err.status));
-               } else {
-                 done(err);
-               }
-             } else {
-               done(err);
-             }
-           }
-         });
-    }
-  });
-};
-
-// getInfo
+// ping
 describe('Verifying that we can reach the server', function() {
-  GT('GET','/service', 'rest_getInfo', {}, function(done, resp) {
-    expect(resp.status).to.equal('success');
-    expect(resp.supportedTranslation).to.include.keys('en');
-    expect(resp.supportedTranslation.en).to.include('de');
-    done();
+  it('Should let us call gaasClient.ping', function(done) {
+    gaasClient.ping({}, function(err, data) {
+      if(err) { done(err); return; }
+      if(VERBOSE) console.dir(data);
+      done();
+    });
   });
 });
 
-describe('gaas.supportedTranslations()', function() {
+describe('gaasClient.supportedTranslations()', function() {
   it('Should let us list translations', function(done) {
-    gaas.supportedTranslations({}, function(translations) {
+    gaasClient.supportedTranslations({}, function(err, translations) {
+      if(err) { done(err); return; }
       if(VERBOSE) console.dir(translations);
       expect(translations).to.include.keys('en');
       expect(translations.en).to.include('de');
       done();
-    }, done);
+    });
   });
 });
 
-describe('gaas.project()', function() {
+describe('gaasClient.project()', function() {
   it('Should let us create a client', function(done) {
-    var proj = gaas.project('Something');
+    var proj = gaasClient.project('Something');
     expect(proj.id).to.equal('Something');
     done();
   });
 });
-
 // skipping pre-cleanup for now, using random project ids
 
-describe('gaas.listProjects()', function() {
+describe('gaasClient.listProjects()', function() {
   it('Should let us list projects, not including ' + projectId + ' or ' + projectId2, function(done) {
-    gaas.listProjects({}, function(projList) {
+    gaasClient.listProjects({}, function(err, projList) {
+      if(err) { done(err); return; }
       if(VERBOSE) console.dir(projList);
       expect(projList).to.not.include.keys(projectId);
       expect(projList).to.not.include.keys(projectId2);
       // if(CLEANSLATE) expect(projList).to.be.empty()
       done();
-    }, done);
+    });
   });
 });
 
-describe('gaas.project('+projectId+').create()', function() {
+describe('gaasClient.project('+projectId+').create()', function() {
   it('Should let us create', function(done) {
-    var proj = gaas.project(projectId);
-    proj.create({sourceLanguage: 'en', targetLanguages: ['es','qru']}, function good(resp) {
+    var proj = gaasClient.project(projectId);
+    proj.create({sourceLanguage: 'en', targetLanguages: ['es','qru']}, function(err, resp) {
+      if(err) { done(err); return; }
+      // TODO: verify
       done();
     }, done);
   });
@@ -156,9 +117,10 @@ describe('gaas.project('+projectId+').create()', function() {
 
 
 
-describe('gaas.listProjects()', function() {
+describe('gaasClient.listProjects()', function() {
   it('Should let us list projects including ' + projectId + ' but not ' + projectId2, function(done) {
-    gaas.listProjects({}, function(projList) {
+    gaasClient.listProjects({}, function(err, projList) {
+      if(err) { done(err); return; }
       if(VERBOSE) console.dir(projList);
       expect(projList).to.include.keys(projectId);
       expect(projList).to.not.include.keys(projectId2);
@@ -168,19 +130,21 @@ describe('gaas.listProjects()', function() {
   });
 });
 
-describe('gaas.project('+projectId+').remove()', function() {
+describe('gaasClient.project('+projectId+').remove()', function() {
   it('Should let us delete', function(done) {
-    var proj = gaas.project(projectId);
-    proj.remove({}, function good(resp) {
+    var proj = gaasClient.project(projectId);
+    proj.remove({}, function cb(err, resp) {
+      if(err) { done(err); return; }
       done();
     }, done);
   });
 });
 
 
-describe('gaas.listProjects()', function() {
+describe('gaasClient.listProjects()', function() {
   it('Should let us list projects, not including ' + projectId + ' or ' + projectId2, function(done) {
-    gaas.listProjects({}, function(projList) {
+    gaasClient.listProjects({}, function(err, projList) {
+      if(err) { done(err); return; }
       if(VERBOSE) console.dir(projList);
       expect(projList).to.not.include.keys(projectId);
       expect(projList).to.not.include.keys(projectId2);
