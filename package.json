@@ -17,11 +17,11 @@
   ],
   "author": "Steven R. Loomis <srloomis@us.ibm.com>",
   "license": "Apache 2.0",
+  "devDependencies": {
+    "chai": "^2.2.0",
+    "mocha": "^2.2.4"
+  },
   "dependencies": {
     "swagger-client": "^2.1.4-M1"
-  },
-  "devDependencies": {
-      "chai": "*",
-      "mocha": "*"
   }
 }
