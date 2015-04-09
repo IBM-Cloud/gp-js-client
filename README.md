@@ -105,10 +105,56 @@ Result:
 
 ### gaas.project
 
-This function returns a new Project object that can be 
+This function returns a new `Project` object that can be used for further access.
+*Note* that this function does not create the project or fetch any information - see [Project.create](#Project.create)
+
+    var myProject = gaas.project('MyProject');
+
+### gaas.listProjects
+
+This function fetches a map of Project objects corresponding to your current projects.
+
+    gaas.listProjects({}, onSuccess(projList), onFailure);
+
+Result:
+
+    projList = {
+        MyProject: Project(...),
+        MyOtherProject: Project(...),
+        ...
+    };
+
+API Reference: `Project` object
+===
+
+### Project.id
+
+This property returns the projectID of the project.
+
+### Project.create
+
+This function creates the project
+
+    Project.create({}, onSuccess, onFailure);
+
+### Project.remove
+
+This function removes the project, immediately and irrevocably.
+
+    Project.remove({}, onSuccess, onFailure);
+
+### project.getInfo
+
+This function returns a new Project object, with the same `id` but
+populated with the current project status, `readerKey`, etc.
+
+    Project.getInfo({}, function onSuccess(newProj), onFailure);
+    console.log(newProj.readerKey);
 
 REST APIs
 ===
+
+The `rest_*` functions let you directly call the RESTful API.
 
 These functions directly mirror the REST api on the Globalization service.
 
@@ -297,28 +343,7 @@ Sample `resp`:
  {}
 ```
 
-Using RESTful APIs
-==
-
-At present, the service's RESTful API docs are hosted
-[here](https://gaas.mybluemix.net/translate/swagger/index.html)
-and may be helpful reference.
-
-The RESTful APIs have the same pattern as the simple, except that:
-* the project ID is NOT set automatically
-* the API key IS set automatically.
-
-To use the RESTful APIs, you can call like this:
-
-```
-gaas.rest_getProjectList({/* params */}, function onSuccess(resp) {
-  if(resp.status !== 'success') { /* it didnt work  */ }
-  else {         
-     console.log('Projects:');
-     console.dir(resp.projects);
-  } 
-}, function onFailure(err){console.log('Err:',err);}
-```
+### gaas.rest_help
 
 The variable `rest_help` has a list of operations. It could be printed out with this command:
 `console.dir(gaas.rest_help);`

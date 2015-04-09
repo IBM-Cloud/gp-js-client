@@ -25,6 +25,9 @@ var assert = require('assert');
 var VERBOSE = process.env.GAAS_VERBOSE || false;
 if(VERBOSE) console.dir(module.filename);
 
+var projectId = process.env.GAAS_PROJECT  || 'MyHLProject'+Math.random();
+var projectId2 = process.env.GAAS_PROJECT2 || 'MyOtherHLProject'+Math.random();
+
 var opts = {
 };
 
@@ -108,3 +111,80 @@ describe('Verifying that we can reach the server', function() {
   });
 });
 
+describe('gaas.supportedTranslations()', function() {
+  it('Should let us list translations', function(done) {
+    gaas.supportedTranslations({}, function(translations) {
+      if(VERBOSE) console.dir(translations);
+      expect(translations).to.include.keys('en');
+      expect(translations.en).to.include('de');
+      done();
+    }, done);
+  });
+});
+
+describe('gaas.project()', function() {
+  it('Should let us create a client', function(done) {
+    var proj = gaas.project('Something');
+    expect(proj.id).to.equal('Something');
+    done();
+  });
+});
+
+// skipping pre-cleanup for now, using random project ids
+
+describe('gaas.listProjects()', function() {
+  it('Should let us list projects, not including ' + projectId + ' or ' + projectId2, function(done) {
+    gaas.listProjects({}, function(projList) {
+      if(VERBOSE) console.dir(projList);
+      expect(projList).to.not.include.keys(projectId);
+      expect(projList).to.not.include.keys(projectId2);
+      // if(CLEANSLATE) expect(projList).to.be.empty()
+      done();
+    }, done);
+  });
+});
+
+describe('gaas.project('+projectId+').create()', function() {
+  it('Should let us create', function(done) {
+    var proj = gaas.project(projectId);
+    proj.create({sourceLanguage: 'en', targetLanguages: ['es','qru']}, function good(resp) {
+      done();
+    }, done);
+  });
+});
+
+
+
+describe('gaas.listProjects()', function() {
+  it('Should let us list projects including ' + projectId + ' but not ' + projectId2, function(done) {
+    gaas.listProjects({}, function(projList) {
+      if(VERBOSE) console.dir(projList);
+      expect(projList).to.include.keys(projectId);
+      expect(projList).to.not.include.keys(projectId2);
+      // if(CLEANSLATE) expect(projList).to.be.empty()
+      done();
+    }, done);
+  });
+});
+
+describe('gaas.project('+projectId+').remove()', function() {
+  it('Should let us delete', function(done) {
+    var proj = gaas.project(projectId);
+    proj.remove({}, function good(resp) {
+      done();
+    }, done);
+  });
+});
+
+
+describe('gaas.listProjects()', function() {
+  it('Should let us list projects, not including ' + projectId + ' or ' + projectId2, function(done) {
+    gaas.listProjects({}, function(projList) {
+      if(VERBOSE) console.dir(projList);
+      expect(projList).to.not.include.keys(projectId);
+      expect(projList).to.not.include.keys(projectId2);
+      // if(CLEANSLATE) expect(projList).to.be.empty()
+      done();
+    }, done);
+  });
+});
