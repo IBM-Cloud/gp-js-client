@@ -24,6 +24,8 @@ var vcapEnv = process.env.VCAP_SERVICES;
 var CLEANSLATE = false; // CLEANSLATE: assume no other projects
 var VERBOSE = process.env.GAAS_VERBOSE || false;
 
+if(process.env.NO_REST_TEST) { console.log('skip: ' + module.filename); return; }
+
 if(VERBOSE) console.dir(module.filename);
 
 var expect = require('chai').expect;

@@ -106,7 +106,7 @@ API reference
     * [project.getInfo()](#module_gaas..Project#getInfo)
     * [project.addTargetLanguages(args, cb)](#module_gaas..Project#addTargetLanguages)
     * [project.getResourceData(args, cb)](#module_gaas..Project#getResourceData)
-    * [project.updateResourceData(args, {boo, cb)](#module_gaas..Project#updateResourceData)
+    * [project.updateResourceData(args, cb)](#module_gaas..Project#updateResourceData)
     * [project.deleteLanguage(args, cb)](#module_gaas..Project#deleteLanguage)
     * [project.getResourceEntry(args, cb)](#module_gaas..Project#getResourceEntry)
 
@@ -177,7 +177,7 @@ List the projects available
   * [project.getInfo()](#module_gaas..Project#getInfo)
   * [project.addTargetLanguages(args, cb)](#module_gaas..Project#addTargetLanguages)
   * [project.getResourceData(args, cb)](#module_gaas..Project#getResourceData)
-  * [project.updateResourceData(args, {boo, cb)](#module_gaas..Project#updateResourceData)
+  * [project.updateResourceData(args, cb)](#module_gaas..Project#updateResourceData)
   * [project.deleteLanguage(args, cb)](#module_gaas..Project#deleteLanguage)
   * [project.getResourceEntry(args, cb)](#module_gaas..Project#getResourceEntry)
 
@@ -222,20 +222,21 @@ Get resourcedata for one language
 **Params**
 
 - args `object`  
-  - replace `boolean` - if true, replace ALL resource keys instead of just appending  
-  - retry `boolean` - if true, retry translation  
   - languageID `string` - which BCP47 language to get info for  
 - cb <code>[resourceCallback](#resourceCallback)</code>  
 
 <a name="module_gaas..Project#updateResourceData"></a>
-#####project.updateResourceData(args, {boo, cb)
+#####project.updateResourceData(args, cb)
 Update resource data and/or retry translation
 
 **Params**
 
 - args `object`  
-  - langaugeID `string` - langauge to update (source or target)  
-- {boo   
+  - languageID `string` - language to update (source or target)  
+  - body `object`  
+  - replace `boolean` - if true, replace ALL resource keys instead of just appending  
+  - retry `boolean` - if true, retry translation  
+  - data `Object.<string, string>` - key/value pairs to update  
 - cb <code>[basicCallback](#basicCallback)</code>  
 
 <a name="module_gaas..Project#deleteLanguage"></a>
@@ -326,7 +327,7 @@ List the projects available
   * [project.getInfo()](#module_gaas..Project#getInfo)
   * [project.addTargetLanguages(args, cb)](#module_gaas..Project#addTargetLanguages)
   * [project.getResourceData(args, cb)](#module_gaas..Project#getResourceData)
-  * [project.updateResourceData(args, {boo, cb)](#module_gaas..Project#updateResourceData)
+  * [project.updateResourceData(args, cb)](#module_gaas..Project#updateResourceData)
   * [project.deleteLanguage(args, cb)](#module_gaas..Project#deleteLanguage)
   * [project.getResourceEntry(args, cb)](#module_gaas..Project#getResourceEntry)
 
@@ -371,20 +372,21 @@ Get resourcedata for one language
 **Params**
 
 - args `object`  
-  - replace `boolean` - if true, replace ALL resource keys instead of just appending  
-  - retry `boolean` - if true, retry translation  
   - languageID `string` - which BCP47 language to get info for  
 - cb <code>[resourceCallback](#resourceCallback)</code>  
 
 <a name="module_gaas..Project#updateResourceData"></a>
-#####project.updateResourceData(args, {boo, cb)
+#####project.updateResourceData(args, cb)
 Update resource data and/or retry translation
 
 **Params**
 
 - args `object`  
-  - langaugeID `string` - langauge to update (source or target)  
-- {boo   
+  - languageID `string` - language to update (source or target)  
+  - body `object`  
+  - replace `boolean` - if true, replace ALL resource keys instead of just appending  
+  - retry `boolean` - if true, retry translation  
+  - data `Object.<string, string>` - key/value pairs to update  
 - cb <code>[basicCallback](#basicCallback)</code>  
 
 <a name="module_gaas..Project#deleteLanguage"></a>
