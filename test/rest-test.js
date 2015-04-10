@@ -20,7 +20,6 @@ var projectId = process.env.GAAS_PROJECT  || 'MyLLProject'+Math.random();
 var projectId2 = process.env.GAAS_PROJECT2 || 'MyOtherLLProject'+Math.random();
 var apiKey = process.env.GAAS_API_KEY;
 var url = process.env.GAAS_API_URL;
-var vcapEnv = process.env.VCAP_SERVICES;
 var CLEANSLATE = false; // CLEANSLATE: assume no other projects
 var VERBOSE = process.env.GAAS_VERBOSE || false;
 
@@ -33,7 +32,7 @@ var expect = require('chai').expect;
 var assert = require('assert');
 
 var gaas = require('../index.js');
-var gaasClient = gaas.getClient({ vcap: vcapEnv, url: url, api: apiKey, project: projectId });
+var gaasClient = gaas.getClient({ url: url, api: apiKey, project: projectId });
 
 var sourceLoc = "en-US";
 var targLoc = "zh-Hans";
@@ -44,7 +43,7 @@ var sourceData = {
 };
 
 if ( ! url ) {
-  url = gaasClient._getUrl(); // fetch the URL from vcap, etc
+  url = gaasClient._getUrl(); // fetch the URL
 }
 
 var http_or_https;

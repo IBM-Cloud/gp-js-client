@@ -44,18 +44,10 @@ var opts = {
 };
 
 describe('Setting up GaaS test', function() {
-  var vcapEnv = process.env.VCAP_SERVICES || null;
   var apiKeyEnv = process.env.GAAS_API_KEY || null;
   var urlEnv = process.env.GAAS_API_URL || null;
 
-  if ( vcapEnv ) {
-    opts.vcap = vcapEnv;
-    it('requiring gaas with VCAP_SERVICES', function(done) {
-      gaasClient = gaas.getClient(opts);
-      if(VERBOSE) console.log( gaasClient._getUrl() );
-      done();
-    });
-  } else if ( apiKeyEnv && urlEnv ) {
+  if ( apiKeyEnv && urlEnv ) {
     it('requiring gaas with GAAS_API_KEY and GAAS_API_URL', function(done) {
       opts.api = apiKeyEnv;
       opts.url = urlEnv;
@@ -64,8 +56,8 @@ describe('Setting up GaaS test', function() {
       done();
     });
   } else {
-    it('should have had either VCAP_SERVICES or GAAS_API_KEY and GAAS_API_URL',  function(done) {
-      done('please set either VCAP_SERVICES, or GAAS_API_KEY and GAAS_API_URL');
+    it('should have had GAAS_API_KEY and GAAS_API_URL',  function(done) {
+      done('please set GAAS_API_KEY and GAAS_API_URL');
     });
   }
 });
