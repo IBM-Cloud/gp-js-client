@@ -99,11 +99,18 @@ API reference
     * [client.supportedTranslations(args, cb)](#module_gaas..Client#supportedTranslations)
     * [client.ping(args, cb)](#module_gaas..Client#ping)
     * [client.project(projectID, props)](#module_gaas..Client#project)
-    * [client.listProjects(params)](#module_gaas..Client#listProjects)
+    * [client.listProjects(args)](#module_gaas..Client#listProjects)
+  * [class: gaas~ResourceData](#module_gaas..ResourceData)
+  * [class: gaas~ResourceEntry](#module_gaas..ResourceEntry)
   * [class: gaas~Project](#module_gaas..Project)
-    * [project.create()](#module_gaas..Project#create)
-    * [project.remove()](#module_gaas..Project#remove)
+    * [project.create(args, cb)](#module_gaas..Project#create)
+    * [project.remove(args, cb)](#module_gaas..Project#remove)
     * [project.getInfo()](#module_gaas..Project#getInfo)
+    * [project.addTargetLanguages(args, cb)](#module_gaas..Project#addTargetLanguages)
+    * [project.getResourceData(args, cb)](#module_gaas..Project#getResourceData)
+    * [project.updateResourceData(args, {boo, cb)](#module_gaas..Project#updateResourceData)
+    * [project.deleteLanguage(args, cb)](#module_gaas..Project#deleteLanguage)
+    * [project.getResourceEntry(args, cb)](#module_gaas..Project#getResourceEntry)
 
 <a name="module_gaas..Client"></a>
 ####class: gaas~Client
@@ -113,7 +120,7 @@ API reference
   * [client.supportedTranslations(args, cb)](#module_gaas..Client#supportedTranslations)
   * [client.ping(args, cb)](#module_gaas..Client#ping)
   * [client.project(projectID, props)](#module_gaas..Client#project)
-  * [client.listProjects(params)](#module_gaas..Client#listProjects)
+  * [client.listProjects(args)](#module_gaas..Client#listProjects)
 
 <a name="module_gaas..Client#supportedTranslations"></a>
 #####client.supportedTranslations(args, cb)
@@ -135,7 +142,7 @@ Do we have access to the server?
 
 <a name="module_gaas..Client#project"></a>
 #####client.project(projectID, props)
-Create a new Project object for further access.Note that this function doesn't create teh project or fetch any information.
+Create a new Project object for further access.Note that this function doesn't create the project or fetch any information.
 
 **Params**
 
@@ -143,33 +150,116 @@ Create a new Project object for further access.Note that this function doesn't 
 - props `object` - optional properties to set on the object  
 
 <a name="module_gaas..Client#listProjects"></a>
-#####client.listProjects(params)
+#####client.listProjects(args)
 List the projects available
 
 **Params**
 
-- params `object` - currently not used  
+- args `object` - currently not used  
+
+<a name="module_gaas..ResourceData"></a>
+####class: gaas~ResourceData
+**Members**
+
+* [class: gaas~ResourceData](#module_gaas..ResourceData)
+
+<a name="module_gaas..ResourceEntry"></a>
+####class: gaas~ResourceEntry
+**Members**
+
+* [class: gaas~ResourceEntry](#module_gaas..ResourceEntry)
 
 <a name="module_gaas..Project"></a>
 ####class: gaas~Project
 **Members**
 
 * [class: gaas~Project](#module_gaas..Project)
-  * [project.create()](#module_gaas..Project#create)
-  * [project.remove()](#module_gaas..Project#remove)
+  * [project.create(args, cb)](#module_gaas..Project#create)
+  * [project.remove(args, cb)](#module_gaas..Project#remove)
   * [project.getInfo()](#module_gaas..Project#getInfo)
+  * [project.addTargetLanguages(args, cb)](#module_gaas..Project#addTargetLanguages)
+  * [project.getResourceData(args, cb)](#module_gaas..Project#getResourceData)
+  * [project.updateResourceData(args, {boo, cb)](#module_gaas..Project#updateResourceData)
+  * [project.deleteLanguage(args, cb)](#module_gaas..Project#deleteLanguage)
+  * [project.getResourceEntry(args, cb)](#module_gaas..Project#getResourceEntry)
 
 <a name="module_gaas..Project#create"></a>
-#####project.create()
+#####project.create(args, cb)
 Create the project
 
+**Params**
+
+- args `object` - parameters for creation  
+  - sourceLanguage `string` - BCP47 langauge tag of translation source  
+  - targetLanguages `Array.<string>` - optional array of BCP47 language tags for translation target  
+- cb <code>[basicCallback](#basicCallback)</code>  
+
 <a name="module_gaas..Project#remove"></a>
-#####project.remove()
+#####project.remove(args, cb)
 Remove the project
+
+**Params**
+
+- args `object` - (ignored)  
+- cb <code>[basicCallback](#basicCallback)</code>  
 
 <a name="module_gaas..Project#getInfo"></a>
 #####project.getInfo()
-Get project info
+Fetch project information. The callback is givena new Project object with updated information.
+
+<a name="module_gaas..Project#addTargetLanguages"></a>
+#####project.addTargetLanguages(args, cb)
+Add target languages to the project
+
+**Params**
+
+- args `object`  
+  - newTargetLanguages `Array.<string>` - array of 1 or more languages to add  
+- cb <code>[basicCallback](#basicCallback)</code>  
+
+<a name="module_gaas..Project#getResourceData"></a>
+#####project.getResourceData(args, cb)
+Get resourcedata for one language
+
+**Params**
+
+- args `object`  
+  - replace `boolean` - if true, replace ALL resource keys instead of just appending  
+  - retry `boolean` - if true, retry translation  
+  - languageID `string` - which BCP47 language to get info for  
+- cb <code>[resourceCallback](#resourceCallback)</code>  
+
+<a name="module_gaas..Project#updateResourceData"></a>
+#####project.updateResourceData(args, {boo, cb)
+Update resource data and/or retry translation
+
+**Params**
+
+- args `object`  
+  - langaugeID `string` - langauge to update (source or target)  
+- {boo   
+- cb <code>[basicCallback](#basicCallback)</code>  
+
+<a name="module_gaas..Project#deleteLanguage"></a>
+#####project.deleteLanguage(args, cb)
+Delete a target language from the project.(Source languages cannot be deleted)
+
+**Params**
+
+- args `object`  
+  - languageID `string` - BCP47 id of language to delete  
+- cb <code>[basicCallback](#basicCallback)</code>  
+
+<a name="module_gaas..Project#getResourceEntry"></a>
+#####project.getResourceEntry(args, cb)
+Get a single ResourceEntry
+
+**Params**
+
+- args `object`  
+  - languageID `string` - langauge name to fetch  
+  - resKey `string` - key name to fetch  
+- cb `entryCallback`  
 
 <a name="module_gaas..Client"></a>
 ####class: gaas~Client
@@ -179,7 +269,7 @@ Get project info
   * [client.supportedTranslations(args, cb)](#module_gaas..Client#supportedTranslations)
   * [client.ping(args, cb)](#module_gaas..Client#ping)
   * [client.project(projectID, props)](#module_gaas..Client#project)
-  * [client.listProjects(params)](#module_gaas..Client#listProjects)
+  * [client.listProjects(args)](#module_gaas..Client#listProjects)
 
 <a name="module_gaas..Client#supportedTranslations"></a>
 #####client.supportedTranslations(args, cb)
@@ -201,7 +291,7 @@ Do we have access to the server?
 
 <a name="module_gaas..Client#project"></a>
 #####client.project(projectID, props)
-Create a new Project object for further access.Note that this function doesn't create teh project or fetch any information.
+Create a new Project object for further access.Note that this function doesn't create the project or fetch any information.
 
 **Params**
 
@@ -209,33 +299,116 @@ Create a new Project object for further access.Note that this function doesn't 
 - props `object` - optional properties to set on the object  
 
 <a name="module_gaas..Client#listProjects"></a>
-#####client.listProjects(params)
+#####client.listProjects(args)
 List the projects available
 
 **Params**
 
-- params `object` - currently not used  
+- args `object` - currently not used  
+
+<a name="module_gaas..ResourceData"></a>
+####class: gaas~ResourceData
+**Members**
+
+* [class: gaas~ResourceData](#module_gaas..ResourceData)
+
+<a name="module_gaas..ResourceEntry"></a>
+####class: gaas~ResourceEntry
+**Members**
+
+* [class: gaas~ResourceEntry](#module_gaas..ResourceEntry)
 
 <a name="module_gaas..Project"></a>
 ####class: gaas~Project
 **Members**
 
 * [class: gaas~Project](#module_gaas..Project)
-  * [project.create()](#module_gaas..Project#create)
-  * [project.remove()](#module_gaas..Project#remove)
+  * [project.create(args, cb)](#module_gaas..Project#create)
+  * [project.remove(args, cb)](#module_gaas..Project#remove)
   * [project.getInfo()](#module_gaas..Project#getInfo)
+  * [project.addTargetLanguages(args, cb)](#module_gaas..Project#addTargetLanguages)
+  * [project.getResourceData(args, cb)](#module_gaas..Project#getResourceData)
+  * [project.updateResourceData(args, {boo, cb)](#module_gaas..Project#updateResourceData)
+  * [project.deleteLanguage(args, cb)](#module_gaas..Project#deleteLanguage)
+  * [project.getResourceEntry(args, cb)](#module_gaas..Project#getResourceEntry)
 
 <a name="module_gaas..Project#create"></a>
-#####project.create()
+#####project.create(args, cb)
 Create the project
 
+**Params**
+
+- args `object` - parameters for creation  
+  - sourceLanguage `string` - BCP47 langauge tag of translation source  
+  - targetLanguages `Array.<string>` - optional array of BCP47 language tags for translation target  
+- cb <code>[basicCallback](#basicCallback)</code>  
+
 <a name="module_gaas..Project#remove"></a>
-#####project.remove()
+#####project.remove(args, cb)
 Remove the project
+
+**Params**
+
+- args `object` - (ignored)  
+- cb <code>[basicCallback](#basicCallback)</code>  
 
 <a name="module_gaas..Project#getInfo"></a>
 #####project.getInfo()
-Get project info
+Fetch project information. The callback is givena new Project object with updated information.
+
+<a name="module_gaas..Project#addTargetLanguages"></a>
+#####project.addTargetLanguages(args, cb)
+Add target languages to the project
+
+**Params**
+
+- args `object`  
+  - newTargetLanguages `Array.<string>` - array of 1 or more languages to add  
+- cb <code>[basicCallback](#basicCallback)</code>  
+
+<a name="module_gaas..Project#getResourceData"></a>
+#####project.getResourceData(args, cb)
+Get resourcedata for one language
+
+**Params**
+
+- args `object`  
+  - replace `boolean` - if true, replace ALL resource keys instead of just appending  
+  - retry `boolean` - if true, retry translation  
+  - languageID `string` - which BCP47 language to get info for  
+- cb <code>[resourceCallback](#resourceCallback)</code>  
+
+<a name="module_gaas..Project#updateResourceData"></a>
+#####project.updateResourceData(args, {boo, cb)
+Update resource data and/or retry translation
+
+**Params**
+
+- args `object`  
+  - langaugeID `string` - langauge to update (source or target)  
+- {boo   
+- cb <code>[basicCallback](#basicCallback)</code>  
+
+<a name="module_gaas..Project#deleteLanguage"></a>
+#####project.deleteLanguage(args, cb)
+Delete a target language from the project.(Source languages cannot be deleted)
+
+**Params**
+
+- args `object`  
+  - languageID `string` - BCP47 id of language to delete  
+- cb <code>[basicCallback](#basicCallback)</code>  
+
+<a name="module_gaas..Project#getResourceEntry"></a>
+#####project.getResourceEntry(args, cb)
+Get a single ResourceEntry
+
+**Params**
+
+- args `object`  
+  - languageID `string` - langauge name to fetch  
+  - resKey `string` - key name to fetch  
+- cb `entryCallback`  
 
 REST APIs
 ===
