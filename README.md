@@ -30,13 +30,14 @@ Presently, the client is only available for [node.js](http://nodejs.org) client,
 support other JavaScript platforms, including browser frameworks.
 
 
-## Node.js - using within Bluemix
+## Quickstart - Bluemix
 
 Load the gaas client object as follows (using [cfenv](https://www.npmjs.com/package/cfenv) )
 
     var appEnv = require('cfenv').getAppEnv();
-    var gaasClient = require('gaas').getClient({ credentials:
-        appEnv.getService('IBM Globalization')});
+    var gaasClient = require('gaas').getClient({
+        credentials:  appEnv.getService('IBM Globalization').credentials
+    });
 
 Or, if you are providing credentials manually:
 
@@ -46,38 +47,16 @@ Or, if you are providing credentials manually:
 
 Note that `api_key` can be from the bound service credentials, or else a "reader key" as
 visible in the IBM Globalization service dashboard.
-    
-
-Initializing the client
-==
-
-Create the client object as below. The project can be set in the client object
-to set a default project name for operations.
-
-
-    var gaas = require('gaas')({
-     url: 'https://<address of GaaS server>/translate',
-     api: '<your API key>',
-     project: '<your default project name>',
-    });
-
-If you have a service bound as the name `IBM Globalization`,
-you can use this to fetch credentials from VCAP:
-
-``` js
-var gaas = require('gaas');
-var gaasClient = gaas.getClient({ vcap: process.env.VCAP_SERVICES, project: 'MyProject'});
-```
 
 Using APIs
 ==
 
 Many of the APIs have this pattern:
 
-`obj.function( { /*params*/ } ,  function callback(err, results...))`
+`obj.function( { /*params*/ } ,  function callback(err, ...))`
 
-* `err`, if truthy, indicates an error has occured.
-* Usually `results` is a single object.
+* `err`: if truthy, indicates an error has occured.
+* `...`: other parameters (optionally)
 
 All language ids are IETF BCP47 codes.
 
