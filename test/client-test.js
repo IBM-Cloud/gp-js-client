@@ -47,10 +47,13 @@ describe('Setting up GaaS test', function() {
   var apiKeyEnv = process.env.GAAS_API_KEY || null;
   var urlEnv = process.env.GAAS_API_URL || null;
 
+  opts.credentials = {
+    api_key: apiKeyEnv,
+    uri: urlEnv
+  };
+
   if ( apiKeyEnv && urlEnv ) {
     it('requiring gaas with GAAS_API_KEY and GAAS_API_URL', function(done) {
-      opts.api = apiKeyEnv;
-      opts.url = urlEnv;
       gaasClient = gaas.getClient(opts);
       if(VERBOSE) console.log( gaasClient._getUrl() );
       done();

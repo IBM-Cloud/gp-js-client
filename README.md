@@ -35,12 +35,12 @@ support other JavaScript platforms, including browser frameworks.
 Load the gaas client object as follows (using [cfenv](https://www.npmjs.com/package/cfenv) )
 
     var appEnv = require('cfenv').getAppEnv();
-    var gaasClient = require('gaas').client({ credentials:
+    var gaasClient = require('gaas').getClient({ credentials:
         appEnv.getService('IBM Globalization')});
 
 Or, if you are providing credentials manually:
 
-    var gaas = require('gaas').client({ credentials:
+    var gaas = require('gaas').getClient({ credentials:
         { uri: 'https://<GaaS server URL>', api_key: '<your API key>' }
     });
 
@@ -83,43 +83,18 @@ All language ids are IETF BCP47 codes.
 
 API reference
 ===
-#Index
-
-**Modules**
-
-* [gaas](#module_gaas)
-  * [class: gaas~Client](#module_gaas..Client)
-    * [client.supportedTranslations(args, cb)](#module_gaas..Client#supportedTranslations)
-    * [client.ping(args, cb)](#module_gaas..Client#ping)
-    * [client.project(projectID, props)](#module_gaas..Client#project)
-    * [client.listProjects(args)](#module_gaas..Client#listProjects)
-  * [class: gaas~ResourceData](#module_gaas..ResourceData)
-  * [class: gaas~ResourceEntry](#module_gaas..ResourceEntry)
-  * [class: gaas~Project](#module_gaas..Project)
-    * [project.create(args, cb)](#module_gaas..Project#create)
-    * [project.remove(args, cb)](#module_gaas..Project#remove)
-    * [project.getInfo()](#module_gaas..Project#getInfo)
-    * [project.addTargetLanguages(args, cb)](#module_gaas..Project#addTargetLanguages)
-    * [project.getResourceData(args, cb)](#module_gaas..Project#getResourceData)
-    * [project.updateResourceData(args, cb)](#module_gaas..Project#updateResourceData)
-    * [project.deleteLanguage(args, cb)](#module_gaas..Project#deleteLanguage)
-    * [project.getResourceEntry(args, cb)](#module_gaas..Project#getResourceEntry)
-
-**Typedefs**
-
-* [callback: basicCallback](#basicCallback)
-* [callback: supportedTranslationsCallback](#supportedTranslationsCallback)
-* [callback: projectInfoCallback](#projectInfoCallback)
-* [callback: resourceCallback](#resourceCallback)
-* [callback: resourceCallback](#resourceCallback)
-* [callback: listCallback](#listCallback)
- 
 <a name="module_gaas"></a>
 #gaas
 **Author**: Steven R. Loomis  
 **Members**
 
 * [gaas](#module_gaas)
+  * [callback: gaas~basicCallback](#module_gaas..basicCallback)
+  * [callback: gaas~supportedTranslationsCallback](#module_gaas..supportedTranslationsCallback)
+  * [callback: gaas~projectInfoCallback](#module_gaas..projectInfoCallback)
+  * [callback: gaas~resourceCallback](#module_gaas..resourceCallback)
+  * [callback: gaas~resourceCallback](#module_gaas..resourceCallback)
+  * [callback: gaas~listCallback](#module_gaas..listCallback)
   * [class: gaas~Client](#module_gaas..Client)
     * [client.supportedTranslations(args, cb)](#module_gaas..Client#supportedTranslations)
     * [client.ping(args, cb)](#module_gaas..Client#ping)
@@ -137,6 +112,65 @@ API reference
     * [project.deleteLanguage(args, cb)](#module_gaas..Project#deleteLanguage)
     * [project.getResourceEntry(args, cb)](#module_gaas..Project#getResourceEntry)
 
+<a name="module_gaas..basicCallback"></a>
+##callback: gaas~basicCallback
+**Params**
+
+- err `object` - if(err), error  
+- result `object` - any result data  
+
+**Scope**: inner typedef of [gaas](#module_gaas)  
+**Type**: `function`  
+<a name="module_gaas..supportedTranslationsCallback"></a>
+##callback: gaas~supportedTranslationsCallback
+**Params**
+
+- err `object` - if(err), error  
+- translations `Object.<string, Array.<string>>` - source : [target...] languages  
+
+**Scope**: inner typedef of [gaas](#module_gaas)  
+**Type**: `function`  
+<a name="module_gaas..projectInfoCallback"></a>
+##callback: gaas~projectInfoCallback
+**Params**
+
+- err `object` - if(err), error  
+- project `Project` - the updated Project object with the latest data  
+
+**Scope**: inner typedef of [gaas](#module_gaas)  
+**Type**: `function`  
+<a name="module_gaas..resourceCallback"></a>
+##callback: gaas~resourceCallback
+**Params**
+
+- err `object` - if(err), error  
+- resource `ResourceData` - the specified resource data  
+  - data `Object.<string, string>` - the translated key/value pairs  
+  - inProgress `Array.<string>` - a list of the keys that are still in progress  
+  - failed `Array.<string>` - a list of the keys that failed to translate  
+
+**Scope**: inner typedef of [gaas](#module_gaas)  
+**Type**: `function`  
+<a name="module_gaas..resourceCallback"></a>
+##callback: gaas~resourceCallback
+**Params**
+
+- err `object` - if(err), error  
+- entry `ResourceEntry` - the specified resource entry  
+  - value `string` - the entry's string value  
+  - translationStatus `string` - the entry's translation status  
+
+**Scope**: inner typedef of [gaas](#module_gaas)  
+**Type**: `function`  
+<a name="module_gaas..listCallback"></a>
+##callback: gaas~listCallback
+**Params**
+
+- err `object` - if(err), error  
+- projects `Object.<string, Project>` - map from project ID to project object  
+
+**Scope**: inner typedef of [gaas](#module_gaas)  
+**Type**: `function`  
 <a name="module_gaas..Client"></a>
 ##class: gaas~Client
 **Members**
@@ -154,7 +188,7 @@ This function returns a map from source language(s) to target language(s).
 **Params**
 
 - args `object`  
-- cb <code>[supportedTranslationsCallback](#supportedTranslationsCallback)</code>  
+- cb `supportedTranslationsCallback`  
 
 <a name="module_gaas..Client#ping"></a>
 ###client.ping(args, cb)
@@ -217,7 +251,7 @@ Create the project
 - args `object` - parameters for creation  
   - sourceLanguage `string` - BCP47 langauge tag of translation source  
   - targetLanguages `Array.<string>` - optional array of BCP47 language tags for translation target  
-- cb <code>[basicCallback](#basicCallback)</code>  
+- cb `basicCallback`  
 
 <a name="module_gaas..Project#remove"></a>
 ###project.remove(args, cb)
@@ -226,7 +260,7 @@ Remove the project
 **Params**
 
 - args `object` - (ignored)  
-- cb <code>[basicCallback](#basicCallback)</code>  
+- cb `basicCallback`  
 
 <a name="module_gaas..Project#getInfo"></a>
 ###project.getInfo()
@@ -240,7 +274,7 @@ Add target languages to the project
 
 - args `object`  
   - newTargetLanguages `Array.<string>` - array of 1 or more languages to add  
-- cb <code>[basicCallback](#basicCallback)</code>  
+- cb `basicCallback`  
 
 <a name="module_gaas..Project#getResourceData"></a>
 ###project.getResourceData(args, cb)
@@ -250,7 +284,7 @@ Get resourcedata for one language
 
 - args `object`  
   - languageID `string` - which BCP47 language to get info for  
-- cb <code>[resourceCallback](#resourceCallback)</code>  
+- cb `resourceCallback`  
 
 <a name="module_gaas..Project#updateResourceData"></a>
 ###project.updateResourceData(args, cb)
@@ -264,7 +298,7 @@ Update resource data and/or retry translation
   - replace `boolean` - if true, replace ALL resource keys instead of just appending  
   - retry `boolean` - if true, retry translation  
   - data `Object.<string, string>` - key/value pairs to update  
-- cb <code>[basicCallback](#basicCallback)</code>  
+- cb `basicCallback`  
 
 <a name="module_gaas..Project#deleteLanguage"></a>
 ###project.deleteLanguage(args, cb)
@@ -274,7 +308,7 @@ Delete a target language from the project.(Source languages cannot be deleted)
 
 - args `object`  
   - languageID `string` - BCP47 id of language to delete  
-- cb <code>[basicCallback](#basicCallback)</code>  
+- cb `basicCallback`  
 
 <a name="module_gaas..Project#getResourceEntry"></a>
 ###project.getResourceEntry(args, cb)
@@ -287,59 +321,6 @@ Get a single ResourceEntry
   - resKey `string` - key name to fetch  
 - cb `entryCallback`  
 
-<a name="basicCallback"></a>
-#callback: basicCallback
-**Params**
-
-- err `object` - if(err), error  
-- result `object` - any result data  
-
-**Type**: `function`  
-<a name="supportedTranslationsCallback"></a>
-#callback: supportedTranslationsCallback
-**Params**
-
-- err `object` - if(err), error  
-- translations `Object.<string, Array.<string>>` - source : [target...] languages  
-
-**Type**: `function`  
-<a name="projectInfoCallback"></a>
-#callback: projectInfoCallback
-**Params**
-
-- err `object` - if(err), error  
-- project `Project` - the updated Project object with the latest data  
-
-**Type**: `function`  
-<a name="resourceCallback"></a>
-#callback: resourceCallback
-**Params**
-
-- err `object` - if(err), error  
-- resource `ResourceData` - the specified resource data  
-  - data `Object.<string, string>` - the translated key/value pairs  
-  - inProgress `Array.<string>` - a list of the keys that are still in progress  
-  - failed `Array.<string>` - a list of the keys that failed to translate  
-
-**Type**: `function`  
-<a name="resourceCallback"></a>
-#callback: resourceCallback
-**Params**
-
-- err `object` - if(err), error  
-- entry `ResourceEntry` - the specified resource entry  
-  - value `string` - the entry's string value  
-  - translationStatus `string` - the entry's translation status  
-
-**Type**: `function`  
-<a name="listCallback"></a>
-#callback: listCallback
-**Params**
-
-- err `object` - if(err), error  
-- projects `Object.<string, Project>` - map from project ID to project object  
-
-**Type**: `function`  
 
 
 *docs autogenerated via [jsdoc2md](https://github.com/jsdoc2md/jsdoc-to-markdown)*

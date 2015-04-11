@@ -1,6 +1,6 @@
 {
   "name": "gaas",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.2",
   "description": "JavaScript (Node.js, etc) client for Globalization-as-a-Service",
   "main": "index.js",
   "scripts": {
@@ -15,8 +15,8 @@
   "keywords": [
     "l10n"
   ],
-  "author": "Steven R. Loomis <srloomis@us.ibm.com>",
-  "license": "Apache 2.0",
+  "Author": "Steven R. Loomis <srloomis@us.ibm.com>",
+  "license": "Apache-2.0",
   "devDependencies": {
     "chai": "^2.2.0",
     "jsdoc-to-markdown": "^0.5.11",

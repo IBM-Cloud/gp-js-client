@@ -35,12 +35,12 @@ support other JavaScript platforms, including browser frameworks.
 Load the gaas client object as follows (using [cfenv](https://www.npmjs.com/package/cfenv) )
 
     var appEnv = require('cfenv').getAppEnv();
-    var gaasClient = require('gaas').client({ credentials:
+    var gaasClient = require('gaas').getClient({ credentials:
         appEnv.getService('IBM Globalization')});
 
 Or, if you are providing credentials manually:
 
-    var gaas = require('gaas').client({ credentials:
+    var gaas = require('gaas').getClient({ credentials:
         { uri: 'https://<GaaS server URL>', api_key: '<your API key>' }
     });
 

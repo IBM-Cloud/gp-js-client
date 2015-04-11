@@ -32,7 +32,7 @@ var expect = require('chai').expect;
 var assert = require('assert');
 
 var gaas = require('../index.js');
-var gaasClient = gaas.getClient({ url: url, api: apiKey, project: projectId });
+var gaasClient = gaas.getClient({credentials: { uri: url, api_key: apiKey, project: projectId }});
 
 var sourceLoc = "en-US";
 var targLoc = "zh-Hans";
