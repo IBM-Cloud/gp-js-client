@@ -24,6 +24,10 @@ This is a JavaScript client and sample code for the
 [IBM Globalization](https://www.ng.bluemix.net/docs/#services/Globalization/index.html#globalization)
 Bluemix service.
 
+# jQuery
+
+There is an experimental sample showing jQuery use in the `jquery` directory.
+
 # Node.js
 
 Presently, the client is only available for [node.js](http://nodejs.org) client, but is expected to
@@ -41,7 +45,7 @@ Load the gaas client object as follows (using [cfenv](https://www.npmjs.com/pack
 
 Or, if you are providing credentials manually:
 
-    var gaas = require('gaas').getClient({
+    var gaasClient = require('gaas').getClient({
      credentials: {
         uri: 'https://<GaaS server URL>',
         api_key: '<your API key>'
@@ -51,7 +55,26 @@ Or, if you are providing credentials manually:
 Note that `api_key` can be from the bound service credentials, or else a "reader key" as
 visible in the IBM Globalization service dashboard.
 
-Using APIs
+To load the key "hello" in Spanish from the project named "world" you can use this code:
+
+    var myProject = gaasClient.project('world');
+
+    myProject.getResourceEntry({
+          resKey: 'hello',
+          languageID: 'es'
+        },
+        function(err, entry) {
+            if(err) {
+                console.error(err); return;
+            } else if(entry.value) {
+                console.log( entry.value ); // Print out the value!
+            } else {
+                console.error('Status is ' + entry.translationStatus); // may be: 'inProgress' or 'failed'
+            }
+    });
+
+
+API convention
 ==
 
 Many of the APIs have this pattern:

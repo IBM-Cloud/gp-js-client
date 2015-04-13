@@ -21,6 +21,10 @@
 if(process.env.NO_CLIENT_TEST) { console.log('skip: ' + module.filename); return; }
 var gaas = require('../index.js'); // required, below
 var gaasClient;
+
+var ourReaderKey; // to be filled in - API key.
+var ourReaderClient; // to be filled in - separate client that's just a reader.
+
 var expect = require('chai').expect;
 var assert = require('assert');
 
@@ -207,6 +211,8 @@ describe('gaasClient.project('+projectId+')', function() {
     proj.getInfo({}, function(err, proj2) {
       if(err) { done(err); return; }
       expect(proj2.readerKey).to.be.a('string');
+      expect(proj2.readerKey).to.not.equal(opts.credentials.api_key);
+      ourReaderKey = proj2.readerKey; // set this
       expect(proj2.id).to.equal(projectId);
       expect(proj2.sourceLanguage).to.equal('en');
       expect(proj2.targetLanguages).to.include('es');
@@ -215,6 +221,24 @@ describe('gaasClient.project('+projectId+')', function() {
       done();
     });
   });
+  it('Should let us use the reader key', function(done) {
+    ourReaderClient = gaas.getClient({
+      credentials: {
+        uri: opts.credentials.uri,
+        api_key: ourReaderKey
+      }
+    });
+    var ourReaderProject = ourReaderClient.project(projectId);
+    ourReaderProject.getResourceEntry({ languageID: 'qru', resKey: 'key1'},
+    function(err, entry) {
+      if(err) {done(err); return; }
+      expect(entry.language).to.equal('qru');
+      expect(entry.key).to.equal('key1');
+      expect(entry.value).to.equal(qruData.key1);
+      done();
+    });
+  });
+
   it('should let us verify failed target data(zxx)', function(done) {
     var proj = gaasClient.project(projectId);    
     proj.getResourceData({ languageID: 'zxx'},
