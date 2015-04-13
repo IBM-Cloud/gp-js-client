@@ -14,4 +14,16 @@
  * limitations under the License.
  */
 
-module.exports = require('./lib/client.js');
+body {
+    margin:  1em;
+    background-color: #fcfaf4;
+}
+
+#hello {
+    border:  1px solid gray;
+    display:  inline;
+    padding:  .25em;
+    font-size:  x-large;
+    margin:  1em;
+    font-family: 'Lora', serif;
+}

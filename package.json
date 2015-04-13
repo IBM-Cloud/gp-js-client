@@ -1,26 +1,28 @@
 {
-  "private": true,
   "name": "gaas",
-  "version": "0.0.1",
-  "description": "NodeJS client for Globalization-as-a-Service",
+  "version": "1.0.0-alpha.3",
+  "description": "JavaScript (Node.js, etc) client for Globalization-as-a-Service",
   "main": "index.js",
   "scripts": {
-    "mocha": "mocha"
+    "test": "mocha",
+    "mocha": "mocha --reporter dot",
+    "docs": "jsdoc2md lib/client.js --template template-README.md > README.md"
   },
   "repository": {
     "type": "git",
-    "url": "git:icu.sanjose.ibm.com:/git/taas-nodejs-client.git"
+    "url": "https://github.com/IBM-Bluemix/gaas-js-client"
   },
   "keywords": [
     "l10n"
   ],
-  "author": "Steven R. Loomis <srloomis@us.ibm.com>",
-  "license": "Commercial",
+  "Author": "Steven R. Loomis <srloomis@us.ibm.com>",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "chai": "^2.2.0",
+    "jsdoc-to-markdown": "^0.5.11",
+    "mocha": "^2.2.4"
+  },
   "dependencies": {
     "swagger-client": "^2.1.4-M1"
-  },
-  "devDependencies": {
-      "chai": "*",
-      "mocha": "*"
-  }, "//": "Just for testing"
+  }
 }
