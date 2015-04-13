@@ -14,11 +14,12 @@ This ought to be a "jQuery plugin", but for now it is sample code.
 * Get the credentials, especially the "reader key" (available in the dashboard view). Also get the service URI from the Bluemix dashboard.
 * Create a file `gaas4jq-sample-config.js` as below: (modifying `api_key`, `uri` and `project` as appropriate.)
 
-    var sampleconfig = {
-         credentials: {
+        var sampleconfig = {
+          credentials: {
              api_key: '<YOUR READER KEY>',
              "uri": "https://gaas-bluemix-service.example.com/translate"
-         },
-         project: 'hello'
-    };
+          },
+          project: 'hello'
+        };
+         
 * view the `gaas4jq-sample.html` in a browser. You should see the translation.
