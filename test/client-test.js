@@ -35,7 +35,7 @@ var projectId = process.env.GAAS_PROJECT  || 'MyHLProject'+Math.random();
 var projectId2 = process.env.GAAS_PROJECT2 || 'MyOtherHLProject'+Math.random();
 
 var sourceData = {
-    "key1": "First string to translate",
+    "key1": "@DELAY@First string to translate",
     "key2": "Second string to translate"
 };
 var str3 = 'The main pump fixing screws with the correct strength class';
@@ -162,6 +162,40 @@ describe('gaasClient.project('+projectId+')', function() {
     proj.updateResourceData({ languageID: 'en',
                               body: { replace: false, retry: false, data: sourceData}},done);
   });
+  // at this point, the qru data will not have finished.
+  it('should show qru as in progress', function(done) {
+    var proj = gaasClient.project(projectId);    
+    proj.getResourceEntry({ languageID: 'qru', resKey: 'key1'},
+    function(err, entry) {
+      if(err) {done(err); return; }
+      expect(entry.language).to.equal('qru');
+      expect(entry.key).to.equal('key1');
+      expect(entry.translationStatus).to.equal("inProgress");
+      done();
+    });
+  });
+  // wait for qru to finish
+  it('should let qru finish', function(done) {
+    var proj = gaasClient.project(projectId);
+    var loopy = function() {
+      process.stderr.write('*');
+      proj.getResourceEntry({ languageID: 'qru', resKey: 'key1'},
+      function(err, entry) {
+        if(err) {done(err); return; }
+        expect(entry.language).to.equal('qru');
+        expect(entry.key).to.equal('key1');
+        process.stderr.write(entry.translationStatus);
+        if(entry.translationStatus === "inProgress") {
+          setTimeout(loopy, 500); // try again
+        } else {
+          expect(entry.translationStatus).to.equal("completed"); // if not in progress, better be done.
+          done(); // get out.
+        }
+      });
+    };
+    process.nextTick(loopy); // first run
+  });
+  // qru should be done now.
   it('should NOT us update the wrong language(tlh)', function(done) {
     var proj = gaasClient.project(projectId);    
     proj.updateResourceData({ languageID: 'tlh',
