@@ -72,7 +72,17 @@ describe('Setting up GaaS test', function() {
 // ping
 describe('Verifying that we can reach the server', function() {
   it('Should let us call gaasClient.ping', function(done) {
+      if(process.env.BAIL_ON_ERR && !gaasClient.hasOwnProperty('ping')) {
+        console.error('Could not reach server');
+        process.exit(1);
+      }
     gaasClient.ping({}, function(err, data) {
+      
+      if(err && process.env.BAIL_ON_ERR) {
+        console.error('Could not reach server');
+        process.exit(1);
+      }
+      
       if(err) { done(err); return; }
       if(VERBOSE) console.dir(data);
       done();
