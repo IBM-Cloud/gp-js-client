@@ -178,13 +178,13 @@ describe('gaasClient.project('+projectId+')', function() {
   it('should let qru finish', function(done) {
     var proj = gaasClient.project(projectId);
     var loopy = function() {
-      process.stderr.write('*');
+      if(VERBOSE) process.stderr.write('*');
       proj.getResourceEntry({ languageID: 'qru', resKey: 'key1'},
       function(err, entry) {
         if(err) {done(err); return; }
         expect(entry.language).to.equal('qru');
         expect(entry.key).to.equal('key1');
-        process.stderr.write(entry.translationStatus);
+        if(VERBOSE) process.stderr.write(entry.translationStatus);
         if(entry.translationStatus === "inProgress") {
           setTimeout(loopy, 500); // try again
         } else {
