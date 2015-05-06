@@ -22,11 +22,11 @@ var apiKey = process.env.GAAS_API_KEY;
 var url = process.env.GAAS_API_URL;
 var CLEANSLATE = false; // CLEANSLATE: assume no other projects
 var VERBOSE = process.env.GAAS_VERBOSE || false;
-
 if(process.env.NO_REST_TEST) { console.log('skip: ' + module.filename); return; }
 
 if(VERBOSE) console.dir(module.filename);
 
+var minispin = require('./lib/minispin');
 var expect = require('chai').expect;
 
 var assert = require('assert');
@@ -46,21 +46,50 @@ if ( ! url ) {
   url = gaasClient._getUrl(); // fetch the URL
 }
 
-var http_or_https;
-if ( url.indexOf('https') === 0) {
-    http_or_https = require('https');
-} else { 
-    http_or_https = require('http');
-}
+var http_or_https = require('./lib/byscheme')(url);
 
 describe('Check URL ' + url+'/', function() {
+    var urlToPing = url+'/';
+    if(VERBOSE) console.dir(urlToPing);
+    it('should let us eventually ping ' + urlToPing, function(done) {
+      var timeout;
+      var http_or_https = require('./lib/byscheme')(urlToPing);
+      var t = 200;
+      var loopy = function() {
+          if(timeout) {
+            clearTimeout(timeout);
+            timeout = undefined;
+          }
+          minispin.step();
+          try {
+            http_or_https.get(urlToPing, // trailing slash to avoid 302
+            function(d) {
+               if(VERBOSE) console.log(urlToPing + '-> ' + d.statusCode); // dontcare
+               if(d.statusCode === 200) {
+                 minispin.clear();
+                 done();
+               } else {
+                 timeout = setTimeout(loopy, t);
+               }
+            }).on('error', function(e) {
+              if(VERBOSE) console.dir(e, {color: true});
+               timeout = setTimeout(loopy, t);
+            });
+          } catch(e) {
+              if(VERBOSE) console.dir(e, {color: true});
+             timeout = setTimeout(loopy, t);
+          }
+      };
+      process.nextTick(loopy); // first run
+    });
+
     it('Should let me fetch landing page', function(done) {
-        http_or_https.get(url+'/', // trailing slash to avoid 302
-                          function(d) {
-                            if(VERBOSE) console.log('-> ' + d.statusCode); // dontcare
-                             done();
-                          })
-        .on('error', done);
+    http_or_https.get(url+'/', // trailing slash to avoid 302
+                      function(d) {
+                        if(VERBOSE) console.log('-> ' + d.statusCode); // dontcare
+                         done();
+                      })
+    .on('error', done);
     });
 });
 

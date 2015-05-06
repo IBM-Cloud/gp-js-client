@@ -18,6 +18,8 @@
 
 //return true;
 
+var minispin = require('./lib/minispin');
+
 if(process.env.NO_CLIENT_TEST) { console.log('skip: ' + module.filename); return; }
 var gaas = require('../index.js'); // required, below
 var gaasClient;
@@ -55,14 +57,50 @@ describe('Setting up GaaS test', function() {
     api_key: apiKeyEnv,
     uri: urlEnv
   };
-
+  
   if ( apiKeyEnv && urlEnv ) {
+    var urlToPing = urlEnv+'/';
+    if(VERBOSE) console.dir(urlToPing);
+    it('should let us directly ping ' + urlToPing, function(done) {
+      var timeout;
+      var http_or_https = require('./lib/byscheme')(urlEnv);
+      var t = 200;
+      var loopy = function() {
+          if(timeout) {
+            clearTimeout(timeout);
+            timeout = undefined;
+          }
+          minispin.step();
+          try {
+            http_or_https.get(urlToPing, // trailing slash to avoid 302
+            function(d) {
+               if(VERBOSE) console.log(urlToPing + '-> ' + d.statusCode); // dontcare
+               if(d.statusCode === 200) {
+                 minispin.clear();
+                 done();
+               } else {
+                 timeout = setTimeout(loopy, t);
+               }
+            }).on('error', function(e) {
+              if(VERBOSE) console.dir(e, {color: true});
+               timeout = setTimeout(loopy, t);
+            });
+          } catch(e) {
+              if(VERBOSE) console.dir(e, {color: true});
+             timeout = setTimeout(loopy, t);
+          }
+      };
+      process.nextTick(loopy); // first run
+    });
+    
+    
     it('requiring gaas with GAAS_API_KEY and GAAS_API_URL', function(done) {
       gaasClient = gaas.getClient(opts);
-      if(VERBOSE) console.log( gaasClient._getUrl() );
+      //if(VERBOSE) console.log( gaasClient._getUrl() );
       done();
     });
   } else {
+    // no creds
     it('should have had GAAS_API_KEY and GAAS_API_URL',  function(done) {
       done('please set GAAS_API_KEY and GAAS_API_URL');
     });
@@ -70,7 +108,7 @@ describe('Setting up GaaS test', function() {
 });
 
 // ping
-describe('Verifying that we can reach the server', function() {
+describe('Verifying again that we can reach the server', function() {
   it('Should let us call gaasClient.ping', function(done) {
       if(process.env.BAIL_ON_ERR && !gaasClient.hasOwnProperty('ping')) {
         console.error('Could not reach server');
@@ -178,7 +216,7 @@ describe('gaasClient.project('+projectId+')', function() {
   it('should let qru finish', function(done) {
     var proj = gaasClient.project(projectId);
     var loopy = function() {
-      if(VERBOSE) process.stderr.write('*');
+      minispin.step();
       proj.getResourceEntry({ languageID: 'qru', resKey: 'key1'},
       function(err, entry) {
         if(err) {done(err); return; }
@@ -189,6 +227,7 @@ describe('gaasClient.project('+projectId+')', function() {
           setTimeout(loopy, 500); // try again
         } else {
           expect(entry.translationStatus).to.equal("completed"); // if not in progress, better be done.
+          minispin.clear();
           done(); // get out.
         }
       });
