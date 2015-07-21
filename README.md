@@ -39,7 +39,14 @@ See the [Readme](./jquery-sample/README.md) in that directory for more details.
 The rest of this document explains how to use the Globalization service
 with the [node.js](http://nodejs.org) client.
 
+For a working Bluemix application sample,
+see [gaas-nodejs-hello](https://github.com/IBM-Bluemix/gaas-nodejs-hello).
+
 ## Quickstart - Bluemix
+
+Add `gaas` to your project, as well as `cfenv`.
+
+    npm install --save gaas cfenv
 
 Load the gaas client object as follows (using [cfenv](https://www.npmjs.com/package/cfenv) ).
 Note that `/IBM Globalization.*/` will match any service *named* with something starting
