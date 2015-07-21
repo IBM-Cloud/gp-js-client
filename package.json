@@ -18,11 +18,11 @@
   "Author": "Steven R. Loomis <srloomis@us.ibm.com>",
   "license": "Apache-2.0",
   "devDependencies": {
-    "chai": "^2.2.0",
-    "jsdoc-to-markdown": "^0.5.11",
-    "mocha": "^2.2.4"
+    "chai": "^3.2.0",
+    "jsdoc-to-markdown": "^1.1.1",
+    "mocha": "^2.2.5"
   },
   "dependencies": {
-    "swagger-client": "^2.1.4-M1"
+    "swagger-client": "^2.1.1"
   }
 }
