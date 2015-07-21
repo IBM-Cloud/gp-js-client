@@ -1,6 +1,6 @@
 {
   "name": "gaas",
-  "version": "1.0.1",
+  "version": "2.0.1-PREBETA",
   "description": "JavaScript (Node.js, etc) client for Globalization-as-a-Service",
   "main": "index.js",
   "scripts": {

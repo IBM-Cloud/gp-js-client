@@ -1,4 +1,4 @@
-JavaScript Client for IBM Bluemix Globalization-as-a-Service
+JavaScript Client for Globalization Pipeline
 ===
 <!--
 /*	
@@ -16,13 +16,26 @@ JavaScript Client for IBM Bluemix Globalization-as-a-Service
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
+ 
+ DON’T EDIT README.md <<<<<<<<<<<< <<<<<<<<<<<<<<<<<<<<<<< THIS MEANS YOU!
+ 
+    Edit `template-README.md` and run `npm run docs`
+ 
 -->
+
+# WORK IN PROGRESS
+
+This code is being updated for the "Beta" (v2 API) version.
+It will very shortly not function with the "Experimental" (v1 API) version.
+
+Much of the text will need to be updated.
 
 # What is this?
 
 This is a JavaScript client and sample code for the
-[IBM Globalization](https://www.ng.bluemix.net/docs/#services/Globalization/index.html#globalization)
-Bluemix service. The IBM Globalization service makes it easy for you to provide your global customers
+IBM [Globalization Pipeline](https://www.ng.bluemix.net/docs/#services/Globalization/index.html#globalization)
+Bluemix service. The Globalization Pipeline service makes it easy for you to provide your global customers
 with Bluemix applications translated into the languages in which they work.
 
 Using the client code in this project, either from node.js, or from any browser using the jQuery sample
@@ -221,7 +234,8 @@ Do we have access to the server?
 
 <a name="module_gaas..Client#project"></a>
 ###client.project(projectID, props)
-Create a new Project object for further access.Note that this function doesn't create the project or fetch any information.
+Create a new Project object for further access.
+Note that this function doesn't create the project or fetch any information.
 
 **Params**
 
@@ -284,7 +298,8 @@ Remove the project
 
 <a name="module_gaas..Project#getInfo"></a>
 ###project.getInfo()
-Fetch project information. The callback is givena new Project object with updated information.
+Fetch project information. The callback is given
+a new Project object with updated information.
 
 <a name="module_gaas..Project#addTargetLanguages"></a>
 ###project.addTargetLanguages(args, cb)
@@ -322,7 +337,8 @@ Update resource data and/or retry translation
 
 <a name="module_gaas..Project#deleteLanguage"></a>
 ###project.deleteLanguage(args, cb)
-Delete a target language from the project.(Source languages cannot be deleted)
+Delete a target language from the project.
+(Source languages cannot be deleted)
 
 **Params**
 
