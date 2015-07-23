@@ -16,6 +16,9 @@
 
 // High Level test of GAAS API
 
+// load locals
+require('./lib/localsetenv').applyLocal();
+
 //return true;
 
 var minispin = require('./lib/minispin');
@@ -127,6 +130,8 @@ describe('Verifying again that we can reach the server', function() {
     });
   });
 });
+
+return; // @@@@@@
 
 describe('gaasClient.supportedTranslations()', function() {
   it('Should let us list translations', function(done) {
