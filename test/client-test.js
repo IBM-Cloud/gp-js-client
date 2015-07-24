@@ -22,6 +22,7 @@ require('./lib/localsetenv').applyLocal();
 //return true;
 
 var minispin = require('./lib/minispin');
+var randHex = require('./lib/randhex');
 
 if(process.env.NO_CLIENT_TEST) { console.log('skip: ' + module.filename); return; }
 var gaas = require('../index.js'); // required, below
@@ -131,8 +132,6 @@ describe('Verifying again that we can reach the server', function() {
   });
 });
 
-return; // @@@@@@
-
 describe('gaasClient.supportedTranslations()', function() {
   it('Should let us list translations', function(done) {
     gaasClient.supportedTranslations({}, function(err, translations) {
@@ -144,6 +143,59 @@ describe('gaasClient.supportedTranslations()', function() {
     });
   });
 });
+
+var instanceName = 'js-client-'+randHex();
+
+describe('gaasClient.setup instance ' + instanceName, function() {
+  it('should let us create our instance', function(done) {
+    gaasClient.ready(done, function(err, done, apis) {
+      if(err) { done(err); return; }
+      apis.admin.createServiceInstance({
+        serviceInstanceId: instanceName,
+        body: {
+          serviceId: 'rand-'+randHex(),
+          orgId: 'rand-'+randHex(),
+          spaceId: 'rand-'+randHex(),
+          planId: 'rand-'+randHex(),
+          disabled: false
+        }
+      }, function onSuccess(o) {
+        if(o.obj.status !== 'SUCCESS') {
+          done(Error(o.obj.status));
+        } else {
+          //console.dir(o.obj, {depth: null, color: true});
+          done();
+        }
+      }, function onFailure(o) {
+        done(Error('Failed: ' + o));
+      });
+    });
+  });
+});
+
+
+// unless !delete?
+describe('gaasClient.delete instance ' + instanceName, function() {
+  it('should let us delete our instance', function(done) {
+    gaasClient.ready(done, function(err, done, apis) {
+      if(err) { done(err); return; }
+      apis.admin.deleteServiceInstance({
+        serviceInstanceId: instanceName
+      }, function onSuccess(o) {
+        if(o.obj.status !== 'SUCCESS') {
+          done(Error(o.obj.status));
+        } else {
+          //console.dir(o.obj, {depth: null, color: true});
+          done();
+        }
+      }, function onFailure(o) {
+        done(Error('Failed: ' + o));
+      });
+    });
+  });
+});
+
+return; // @@@@@@@
 
 describe('gaasClient.project()', function() {
   it('Should let us create a client', function(done) {

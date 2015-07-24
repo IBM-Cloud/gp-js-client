@@ -53,6 +53,9 @@ if ( ! url ) {
 
 var http_or_https = require('./lib/byscheme')(url);
 
+var instanceName = 'js-rest-'+new Number(Math.random()*10E16,16).toString(16);
+
+
 describe('Check URL ' + url+'/', function() {
     var urlToPing = url+'/';
     if(VERBOSE) console.dir(urlToPing);
@@ -112,8 +115,6 @@ describe('Check URL ' + url+'/', function() {
     .on('error', done);
     });
 });
-
-var instanceName = 'instance'+new Number(Math.random()*10E16,16).toString(16);
 
 describe('client.apis', function() {
   it('should become ready', function(done) {
