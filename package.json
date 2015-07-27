@@ -23,6 +23,7 @@
     "mocha": "^2.2.5"
   },
   "dependencies": {
+    "q": "^1.4.1",
     "swagger-client": "^2.1.1"
   }
 }

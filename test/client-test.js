@@ -58,7 +58,7 @@ describe('Setting up GaaS test', function() {
   var urlEnv = process.env.GAAS_API_URL || null;
 
   opts.credentials = {
-    api_key: apiKeyEnv,
+    // api_key: apiKeyEnv,
     uri: urlEnv
   };
   
@@ -146,7 +146,23 @@ describe('gaasClient.supportedTranslations()', function() {
 
 var instanceName = 'js-client-'+randHex();
 
+
 describe('gaasClient.setup instance ' + instanceName, function() {
+  it.skip('should’t let me query the bundle list yet', function(done) {
+    try {
+      gaasClient.getBundleList({serviceInstance: instanceName}, function(err, data) {
+        if(err) {
+          if(VERBOSE) console.dir(err);
+          done();
+        } else {
+          done(Error('Expected failure here.'));
+        }
+      });
+    } catch(e) {
+      if(VERBOSE) console.dir(e);
+      done(); // expect
+    }
+  });
   it('should let us create our instance', function(done) {
     gaasClient.ready(done, function(err, done, apis) {
       if(err) { done(err); return; }
@@ -169,6 +185,16 @@ describe('gaasClient.setup instance ' + instanceName, function() {
       }, function onFailure(o) {
         done(Error('Failed: ' + o));
       });
+    });
+  });
+  it('should now let me query the bundle list', function(done) {
+    gaasClient.getBundleList({serviceInstance: instanceName}, function(err, data) {
+      if(err) {
+        done(err);
+      } else {
+        expect(data.length).to.equal(0);
+        done();
+      }
     });
   });
 });
