@@ -104,6 +104,8 @@ To load the key "hello" in Spanish from the project named "world" you can use th
 API convention
 ==
 
+APIs return promises, unless a callback is provided.
+
 APIs which take a callback use this pattern:
 
 `obj.function( { /*params*/ } ,  function callback(err, ...))`
