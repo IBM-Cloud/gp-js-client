@@ -148,7 +148,7 @@ var instanceName = 'js-client-'+randHex();
 
 
 describe('gaasClient.setup instance ' + instanceName, function() {
-  it.skip('should’t let me query the bundle list yet', function(done) {
+  it.skip('should’t let me query the bundle list yet - work item 16831', function(done) {
     try {
       gaasClient.getBundleList({serviceInstance: instanceName}, function(err, data) {
         if(err) {
@@ -187,7 +187,7 @@ describe('gaasClient.setup instance ' + instanceName, function() {
       });
     });
   });
-  it('should now let me query the bundle list', function(done) {
+  it('should now let me query the bundle list (cb)', function(done) {
     gaasClient.getBundleList({serviceInstance: instanceName}, function(err, data) {
       if(err) {
         done(err);
@@ -196,6 +196,13 @@ describe('gaasClient.setup instance ' + instanceName, function() {
         done();
       }
     });
+  });
+  it('should now let me query the bundle list (promises!)', function(done) {
+    gaasClient.getBundleList({serviceInstance: instanceName})
+    .then(function(data) {
+        expect(data.length).to.equal(0);
+        done();
+    },done);
   });
 });
 
