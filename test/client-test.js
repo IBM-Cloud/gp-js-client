@@ -207,6 +207,71 @@ describe('gaasClient.setup instance ' + instanceName, function() {
 });
 
 
+describe('gaasClient.bundle()', function() {
+  it('Should let us create a bundle accessor', function(done) {
+    var proj = gaasClient.bundle({id:'Something', serviceInstance: instanceName});
+    expect(proj.id).to.equal('Something');
+    done();
+  });
+  it('Should let us create a bundle accessor again', function(done) {
+    var proj = gaasClient.bundle('Something');
+    expect(proj.id).to.equal('Something');
+    done();
+  });
+  it('Should let us create', function(done) {
+    var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
+    proj.create({sourceLanguage: 'en', targetLanguages: ['es','qru']})
+    .then(function(resp) {
+      done();
+    }, done);
+  });
+  it('should now let me query the bundle list (promises!)', function(done) {
+    gaasClient.getBundleList({serviceInstance: instanceName})
+    .then(function(data) {
+        expect(data).to.contain(projectId);
+        done();
+    },done);
+  });
+//   it('Should let us verify the project info', function(done) {
+//     var proj = gaasClient.project(projectId);
+//     proj.getInfo({}, function(err, proj2) {
+//       if(err) { done(err); return; }
+//       expect(proj2.readerKey).to.be.a('string');
+//       expect(proj2.id).to.equal(projectId);
+//       expect(proj2.sourceLanguage).to.equal('en');
+//       expect(proj2.targetLanguages).to.include('es');
+//       expect(proj2.targetLanguages).to.include('qru');
+//       expect(proj2.targetLanguages).to.not.include('zxx');
+//       done();
+//     });
+//   });
+//   it('Should NOT let us verify nonexistent ' + projectId2, function(done) {
+//     var proj = gaasClient.project(projectId2);
+//     proj.getInfo({}, function(err, proj2) {
+//       if(err) { done(); return; }
+// console.dir(proj2);
+//       done(Error('expected this to fail.'));
+//     });
+//   });
+  it('Should let us delete', function(done) {
+    var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
+    proj.delete()
+    .then(function(resp) {
+      done();
+    }, done);
+  });
+  it('should now let me query the bundle list aga9j (promises!)', function(done) {
+    gaasClient.getBundleList({serviceInstance: instanceName})
+    .then(function(data) {
+        expect(data).to.not.contain(projectId);
+        done();
+    },done);
+  });
+});
+
+
+
+
 // unless !delete?
 describe('gaasClient.delete instance ' + instanceName, function() {
   it('should let us delete our instance', function(done) {
@@ -227,62 +292,10 @@ describe('gaasClient.delete instance ' + instanceName, function() {
     });
   });
 });
+//  END DELETE +++++
+
 
 return; // @@@@@@@
-
-describe('gaasClient.project()', function() {
-  it('Should let us create a client', function(done) {
-    var proj = gaasClient.project('Something');
-    expect(proj.id).to.equal('Something');
-    done();
-  });
-});
-// skipping pre-cleanup for now, using random project ids
-
-describe('gaasClient.listProjects()', function() {
-  it('Should let us list projects, not including ' + projectId + ' or ' + projectId2, function(done) {
-    gaasClient.listProjects({}, function(err, projList) {
-      if(err) { done(err); return; }
-      if(VERBOSE) console.dir(projList);
-      expect(projList).to.not.include.keys(projectId);
-      expect(projList).to.not.include.keys(projectId2);
-      // if(CLEANSLATE) expect(projList).to.be.empty()
-      done();
-    });
-  });
-});
-
-describe('gaasClient.project('+projectId+').create()', function() {
-  it('Should let us create', function(done) {
-    var proj = gaasClient.project(projectId);
-    proj.create({sourceLanguage: 'en', targetLanguages: ['es','qru']}, function(err, resp) {
-      if(err) { done(err); return; }
-      done();
-    }, done);
-  });
-
-  it('Should let us verify the project info', function(done) {
-    var proj = gaasClient.project(projectId);
-    proj.getInfo({}, function(err, proj2) {
-      if(err) { done(err); return; }
-      expect(proj2.readerKey).to.be.a('string');
-      expect(proj2.id).to.equal(projectId);
-      expect(proj2.sourceLanguage).to.equal('en');
-      expect(proj2.targetLanguages).to.include('es');
-      expect(proj2.targetLanguages).to.include('qru');
-      expect(proj2.targetLanguages).to.not.include('zxx');
-      done();
-    });
-  });
-  it('Should NOT let us verify nonexistent ' + projectId2, function(done) {
-    var proj = gaasClient.project(projectId2);
-    proj.getInfo({}, function(err, proj2) {
-      if(err) { done(); return; }
-console.dir(proj2);
-      done(Error('expected this to fail.'));
-    });
-  });
-});
 
 describe('gaasClient.project('+projectId+')', function() {
   it('should let us update some data(en)', function(done) {
