@@ -105,7 +105,6 @@ describe('lib/shimcb', function() {
 		.then(function(z){
 			done(Error('Should have failed (reject)'));
 		}, function(e) {
-			console.log('Reject');
 			done();
 		});
 	});
