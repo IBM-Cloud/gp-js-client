@@ -22,7 +22,18 @@ var assert = require('assert');
 
 describe('test/lib/byscheme', function() {
 	var byscheme = require('./lib/byscheme.js');
-	it('Should verify that both http and https are reachable');
+	it('Should verify that http works and is ≠ https', function() {
+		var http = byscheme('http://ibm.com');
+		expect(http).to.be.ok;
+		expect(http).to.equal(require('http'));
+		expect(http).to.not.equal(require('https'));
+	});
+	it('Should verify that https works and is ≠ http', function() {
+		var https = byscheme('https://ibm.com');
+		expect(https).to.be.ok;
+		expect(https).to.equal(require('https'));
+		expect(https).to.not.equal(require('http'));
+	});
 });
 
 describe('test/lib/minispin', function() {
