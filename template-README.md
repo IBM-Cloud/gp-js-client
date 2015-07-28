@@ -106,6 +106,9 @@ API convention
 
 APIs return promises, unless a callback is provided.
 
+NOTE: The non-promise API is deprecated and will be removed before Beta (as soon
+as the test code can be removed)
+
 APIs which take a callback use this pattern:
 
 `obj.function( { /*params*/ } ,  function callback(err, ...))`
