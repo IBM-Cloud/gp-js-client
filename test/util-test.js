@@ -27,28 +27,135 @@ describe('test/lib/byscheme', function() {
 
 describe('test/lib/minispin', function() {
 	var minispin = require('./lib/minispin.js');
-	it('Should verify that the spinner works');
+	it('Should verify that the spinner works', function() {
+		for(var i=0;i<8;i++) {
+			minispin.step();
+		}
+		minispin.clear();
+	});
 });
 
 describe('test/lib/randhex', function() {
 	var randhex = require('./lib/randhex.js');
-	it('Should verify that the random hex works');
+	it('Should verify that the random hex works', function() {
+		var x = randhex();
+		var y = randhex();
+		expect(x).to.not.equal(y);
+		expect(x.length).to.not.equal(0);
+		expect(parseInt(x,16)).to.not.equal(parseInt(y,16));
+	});
 });
 
 
 describe('lib/shimcb', function() {
 	var shimcb = require('../lib/shimcb.js');
-	it('Should verify that the shimcb works with a cb function');
-	it('Should verify that the shimcb works with a promise');
+	/**
+	 * Add two numbers. Error if the sum = 0.
+	 * @param {Number} x - addend
+	 * @param {Number} y - addend
+	 * @param {Function} cb - optional, if not present, promise is returned
+	 * @return {Promise} - if cb is falsy
+	 */
+	function myFunc(x, y, cb) {
+		var deferred = shimcb.wrap(cb);
+		process.nextTick(function() {
+			var z = (x + y);
+			if(z == 0) {
+				deferred.reject(Error('Result was zero'));
+			} else {
+				deferred.resolve(z);
+			}
+		});
+		return shimcb.return(deferred);
+	}
+	
+	it('Should verify that the shimcb works with a cb function', function(done) {
+		expect(myFunc(2,4, function(err, z) {
+			expect(err).to.be.null;
+			expect(z).to.equal(6);
+			done();
+		})).to.be.true;
+	});
+	it('Should verify that the shimcb works with a promise', function(done) {
+		myFunc(2,4)
+		.then(function(z){
+			expect(z).to.equal(6);
+			done();
+		}, done);
+	});
+	it('Should verify that the shimcb can fail with a cb function', function(done) {
+		expect(myFunc(0, 0, function(err, z) {
+			expect(err).to.not.be.null;
+			done();
+		})).to.be.true;
+	});
+	it('Should verify that the shimcb can fail with a promise', function(done) {
+		myFunc(0, 0)
+		.then(function(z){
+			done(Error('Should have failed (reject)'));
+		}, function(e) {
+			console.log('Reject');
+			done();
+		});
+	});
 });
 
 describe('lib/utils', function() {
 	var utils = require('../lib/utils.js');
-	it('Should let us create a Fields object');
-	it('Should let us access the Fields list');
-	it('Should let us use a comma separated fields list');
-	it('Should let us use specified field parameters');
-	it('Should let us use no field parameters');
-	it('Should let us use no options');
-	it('Should let us use a mixture of parameters and options');
+	
+	describe('Fields', function() {
+		var f;
+		it('Should let us create a Fields object', function() {
+			f = new utils.Fields("soccer baseball rugby");
+			expect(f).to.be.ok;
+		});
+		it('Should let us access the Fields list', function() {
+			expect(f.fields).to.be.an('array');
+			expect(f.fields).to.contain('rugby');
+			expect(f.fields).to.contain('soccer');
+			expect(f.fields).to.contain('baseball');
+			expect(f.fields).to.not.contain('backgammon');
+		});
+		it('Should let us use a comma separated fields list', function() {
+			var o = f.processFields({
+				fields: "soccer,rugby"
+			});
+			expect(o).to.be.ok;
+			expect(o).to.equal("soccer,rugby"); // in order of the original array
+		});
+		it('Should let us use specified field parameters', function() {
+			var o = f.processFields({
+				baseball: true,
+				carroms: true,
+				soccer: false
+			});
+			expect(o).to.be.ok;
+			expect(o).to.equal("baseball"); // in order of the original array
+		});
+		it('Should let us use no field parameters', function() {
+			var o = f.processFields({});
+			expect(o).to.not.be.ok;
+		});
+		it('Should let us use null field parameters', function() {
+			var o = f.processFields({ fields: null});
+			expect(o).to.not.be.ok;
+		});
+		it('Should let us use false field parameters', function() {
+			var o = f.processFields({ baseball: false, soccer: false, rugby: false, hockey: false});
+			expect(o).to.not.be.ok;
+		});
+		it('Should let us use no options', function() {
+			var o = f.processFields();
+			expect(o).to.not.be.ok;
+		});
+		it('Should let us use a mixture of parameters and options', function() {
+			var o = f.processFields({
+				fields: "rugby,baseball",
+//				baseball: false,  // Fields only add. 
+				soccer: true
+			});
+			expect(o).to.be.ok;
+			expect(o).to.equal("rugby,baseball,soccer");
+		});
+	});
 });
