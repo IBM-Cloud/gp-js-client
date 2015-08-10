@@ -31,6 +31,21 @@ It will very shortly not function with the "Experimental" (v1 API) version.
 
 Much of the text will need to be updated.
 
+# HOW TO USE THIS TO TEST GAAS-SERVICES (rest)
+
+* create `local-test.properties` with the following lines:
+
+    # the 'API key' to use. Just set it to "something" for now.
+    GAAS_API_KEY=something
+    # the server URL to use. Adjust to taste. Include trailing slash.
+    GAAS_API_URL=http://localhost:9080/translate
+
+* install [node](http://nodejs.org)
+* `npm install`
+* `npm test`
+
+-----
+
 # What is this?
 
 This is a JavaScript client and sample code for the
@@ -106,6 +121,9 @@ API convention
 
 APIs return promises, unless a callback is provided.
 
+NOTE: The non-promise API is deprecated and will be removed before Beta (as soon
+as the test code can be removed)
+
 APIs which take a callback use this pattern:
 
 `obj.function( { /*params*/ } ,  function callback(err, ...))`
@@ -119,168 +137,173 @@ All language identifiers are [IETF BCP47](http://tools.ietf.org/html/bcp47) code
 API reference
 ===
 <a name="module_gaas"></a>
-## gaas
-**Author:** Steven R. Loomis  
+#gaas
+**Author**: Steven R. Loomis  
+**Members**
 
 * [gaas](#module_gaas)
-  * [~Client](#module_gaas..Client)
-    * [.ping](#module_gaas..Client+ping) ⇒ <code>Promise</code>
-    * [.apis()](#module_gaas..Client+apis) ⇒ <code>Object</code>
-    * [.ready(arg, cb)](#module_gaas..Client+ready)
-    * [.restCall(fn, restArg)](#module_gaas..Client+restCall) ⇒ <code>Promise</code>
-    * [.getServiceInstance(opts)](#module_gaas..Client+getServiceInstance) ⇒ <code>String</code>
-    * [.getBundleList(opts, cb)](#module_gaas..Client+getBundleList) ⇒ <code>Promise</code>
-    * [.supportedTranslations(args, cb)](#module_gaas..Client+supportedTranslations) ⇒ <code>Promise</code>
-    * [.getServiceInfo(args, cb)](#module_gaas..Client+getServiceInfo) ⇒ <code>Promise</code>
-    * [.bundle(opts)](#module_gaas..Client+bundle) ⇒ <code>Bundle</code>
-  * [~Bundle](#module_gaas..Bundle)
-    * [new Bundle(gaas, props)](#new_module_gaas..Bundle_new)
-    * [.delete()](#module_gaas..Bundle+delete) ⇒ <code>Promise</code>
-    * [.create(body)](#module_gaas..Bundle+create) ⇒ <code>Promise</code>
+  * [class: gaas~Client](#module_gaas..Client)
+    * [client.ping](#module_gaas..Client#ping)
+    * [client.apis()](#module_gaas..Client#apis)
+    * [client.ready(arg, cb)](#module_gaas..Client#ready)
+    * [client.restCall(fn, restArg)](#module_gaas..Client#restCall)
+    * [client.getServiceInstance(opts)](#module_gaas..Client#getServiceInstance)
+    * [client.getBundleList(opts, cb)](#module_gaas..Client#getBundleList)
+    * [client.supportedTranslations(args, cb)](#module_gaas..Client#supportedTranslations)
+    * [client.getServiceInfo(args, cb)](#module_gaas..Client#getServiceInfo)
+    * [client.bundle(opts)](#module_gaas..Client#bundle)
+  * [class: gaas~Bundle](#module_gaas..Bundle)
+    * [new gaas~Bundle(gaas, props)](#new_module_gaas..Bundle)
+    * [bundle.getInfoFields](#module_gaas..Bundle#getInfoFields)
+    * [bundle.delete()](#module_gaas..Bundle#delete)
+    * [bundle.create(body)](#module_gaas..Bundle#create)
+    * [bundle.getInfo(opts)](#module_gaas..Bundle#getInfo)
 
 <a name="module_gaas..Client"></a>
-### gaas~Client
-**Kind**: inner class of <code>[gaas](#module_gaas)</code>  
+##class: gaas~Client
+**Members**
 
-* [~Client](#module_gaas..Client)
-  * [.ping](#module_gaas..Client+ping) ⇒ <code>Promise</code>
-  * [.apis()](#module_gaas..Client+apis) ⇒ <code>Object</code>
-  * [.ready(arg, cb)](#module_gaas..Client+ready)
-  * [.restCall(fn, restArg)](#module_gaas..Client+restCall) ⇒ <code>Promise</code>
-  * [.getServiceInstance(opts)](#module_gaas..Client+getServiceInstance) ⇒ <code>String</code>
-  * [.getBundleList(opts, cb)](#module_gaas..Client+getBundleList) ⇒ <code>Promise</code>
-  * [.supportedTranslations(args, cb)](#module_gaas..Client+supportedTranslations) ⇒ <code>Promise</code>
-  * [.getServiceInfo(args, cb)](#module_gaas..Client+getServiceInfo) ⇒ <code>Promise</code>
-  * [.bundle(opts)](#module_gaas..Client+bundle) ⇒ <code>Bundle</code>
+* [class: gaas~Client](#module_gaas..Client)
+  * [client.ping](#module_gaas..Client#ping)
+  * [client.apis()](#module_gaas..Client#apis)
+  * [client.ready(arg, cb)](#module_gaas..Client#ready)
+  * [client.restCall(fn, restArg)](#module_gaas..Client#restCall)
+  * [client.getServiceInstance(opts)](#module_gaas..Client#getServiceInstance)
+  * [client.getBundleList(opts, cb)](#module_gaas..Client#getBundleList)
+  * [client.supportedTranslations(args, cb)](#module_gaas..Client#supportedTranslations)
+  * [client.getServiceInfo(args, cb)](#module_gaas..Client#getServiceInfo)
+  * [client.bundle(opts)](#module_gaas..Client#bundle)
 
-<a name="module_gaas..Client+ping"></a>
-#### client.ping ⇒ <code>Promise</code>
+<a name="module_gaas..Client#ping"></a>
+###client.ping
 Do we have access to the server?
 
-**Kind**: instance property of <code>[Client](#module_gaas..Client)</code>  
+**Params**
 
-| Param | Type | Description |
-| --- | --- | --- |
-| args | <code>object</code> | (ignored) |
-| cb | <code>callback</code> | if omitted, a promise is returned |
+- args `object` - (ignored)  
+- cb `callback` - if omitted, a promise is returned  
 
-<a name="module_gaas..Client+apis"></a>
-#### client.apis() ⇒ <code>Object</code>
+**Returns**: `Promise`  
+<a name="module_gaas..Client#apis"></a>
+###client.apis()
 Get the REST APIs. Use with ready()
 
-**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
-**Returns**: <code>Object</code> - - Map of API operations, otherwise null if not ready.  
-<a name="module_gaas..Client+ready"></a>
-#### client.ready(arg, cb)
+**Returns**: `Object` - - Map of API operations, otherwise null if not ready.  
+<a name="module_gaas..Client#ready"></a>
+###client.ready(arg, cb)
 Verify that the client is ready before proceeding.
 
-**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
+**Params**
 
-| Param | Type | Description |
-| --- | --- | --- |
-| arg | <code>Object</code> | arg option, passed to cb on success or failure |
-| cb | <code>function</code> | callback (called with (null, arg, apis) on success |
+- arg `Object` - arg option, passed to cb on success or failure  
+- cb `function` - callback (called with (null, arg, apis) on success  
 
-<a name="module_gaas..Client+restCall"></a>
-#### client.restCall(fn, restArg) ⇒ <code>Promise</code>
-Call a REST function. Verify the results.
-cb is called with the same context.
+<a name="module_gaas..Client#restCall"></a>
+###client.restCall(fn, restArg)
+Call a REST function. Verify the results.cb is called with the same context.This is designed for internal implementation.
 
-This is designed for internal implementation.
+**Params**
 
-**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
+- fn `Array` - function name, such as ["admin","getServiceInfo"]  
+- restArg `Object` - args to the REST call  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| fn | <code>Array</code> | function name, such as ["admin","getServiceInfo"] |
-| restArg | <code>Object</code> | args to the REST call |
+**Returns**: `Promise`  
+<a name="module_gaas..Client#getServiceInstance"></a>
+###client.getServiceInstance(opts)
+Get the serviceInstance id from a parameter or from the client's default.
 
-<a name="module_gaas..Client+getServiceInstance"></a>
-#### client.getServiceInstance(opts) ⇒ <code>String</code>
-Get the serviceInstance id from a parameter or from the 
-client's default.
+**Params**
 
-**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
-**Returns**: <code>String</code> - - the service instance ID if found  
+- opts `Object` - can be a map, or falsy.  
+  - serviceInstance `String` - the service instance  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| opts | <code>Object</code> | can be a map, or falsy. |
-| opts.serviceInstance | <code>String</code> | the service instance |
-
-<a name="module_gaas..Client+getBundleList"></a>
-#### client.getBundleList(opts, cb) ⇒ <code>Promise</code>
+**Returns**: `String` - - the service instance ID if found  
+<a name="module_gaas..Client#getBundleList"></a>
+###client.getBundleList(opts, cb)
 Get a list of the bundles
 
-**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
+**Params**
 
-| Param | Type | Description |
-| --- | --- | --- |
-| opts | <code>Object</code> |  |
-| opts.serviceInstance | <code>String</code> | optional service instance |
-| cb | <code>basicCallback</code> | callback. If omitted, a promise is returned. |
+- opts `Object`  
+  - serviceInstance `String` - optional service instance  
+- cb `basicCallback` - callback. If omitted, a promise is returned.  
 
-<a name="module_gaas..Client+supportedTranslations"></a>
-#### client.supportedTranslations(args, cb) ⇒ <code>Promise</code>
+**Returns**: `Promise`  
+<a name="module_gaas..Client#supportedTranslations"></a>
+###client.supportedTranslations(args, cb)
 This function returns a map from source language(s) to target language(s).
 
-**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
+**Params**
 
-| Param | Type | Description |
-| --- | --- | --- |
-| args | <code>object</code> |  |
-| cb | <code>supportedTranslationsCallback</code> | If omitted, a promise is returned. |
+- args `object`  
+- cb `supportedTranslationsCallback` - If omitted, a promise is returned.  
 
-<a name="module_gaas..Client+getServiceInfo"></a>
-#### client.getServiceInfo(args, cb) ⇒ <code>Promise</code>
+**Returns**: `Promise`  
+<a name="module_gaas..Client#getServiceInfo"></a>
+###client.getServiceInfo(args, cb)
 Get information about this service
 
-**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
+**Params**
 
-| Param | Type | Description |
-| --- | --- | --- |
-| args | <code>object</code> |  |
-| cb | <code>basicCallback</code> | If omitted, a promise is returned. |
+- args `object`  
+- cb `basicCallback` - If omitted, a promise is returned.  
 
-<a name="module_gaas..Client+bundle"></a>
-#### client.bundle(opts) ⇒ <code>Bundle</code>
-Create a bundle access object.
-This doesn’t create the bundle itself, just a lightweight
-accessor object.
+**Returns**: `Promise`  
+<a name="module_gaas..Client#bundle"></a>
+###client.bundle(opts)
+Create a bundle access object.This doesn’t create the bundle itself, just a lightweightaccessor object.
 
-**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
+**Params**
 
-| Param | Type | Description |
-| --- | --- | --- |
-| opts | <code>Object</code> | String (id) or map {id: bundleId, serviceInstance: serviceInstanceId} |
+- opts `Object` - String (id) or map {id: bundleId, serviceInstance: serviceInstanceId}  
 
+**Returns**: `Bundle`  
 <a name="module_gaas..Bundle"></a>
-### gaas~Bundle
-**Kind**: inner class of <code>[gaas](#module_gaas)</code>  
+##class: gaas~Bundle
+**Members**
 
-* [~Bundle](#module_gaas..Bundle)
-  * [new Bundle(gaas, props)](#new_module_gaas..Bundle_new)
-  * [.delete()](#module_gaas..Bundle+delete) ⇒ <code>Promise</code>
-  * [.create(body)](#module_gaas..Bundle+create) ⇒ <code>Promise</code>
+* [class: gaas~Bundle](#module_gaas..Bundle)
+  * [new gaas~Bundle(gaas, props)](#new_module_gaas..Bundle)
+  * [bundle.getInfoFields](#module_gaas..Bundle#getInfoFields)
+  * [bundle.delete()](#module_gaas..Bundle#delete)
+  * [bundle.create(body)](#module_gaas..Bundle#create)
+  * [bundle.getInfo(opts)](#module_gaas..Bundle#getInfo)
 
-<a name="new_module_gaas..Bundle_new"></a>
-#### new Bundle(gaas, props)
+<a name="new_module_gaas..Bundle"></a>
+###new gaas~Bundle(gaas, props)
+**Params**
 
-| Param | Type | Description |
-| --- | --- | --- |
-| gaas | <code>Client</code> | parent GaaS client object |
-| props | <code>Object</code> | properties to inherit |
+- gaas `Client` - parent GaaS client object  
+- props `Object` - properties to inherit  
 
-<a name="module_gaas..Bundle+delete"></a>
-#### bundle.delete() ⇒ <code>Promise</code>
-**Kind**: instance method of <code>[Bundle](#module_gaas..Bundle)</code>  
-<a name="module_gaas..Bundle+create"></a>
-#### bundle.create(body) ⇒ <code>Promise</code>
-**Kind**: instance method of <code>[Bundle](#module_gaas..Bundle)</code>  
+**Scope**: inner class of [gaas](#module_gaas)  
+<a name="module_gaas..Bundle#getInfoFields"></a>
+###bundle.getInfoFields
+List of fields usable with Bundle.getInfo()
 
-| Param | Type | Description |
-| --- | --- | --- |
-| body | <code>Object</code> | see API docs |
+<a name="module_gaas..Bundle#delete"></a>
+###bundle.delete()
+**Returns**: `Promise`  
+<a name="module_gaas..Bundle#create"></a>
+###bundle.create(body)
+**Params**
+
+- body `Object` - see API docs  
+
+**Returns**: `Promise`  
+<a name="module_gaas..Bundle#getInfo"></a>
+###bundle.getInfo(opts)
+Get bundle info
+
+**Params**
+
+- opts `Object` - Options object  
+  - fields `String` - Comma separated list of fields  
+  - translationStatusMetricsByLanguage `Boolean` - Optional field (false by default)  
+  - reviewStatusMetricsByLanguage `Boolean` - Optional field (false by default)  
+  - partnerStatusMetricsByLanguage `Boolean` - Optional field (false by default)  
+
+**Returns**: `Promise`  
 
 
 *docs autogenerated via [jsdoc2md](https://github.com/jsdoc2md/jsdoc-to-markdown)*

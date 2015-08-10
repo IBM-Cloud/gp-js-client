@@ -31,6 +31,21 @@ It will very shortly not function with the "Experimental" (v1 API) version.
 
 Much of the text will need to be updated.
 
+# HOW TO USE THIS TO TEST GAAS-SERVICES (rest)
+
+* create `local-test.properties` with the following lines:
+
+    # the 'API key' to use. Just set it to "something" for now.
+    GAAS_API_KEY=something
+    # the server URL to use. Adjust to taste. Include trailing slash.
+    GAAS_API_URL=http://localhost:9080/translate
+
+* install [node](http://nodejs.org)
+* `npm install`
+* `npm test`
+
+-----
+
 # What is this?
 
 This is a JavaScript client and sample code for the
