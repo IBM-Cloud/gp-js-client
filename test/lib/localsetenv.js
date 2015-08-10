@@ -16,7 +16,7 @@ function tryRead(fn) {
 	}
 	if(fc) {
 		console.log('#'+fn);
-		fc.toString().split('\n').forEach(function(s) {
+		fc.toString().split(/[\n\r]/).forEach(function(s) {
 			if(!s || s[0]===('#') || (s==='') ) return;
 			var e = s.split('=');
 			if(process.env.hasOwnProperty(e[0])) {
