@@ -29,6 +29,7 @@ if(process.env.NO_REST_TEST) { console.log('skip: ' + module.filename); return; 
 if(VERBOSE) console.dir(module.filename);
 
 var minispin = require('./lib/minispin');
+var randHex = require('./lib/randhex');
 var expect = require('chai').expect;
 
 var assert = require('assert');
@@ -54,7 +55,7 @@ if ( ! url ) {
 
 var http_or_https = require('./lib/byscheme')(url);
 
-var instanceName = 'js-rest-'+new Number(Math.random()*10E16,16).toString(16);
+var instanceName = randHex()+'-'+randHex();
 
 
 describe('Check URL ' + url+'/', function() {

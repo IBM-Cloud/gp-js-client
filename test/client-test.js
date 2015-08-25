@@ -142,7 +142,7 @@ describe('gaasClient.supportedTranslations()', function() {
   });
 });
 
-var instanceName = 'js-client-'+randHex();
+var instanceName = randHex()+'-'+randHex();
 
 
 describe('gaasClient.setup instance ' + instanceName, function() {

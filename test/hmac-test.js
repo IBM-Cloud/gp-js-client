@@ -39,7 +39,7 @@ describe('lib/gaas-hmac', function() {
 		expect(myHmac.secret).to.be.ok;
 		expect(myHmac.secret).to.equal('MySecret');
 	});
-	it('Should verify that we can apply', function() {
+	it('Should verify hash (JSON content)', function() {
 		var myHmac = new GaasHmac('MyAuth', 'MyUser', 'MySecret');
 		
 		expect(myHmac).to.be.ok;
@@ -47,7 +47,7 @@ describe('lib/gaas-hmac', function() {
 		expect(myHmac.name).to.equal('MyAuth');
 		
 		var obj = {
-			method: 'https',
+			method: 'get',
 			url: 'http://example.com/gaas',
 			headers: {
 				Authorization: undefined
@@ -56,15 +56,16 @@ describe('lib/gaas-hmac', function() {
 		};
 		
 		// we must force the Date so that we have a consistent test.
-		myHmac.forceDateString = "Mon, 30 Jun 2014 00:00:00 -0000"; // Bluemix launch date
+		myHmac.forceDateString = "Mon, 30 Jun 2014 00:00:00 GMT"; // Bluemix launch date
 		expect(myHmac.apply(obj)).to.be.true;
+
 		expect(obj.headers.Authorization).to.be.ok;
 		expect(obj.headers.Authorization).to.equal(
-			'GaaS-HMAC MyUser:1rzVP0gKlUv2DY1TaFmTCR31/WU=');
+			'GaaS-HMAC MyUser:C+0WoqztV6Go5Ttu05y2jcCD450=');
 		expect(obj.headers.Date).to.be.ok;
 		expect(obj.headers.Date).to.equal(myHmac.forceDateString);
 	});
-	it('Should verify that we can apply with a string body', function() {
+	it('Should verify that we can apply with a string body (golden test)', function() {
 		var myHmac = new GaasHmac('MyAuth', 'MyUser', 'MySecret');
 		
 		expect(myHmac).to.be.ok;
@@ -72,20 +73,21 @@ describe('lib/gaas-hmac', function() {
 		expect(myHmac.name).to.equal('MyAuth');
 		
 		var obj = {
-			method: 'https',
-			url: 'http://example.com/gaas',
+			method: 'pOsT',
+			url: 'https://example.com/gaas',
 			headers: {
 				Authorization: undefined
 			},
-			body: 'param=value'
+			body: '{"param":"value"}'
 		};
 		
 		// we must force the Date so that we have a consistent test.
-		myHmac.forceDateString = "Mon, 30 Jun 2014 00:00:00 -0000"; // Bluemix launch date
+		myHmac.forceDateString = "Mon, 30 Jun 2014 00:00:00 GMT"; // Bluemix launch date
 		expect(myHmac.apply(obj)).to.be.true;
+
 		expect(obj.headers.Authorization).to.be.ok;
 		expect(obj.headers.Authorization).to.equal(
-			'GaaS-HMAC MyUser:v4ORQ81ddv7/sGJz3C/nLiGBmu0=');
+			'GaaS-HMAC MyUser:ONBJapYEveDZfsPFdqZHQ64GDgc=');
 		expect(obj.headers.Date).to.be.ok;
 		expect(obj.headers.Date).to.equal(myHmac.forceDateString);
 	});
@@ -97,7 +99,7 @@ describe('lib/gaas-hmac', function() {
 		expect(myHmac.name).to.equal('MyAuth');
 		
 		var obj = {
-			method: 'https',
+			method: 'put',
 			url: 'http://example.com/gaas',
 			headers: {
 				Authorization: undefined
@@ -106,11 +108,12 @@ describe('lib/gaas-hmac', function() {
 		};
 		
 		// we must force the Date so that we have a consistent test.
-		myHmac.forceDateString = "Mon, 30 Jun 2014 00:00:00 -0000"; // Bluemix launch date
+		myHmac.forceDateString = "Mon, 30 Jun 2014 00:00:00 GMT"; // Bluemix launch date		expect(myHmac.apply(obj)).to.be.true;
 		expect(myHmac.apply(obj)).to.be.true;
+
 		expect(obj.headers.Authorization).to.be.ok;
 		expect(obj.headers.Authorization).to.equal(
-			'GaaS-HMAC MyUser:3XqbcIALzsjdtGRdlxKv0jk9R0Q=');
+			'GaaS-HMAC MyUser:VutLpxSxYtUZKLJPV8eqRU3Spxw=');
 		expect(obj.headers.Date).to.be.ok;
 		expect(obj.headers.Date).to.equal(myHmac.forceDateString);
 	});
@@ -122,7 +125,7 @@ describe('lib/gaas-hmac', function() {
 		expect(myHmac.name).to.equal('MyAuth');
 		
 		var obj = {
-			method: 'https',
+			method: 'delete',
 			url: 'http://example.com/gaas',
 			headers: {
 				Authorization: undefined
@@ -131,9 +134,12 @@ describe('lib/gaas-hmac', function() {
 		};
 		
 		expect(myHmac.apply(obj)).to.be.true;
+
 		expect(obj.headers.Authorization).to.be.ok;
 		expect(obj.headers.Authorization.length).to.not.equal(0);
+		// can't test the auth header against a static string
 		expect(obj.headers.Date).to.be.ok;
 		expect(obj.headers.Date.length).to.not.equal(0);
+		expect(obj.headers.Date).to.contain(" GMT");
 	});
 });
