@@ -35,8 +35,9 @@ Much of the text will need to be updated.
 
 * create `local-test.properties` with the following lines:
 
-    # the 'API key' to use. Just set it to "something" for now.
-    GAAS_API_KEY=something
+    # Set the admin ID and password as appropriate
+    GAAS_ADMIN_ID=......
+    GAAS_ADMIN_PASSWORD=......
     # the server URL to use. Adjust to taste. Include trailing slash.
     GAAS_API_URL=http://localhost:9080/translate
 

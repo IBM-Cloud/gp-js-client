@@ -23,6 +23,7 @@ require('./lib/localsetenv').applyLocal();
 
 var minispin = require('./lib/minispin');
 var randHex = require('./lib/randhex');
+var gaasTest = require ('./lib/gaas-test');
 
 if(process.env.NO_CLIENT_TEST) { console.log('skip: ' + module.filename); return; }
 var gaas = require('../index.js'); // required, below
@@ -54,15 +55,12 @@ var opts = {
 };
 
 describe('Setting up GaaS test', function() {
-  var apiKeyEnv = process.env.GAAS_API_KEY || null;
-  var urlEnv = process.env.GAAS_API_URL || null;
 
-  opts.credentials = {
-    // api_key: apiKeyEnv,
-    uri: urlEnv
-  };
+  opts.credentials = gaasTest.getCredentials();
   
-  if ( apiKeyEnv && urlEnv ) {
+  var urlEnv = opts.credentials.uri;
+
+  if ( urlEnv ) {
     var urlToPing = urlEnv+'/';
     if(VERBOSE) console.dir(urlToPing);
     it('should let us directly ping ' + urlToPing, function(done) {

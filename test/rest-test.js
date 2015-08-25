@@ -22,8 +22,6 @@ require('./lib/localsetenv').applyLocal();
 
 var projectId = process.env.GAAS_PROJECT  || 'MyLLProject'+Math.random();
 var projectId2 = process.env.GAAS_PROJECT2 || 'MyOtherLLProject'+Math.random();
-var apiKey = process.env.GAAS_API_KEY;
-var url = process.env.GAAS_API_URL;
 var CLEANSLATE = false; // CLEANSLATE: assume no other projects
 var VERBOSE = process.env.GAAS_VERBOSE || false;
 if(process.env.NO_REST_TEST) { console.log('skip: ' + module.filename); return; }
@@ -37,7 +35,10 @@ var assert = require('assert');
 
 var gaas = require('../index.js');
 
-var gaasClient = gaas.getClient({credentials: { uri: url, api_key: apiKey, project: projectId }});
+var gaasTest = require('./lib/gaas-test');
+var opts = {credentials: gaasTest.getCredentials()};
+var gaasClient = gaas.getClient(opts);
+var url = opts.credentials.uri;
 
 var sourceLoc = "en-US";
 var targLoc = "zh-Hans";

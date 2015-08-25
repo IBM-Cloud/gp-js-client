@@ -49,17 +49,40 @@ describe('lib/gaas-hmac', function() {
 		var obj = {
 			method: 'https',
 			url: 'http://example.com/gaas',
-			header: {
+			headers: {
 				Authorization: undefined
 			},
-			body: "param=value"
+			body: { param: 'value' }
 		};
 		
 		// we must force the Date so that we have a consistent test.
 		myHmac.forceDateString = "Mon, 30 Jun 2014 00:00:00 -0000"; // Bluemix launch date
 		expect(myHmac.apply(obj)).to.be.true;
-		expect(obj.header.Authorization).to.be.ok;
-		expect(obj.header.Authorization).to.equal(
+		expect(obj.headers.Authorization).to.be.ok;
+		expect(obj.headers.Authorization).to.equal(
 			'GaaS-HMAC MyUser:v4ORQ81ddv7/sGJz3C/nLiGBmu0=');
+	});
+	it('Should verify that we can apply with undefined body', function() {
+		var myHmac = new GaasHmac('MyAuth', 'MyUser', 'MySecret');
+		
+		expect(myHmac).to.be.ok;
+		expect(myHmac.name).to.be.ok;
+		expect(myHmac.name).to.equal('MyAuth');
+		
+		var obj = {
+			method: 'https',
+			url: 'http://example.com/gaas',
+			headers: {
+				Authorization: undefined
+			},
+			body: undefined
+		};
+		
+		// we must force the Date so that we have a consistent test.
+		myHmac.forceDateString = "Mon, 30 Jun 2014 00:00:00 -0000"; // Bluemix launch date
+		expect(myHmac.apply(obj)).to.be.true;
+		expect(obj.headers.Authorization).to.be.ok;
+		expect(obj.headers.Authorization).to.equal(
+			'GaaS-HMAC MyUser:3XqbcIALzsjdtGRdlxKv0jk9R0Q=');
 	});
 });
