@@ -61,6 +61,8 @@ describe('lib/gaas-hmac', function() {
 		expect(obj.headers.Authorization).to.be.ok;
 		expect(obj.headers.Authorization).to.equal(
 			'GaaS-HMAC MyUser:1rzVP0gKlUv2DY1TaFmTCR31/WU=');
+		expect(obj.headers.Date).to.be.ok;
+		expect(obj.headers.Date).to.equal(myHmac.forceDateString);
 	});
 	it('Should verify that we can apply with a string body', function() {
 		var myHmac = new GaasHmac('MyAuth', 'MyUser', 'MySecret');
@@ -84,6 +86,8 @@ describe('lib/gaas-hmac', function() {
 		expect(obj.headers.Authorization).to.be.ok;
 		expect(obj.headers.Authorization).to.equal(
 			'GaaS-HMAC MyUser:v4ORQ81ddv7/sGJz3C/nLiGBmu0=');
+		expect(obj.headers.Date).to.be.ok;
+		expect(obj.headers.Date).to.equal(myHmac.forceDateString);
 	});
 	it('Should verify that we can apply with undefined body', function() {
 		var myHmac = new GaasHmac('MyAuth', 'MyUser', 'MySecret');
@@ -107,5 +111,29 @@ describe('lib/gaas-hmac', function() {
 		expect(obj.headers.Authorization).to.be.ok;
 		expect(obj.headers.Authorization).to.equal(
 			'GaaS-HMAC MyUser:3XqbcIALzsjdtGRdlxKv0jk9R0Q=');
+		expect(obj.headers.Date).to.be.ok;
+		expect(obj.headers.Date).to.equal(myHmac.forceDateString);
+	});
+	it('Should verify that we can apply with a random date', function() {
+		var myHmac = new GaasHmac('MyAuth', 'MyUser', 'MySecret');
+		
+		expect(myHmac).to.be.ok;
+		expect(myHmac.name).to.be.ok;
+		expect(myHmac.name).to.equal('MyAuth');
+		
+		var obj = {
+			method: 'https',
+			url: 'http://example.com/gaas',
+			headers: {
+				Authorization: undefined
+			},
+			body: undefined
+		};
+		
+		expect(myHmac.apply(obj)).to.be.true;
+		expect(obj.headers.Authorization).to.be.ok;
+		expect(obj.headers.Authorization.length).to.not.equal(0);
+		expect(obj.headers.Date).to.be.ok;
+		expect(obj.headers.Date.length).to.not.equal(0);
 	});
 });
