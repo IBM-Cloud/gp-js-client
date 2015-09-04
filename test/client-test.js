@@ -146,7 +146,7 @@ var instanceName = randHex()+'-'+randHex();
 
 
 describe('gaasClient.setup instance ' + instanceName, function() {
-  it.skip('should’t let me query the bundle list yet - work item 16831', function(done) {
+  it('should’t let me query the bundle list yet', function(done) {
     try {
       gaasClient.getBundleList({serviceInstance: instanceName}, function(err, data) {
         if(err) {
