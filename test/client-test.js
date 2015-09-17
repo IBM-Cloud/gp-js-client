@@ -54,6 +54,17 @@ var qruData = {
 var opts = {
 };
 
+function resterr(o) {
+  if(!o) {
+    return Error("(falsy object)");
+  }
+  if(o.data && o.message) {
+    return Error(o.data.message);
+  } else if(o.message) {
+    return Error(o.message);
+  }
+}
+
 describe('Setting up GaaS test', function() {
 
   opts.credentials = gaasTest.getCredentials();
@@ -181,7 +192,7 @@ describe('gaasClient.setup instance ' + instanceName, function() {
           done();
         }
       }, function onFailure(o) {
-        done(Error('Failed: ' + o));
+        done(resterr(o));
       });
     });
   });
@@ -258,7 +269,7 @@ describe('gaasClient.bundle()', function() {
       done();
     }, done);
   });
-  it('should now let me query the bundle list aga9j (promises!)', function(done) {
+  it('should now let me query the bundle list again (promises!)', function(done) {
     gaasClient.getBundleList({serviceInstance: instanceName})
     .then(function(data) {
         expect(data).to.not.contain(projectId);
