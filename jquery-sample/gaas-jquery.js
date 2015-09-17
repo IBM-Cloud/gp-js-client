@@ -17,7 +17,7 @@
 
 var gaas = (function(){
     var _exports = {
-        version: "v1"
+        version: "v2"
     };
     
     _exports.getClient = function getClient(params) {
@@ -27,19 +27,19 @@ var gaas = (function(){
 
     function Client(options) {
         this._options = options;
-          var needAll = ' - expected {credentials: { uri: ...,  api_key: ... }}';
-        if ( !this._options.credentials ) {
-          throw new Error("gaas: missing 'credentials' " + needAll);
-        } else if ( !this._options.credentials.uri ) {
-          throw new Error("gaas: missing 'credentials.uri'   " + needAll);
-        } else if ( !this._options.credentials.api_key ) {
-          throw new Error("gaas: missing 'credentials.api_key'  " + needAll);
-        }
+        //   var needAll = ' - expected {credentials: { uri: ...,  api_key: ... }}';
+        // if ( !this._options.credentials ) {
+        //   throw new Error("gaas: missing 'credentials' " + needAll);
+        // } else if ( !this._options.credentials.uri ) {
+        //   throw new Error("gaas: missing 'credentials.uri'   " + needAll);
+        // } else if ( !this._options.credentials.api_key ) {
+        //   throw new Error("gaas: missing 'credentials.api_key'  " + needAll);
+        // }
         this._options.credentials.uri = removeTrailing(this._options.credentials.uri, '/');
     };
     
     /** @class Project */
-    function Project(gaas, projectID, props) {
+    function Bundle(gaas, bundleId, props) {
       if ( props ) {
         // copy properties to this
         for(var k in props) {
@@ -47,7 +47,7 @@ var gaas = (function(){
         }
       }
       this.gaas = gaas; // actually Client
-      this.id = projectID;
+      this.bundleId = bundleId;
     }
    
    
@@ -57,14 +57,14 @@ var gaas = (function(){
     * @param {string} args.languageID - which BCP47 language to get info for
     * @param {resourceCallback} cb
     */
-   Project.prototype.getResourceData = function getResourceData(args, cb) {
+   Bundle.prototype.getResourceStrings = function getResourceStrings(args, cb) {
      var that = this;
      args.projectID = this.id;
-     this.gaas.rest_getResourceData(args, function(err, resp) {
+     this.gaas.rest_getResourceStrings(args, function(err, resp) {
        if(err) {
          cb(err);
-       } else if(resp.resourceData) {
-         cb(null, new ResourceData(that, resp.resourceData), resp);
+       } else if(resp.resourceStrings) {
+         cb(null, new ResourceData(that, resp.resourceStrings), resp);
        } else {
          cb(Error("Response was lacking resource information"));
        }
@@ -88,35 +88,43 @@ function ResourceData(project, props) {
  * @param {string} projectID
  * @param {object} props - optional properties to set on the object
  */
-Client.prototype.project = function project(projectID, props) {
-  return new Project(this, projectID, props);
+Client.prototype.bundle = function project(projectID, props) {
+  return new Bundle(this, projectID, props);
 };
 
 /**
- * Add auth key. modifies input.
- * @ignore
+ * Core implementation.
+ * All of the rest is syntactic sugar.
  */
-Client.prototype._addAuth = function _addAuth(opts) {
-  //opts["api-key"] = this._options.credentials.api_key;
-  return opts;
-};
-
-/**
-* Manual implementation
- */
- Client.prototype.rest_getResourceData = function rest_getResourceData(params, cb) {
-     var url = this._options.credentials.uri + '/' + _exports.version + '/projects/' + params.projectID + '/' + params.languageID;
+ Client.prototype.rest_getResourceStrings = function rest_getResourceData(params, cb) {
+    var that = this;
+     var url = this._options.credentials.uri + 
+          '/rest' +
+          '/' + this._options.credentials.instanceId +
+          '/' + _exports.version + // v2
+          '/bundles' +
+          '/' + this._options.bundleId +
+          '/' + params.languageID;
+          
      console.log('GET ' + url);
      //params = this._addAuth(params); // add api key
      $.ajax({
+       
+       beforeSend: function(x) {
+         x.setRequestHeader('Authorization',
+         'Basic ' + window.btoa(that._options.credentials.userId+
+                          ':'+that._options.credentials.password));
+       },
+       //username: this._options.credentials.userId,
+       // password: this._options.credentials.password,
        dataType: "json",
        url: url,
        //data: data,
-       headers: { "api-key": this._options.credentials.api_key },
+       // BASIC AUTH
        success: function(json) {
            if(!json) { cb(Error('No JSON returned!'));  }
            else if(!json.status) { cb(Error('No status returned!'));  }
-           else if(json.status !== 'success') { cb(Error('RESTful error: ' + json.status)); }
+           else if(json.status !== 'SUCCESS') { cb(Error('RESTful error: ' + json.status)); }
            else { cb(null, json);  }
        },
        error: cb

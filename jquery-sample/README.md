@@ -1,4 +1,4 @@
-Simple jQuery client for IBM Bluemix Globalization
+Simple jQuery client for IBM Globalization Pipeline (beta)
 ===
 
 # What is this?
@@ -18,20 +18,17 @@ Here is a simple `hello.properties` file which can be used:
 
         hello=Hello world.
 
-You will need the following information to configure the sample:
-1. The *reader key* which is available in the dashboard view in Bluemix. 
-2. The *service URI* which is part of your application's bound credentials.
-3. the *project ID* which you used when you created the project.
+You will need to create a `READER` user to be able to generate the following credentials.
 
 * Create a file `gaas4jq-sample-config.js` as below: (modifying `api_key`, `uri` and `project` as appropriate.)
 
-        var sampleconfig = {
-          credentials: {
-             api_key: '<YOUR READER KEY>',
-             uri: '<YOUR URI>'
-          },
-          project: '<YOUR PROJECT>'
-        };
+    var sampleconfig = {
+    credentials: 
+        { instanceId: '<instanceid>',
+            userId: '<READER userid>',
+            password: '<READER password>',
+            uri: '<uri>' },
+        bundleId: 'your bundleid' };
          
 * view the file `gaas4jq-sample.html` in a browser. You should see the "Hello" string translated into Spanish.
 
@@ -55,11 +52,11 @@ your application's data (such as `{ hello: "Hello World", ... }`.
 
 The following code uses jQuery `text()` to display the results.
 
-    gaasProject.getResourceData({languageID:'es'}, function cb(err, resp) {
+    gaasProject.getResourceStrings({languageID:'es'}, function cb(err, resp) {
         if(err) { 
             $('#hello').text('ERR: ' + err.toString());
         } else {
-            $('#hello').text(resp.data.hello);
+            $('#hello').text(resp.hello);
         }
     });
 

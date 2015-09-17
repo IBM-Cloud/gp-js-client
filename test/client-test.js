@@ -36,10 +36,12 @@ var expect = require('chai').expect;
 var assert = require('assert');
 
 var VERBOSE = process.env.GAAS_VERBOSE || false;
+var NO_DELETE = process.env.NO_DELETE || false;
 if(VERBOSE) console.dir(module.filename);
 
 var projectId = process.env.GAAS_PROJECT  || 'MyHLProject'+Math.random();
 var projectId2 = process.env.GAAS_PROJECT2 || 'MyOtherHLProject'+Math.random();
+var projectId3 = process.env.GAAS_PROJECT3 || 'MyUserProject'+Math.random();
 
 var sourceData = {
     "key1": "@DELAY@First string to translate",
@@ -215,7 +217,6 @@ describe('gaasClient.setup instance ' + instanceName, function() {
   });
 });
 
-
 describe('gaasClient.bundle()', function() {
   it('Should let us create a bundle accessor', function(done) {
     var proj = gaasClient.bundle({id:'Something', serviceInstance: instanceName});
@@ -241,7 +242,60 @@ describe('gaasClient.bundle()', function() {
         done();
     },done);
   });
-//   it('Should let us verify the project info', function(done) {
+
+  var myUserInfo = undefined;  
+  it('should let me create a user', function(done) {
+    gaasClient.createUser({serviceInstance: instanceName,
+                           type:'ADMINISTRATOR',
+                           bundles: ['*'],
+                           displayName: 'Somebody'})
+    .then(function(data) {
+      expect(data).to.be.ok;
+      expect(data.user).to.be.ok;
+      expect(data.id).to.be.ok;
+      expect(data.user).to.be.ok;
+      expect(data.user.id).to.be.ok;
+      expect(data.user.password).to.be.ok;
+      expect(data.user.displayName).to.equal('Somebody');
+      if(VERBOSE || NO_DELETE) console.dir(data,{color:true});
+      myUserInfo = {
+        instanceId: instanceName,
+        userId: data.user.id,
+        password: data.user.password,
+        uri: opts.credentials.uri
+      };
+      done();
+    },done);
+  });
+  it('should let me create a reader user', function(done) {
+    gaasClient.createUser({serviceInstance: instanceName,
+                           type:'READER',
+                           bundles: [projectId3],
+                           displayName: 'Reador'})
+    .then(function(data) {
+      expect(data).to.be.ok;
+      expect(data.user).to.be.ok;
+      expect(data.id).to.be.ok;
+      expect(data.user).to.be.ok;
+      expect(data.user.id).to.be.ok;
+      expect(data.user.password).to.be.ok;
+      expect(data.user.displayName).to.equal('Reador');
+      // Dump sample config data.
+      if(VERBOSE || NO_DELETE) console.dir({
+        sampleconfig: {
+          credentials: {
+            instanceId: instanceName,
+            userId: data.user.id,
+            password: data.user.password,
+            uri: opts.credentials.uri
+          },
+          bundleId: projectId3
+        }
+      },{color:true});
+      done();
+    },done);
+  });
+  //   it('Should let us verify the project info', function(done) {
 //     var proj = gaasClient.project(projectId);
 //     proj.getInfo({}, function(err, proj2) {
 //       if(err) { done(err); return; }
@@ -276,13 +330,42 @@ describe('gaasClient.bundle()', function() {
         done();
     },done);
   });
+  var subGaasClient;
+  it('test gaasClient(myuser).ping', function(done) {
+    expect(myUserInfo).to.be.ok; // otherwise, user creation failed
+    
+    subGaasClient = gaas.getClient({credentials: myUserInfo});
+    subGaasClient.ping({}, done);
+  });
+  it('test gaasClient(myuser).createBundle('+projectId3+')', function(done) {
+    expect(myUserInfo).to.be.ok; // otherwise, user creation failed
+    
+    subGaasClient = gaas.getClient({credentials: myUserInfo});
+    var proj = subGaasClient.bundle({id:projectId3});
+    
+    proj.create({sourceLanguage: 'en', targetLanguages: ['es','qru']})
+    .then(function(resp) {
+      // I promise to fix this.
+      proj.uploadResourceStrings({languageId: 'en', strings: {
+        hello: 'Hello, World!'
+      }})
+      .then(function(resp){ done(); }, done);
+    }, done);
+  });
+/*
+    var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
+    proj.create({sourceLanguage: 'en', targetLanguages: ['es','qru']})
+    .then(function(resp) {
+      done();
+    }, done);*/
 });
 
-
-
-
 // unless !delete?
-describe('gaasClient.delete instance ' + instanceName, function() {
+if(NO_DELETE) {
+  describe('gaasClient.delete', function() {
+    it('(skipped- NO_DELETE)');
+  });
+} else describe('gaasClient.delete instance ' + instanceName, function() {
   it('should let us delete our instance', function(done) {
     gaasClient.ready(done, function(err, done, apis) {
       if(err) { done(err); return; }

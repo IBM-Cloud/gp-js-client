@@ -22,13 +22,13 @@ window.onload = function() {
     
     gaasClient = gaas.getClient(sampleconfig);
     
-    gaasProject = gaasClient.project(sampleconfig.project);
+    gaasProject = gaasClient.bundle(sampleconfig.bundleId);
     
-    gaasProject.getResourceData({languageID:'es'}, function cb(err, resp) {
+    gaasProject.getResourceStrings({languageID:'qru'}, function cb(err, resp) {
         /*
             'resp' looks like this (on success):
               var resp = {
-                  data: {
+                  resourceStrings: {
                           "hello":  "Hello world", 
                           ...  (all other k/v pairs )
                   },
@@ -38,9 +38,13 @@ window.onload = function() {
               For this sample we are only printing out one, 'hello'
         */
         if(err) { 
-            $('#hello').text('ERR: ' + err.toString());
+            if(err.responseJSON) {
+                $('#hello').text('ERR: ' + err.responseJSON.message);
+            } else {
+                $('#hello').text('ERR: ' + err);
+            }
         } else {
-            $('#hello').text(resp.data.hello);
+            $('#hello').text(resp.hello); // extract key 'hello' 
         }
     });
 };
