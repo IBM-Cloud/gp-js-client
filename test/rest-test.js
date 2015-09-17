@@ -19,7 +19,6 @@
 // load locals
 require('./lib/localsetenv').applyLocal();
 
-
 var projectId = process.env.GAAS_PROJECT  || 'MyLLProject'+Math.random();
 var projectId2 = process.env.GAAS_PROJECT2 || 'MyOtherLLProject'+Math.random();
 var CLEANSLATE = false; // CLEANSLATE: assume no other projects
@@ -27,7 +26,7 @@ var VERBOSE = process.env.GAAS_VERBOSE || false;
 if(process.env.NO_REST_TEST) { console.log('skip: ' + module.filename); return; }
 
 if(VERBOSE) console.dir(module.filename);
-
+var http = require('http');
 var minispin = require('./lib/minispin');
 var randHex = require('./lib/randhex');
 var expect = require('chai').expect;
@@ -39,6 +38,8 @@ var gaas = require('../index.js');
 var gaasTest = require('./lib/gaas-test');
 var opts = {credentials: gaasTest.getCredentials()};
 var gaasClient = gaas.getClient(opts);
+var basicOpts = {basicAuth: true, credentials: gaasTest.getCredentials()};
+var basicClient = gaas.getClient(basicOpts);
 var url = opts.credentials.uri;
 
 var sourceLoc = "en-US";
@@ -57,6 +58,11 @@ var http_or_https = require('./lib/byscheme')(url);
 
 var instanceName = randHex()+'-'+randHex();
 
+var httpUrl = undefined;
+
+if ( url.indexOf('https:') === 0 ) {
+  httpUrl = 'http:' + url.substring(6);
+}
 
 describe('Check URL ' + url+'/', function() {
     var urlToPing = url+'/';
@@ -101,6 +107,10 @@ describe('Check URL ' + url+'/', function() {
                       })
     .on('error', done);
     });
+    var swaggerUrl = url+'/rest/swagger.json';
+    gaasTest.expectCORSURL(swaggerUrl); // expect CORS here
+    var otherUrl = url+'/';
+    gaasTest.expectNonCORSURL(otherUrl); // don't expect CORS here
     it('Should let me fetch version page', function(done) {
     http_or_https.get(url+'/version',
         function(res) {
@@ -116,6 +126,46 @@ describe('Check URL ' + url+'/', function() {
         })
     .on('error', done);
     });
+});
+
+describe('Check HTTP URL', function() {
+  if(!httpUrl) {
+    it('was not HTTPS - test skipped');
+  } else {
+    var urlToPing = httpUrl + '/rest/swagger.json';
+    it('Should not let me access ' + urlToPing, function(done) {
+      http.get(urlToPing,
+        function(res) {
+          expect(res.statusCode).to.equal(403);
+          res.on('data', function(d) {
+            try {
+              var err = JSON.parse(d);
+              expect(err.status).to.equal("ERROR");
+              expect(err.message).to.contain('crypt');
+              expect(err.message).to.contain('HTTP');
+              done();
+            } catch(e) {
+              done(e);
+            }
+          });
+          res.on('error', function(d) {
+            done(d);
+          });
+        }).on('error', done); // transport err
+    });
+  } 
+});
+
+describe('BASIC auth as administrator', function() {
+  it('should NOT become ready', function(done) {
+    basicClient.ready(null, function(err) {
+      if(err) {
+        done();
+      } else {
+        done(Error('Expected Basic Authentication to not be allowed.'))
+      }
+    });
+  });
 });
 
 describe('client.apis', function() {

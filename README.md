@@ -159,6 +159,8 @@ API reference
     * [bundle.delete()](#module_gaas..Bundle#delete)
     * [bundle.create(body)](#module_gaas..Bundle#create)
     * [bundle.getInfo(opts)](#module_gaas..Bundle#getInfo)
+    * [bundle.getResourceStrings()](#module_gaas..Bundle#getResourceStrings)
+    * [bundle.uploadResourceStrings(opts)](#module_gaas..Bundle#uploadResourceStrings)
 
 <a name="module_gaas..Client"></a>
 ##class: gaas~Client
@@ -269,6 +271,8 @@ Create a bundle access object.This doesn’t create the bundle itself, just a l
   * [bundle.delete()](#module_gaas..Bundle#delete)
   * [bundle.create(body)](#module_gaas..Bundle#create)
   * [bundle.getInfo(opts)](#module_gaas..Bundle#getInfo)
+  * [bundle.getResourceStrings()](#module_gaas..Bundle#getResourceStrings)
+  * [bundle.uploadResourceStrings(opts)](#module_gaas..Bundle#uploadResourceStrings)
 
 <a name="new_module_gaas..Bundle"></a>
 ###new gaas~Bundle(gaas, props)
@@ -303,6 +307,21 @@ Get bundle info
   - translationStatusMetricsByLanguage `Boolean` - Optional field (false by default)  
   - reviewStatusMetricsByLanguage `Boolean` - Optional field (false by default)  
   - partnerStatusMetricsByLanguage `Boolean` - Optional field (false by default)  
+
+**Returns**: `Promise`  
+<a name="module_gaas..Bundle#getResourceStrings"></a>
+###bundle.getResourceStrings()
+Todo
+
+<a name="module_gaas..Bundle#uploadResourceStrings"></a>
+###bundle.uploadResourceStrings(opts)
+Upload some resource strings
+
+**Params**
+
+- opts `Object` - options  
+  - languageId `String` - language to update  
+  - strings `Object` - strings to update  
 
 **Returns**: `Promise`  
 

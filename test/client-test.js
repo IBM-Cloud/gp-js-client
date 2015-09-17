@@ -24,6 +24,7 @@ require('./lib/localsetenv').applyLocal();
 var minispin = require('./lib/minispin');
 var randHex = require('./lib/randhex');
 var gaasTest = require ('./lib/gaas-test');
+var GaasHmac = require('../lib/gaas-hmac');
 
 if(process.env.NO_CLIENT_TEST) { console.log('skip: ' + module.filename); return; }
 var gaas = require('../index.js'); // required, below
@@ -244,7 +245,8 @@ describe('gaasClient.bundle()', function() {
   });
 
   var myUserInfo = undefined;  
-  it('should let me create a user', function(done) {
+  var readerInfo = undefined;
+  it('should let me create an admin user', function(done) {
     gaasClient.createUser({serviceInstance: instanceName,
                            type:'ADMINISTRATOR',
                            bundles: ['*'],
@@ -281,8 +283,7 @@ describe('gaasClient.bundle()', function() {
       expect(data.user.password).to.be.ok;
       expect(data.user.displayName).to.equal('Reador');
       // Dump sample config data.
-      if(VERBOSE || NO_DELETE) console.dir({
-        sampleconfig: {
+      readerInfo = {
           credentials: {
             instanceId: instanceName,
             userId: data.user.id,
@@ -290,7 +291,9 @@ describe('gaasClient.bundle()', function() {
             uri: opts.credentials.uri
           },
           bundleId: projectId3
-        }
+        };
+      if(VERBOSE || NO_DELETE) console.dir({
+        sampleconfig: readerInfo
       },{color:true});
       done();
     },done);
@@ -358,6 +361,49 @@ describe('gaasClient.bundle()', function() {
     .then(function(resp) {
       done();
     }, done);*/
+/*
+readerInfo{
+          credentials: {
+            instanceId: instanceName,
+            userId: data.user.id,
+            password: data.user.password,
+            uri: opts.credentials.uri
+          },
+          bundleId: projectId3
+        }
+         */
+        
+  // check READER
+  var myAuth = function(opts){opts.auth = (readerInfo.credentials.userId+':'+readerInfo.credentials.password); };
+
+  gaasTest.expectCORSURL(opts.credentials.uri + '/rest/swagger.json',
+                      myAuth, ' reader');
+
+  // hardcoded URL here..
+  gaasTest.expectCORSURL(opts.credentials.uri + '/rest/' + instanceName + '/v2/bundles/'+projectId3+'/qru',
+                      myAuth, ' reader');
+
+  // // this should authenticate but NOT be CORS
+
+
+  // check ADMINISTRATOR
+  var myAdminAuth = function(opts) {
+    if(!opts.headers) opts.headers = {};
+    // this is a callback because the user info isn't defined until AFTER the inner 'it()' is called. 
+    var myHmac = new GaasHmac('gaashmac',myUserInfo.userId,
+              myUserInfo.password);
+    myHmac.apply(opts);
+  };
+
+  gaasTest.expectCORSURL(opts.credentials.uri + '/rest/swagger.json',
+                      myAdminAuth, ' admin');
+
+  // hardcoded URL here..
+  gaasTest.expectCORSURL(opts.credentials.uri + '/rest/' + instanceName + '/v2/bundles/'+projectId3+'/qru',
+                      myAdminAuth, ' admin');
+                      
+  gaasTest.expectNonCORSURL(opts.credentials.uri + '/rest/' + instanceName + '/v2/bundles',
+                      myAdminAuth, ' admin');                        
 });
 
 // unless !delete?
