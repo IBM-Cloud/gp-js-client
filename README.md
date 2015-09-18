@@ -40,10 +40,29 @@ Much of the text will need to be updated.
     GAAS_ADMIN_PASSWORD=......
     # the server URL to use. Adjust to taste. Include trailing slash.
     GAAS_API_URL=http://localhost:9080/translate
-
+    
 * install [node](http://nodejs.org)
 * `npm install`
 * `npm test`
+
+
+# OTHER CONFIG OPTIONS
+
+    # set this if AUTHENTICATION_SCHEME=BASIC is set on the server
+    # assumes that Admins can login with HTTP Basic
+    AUTHENTICATION_SCHEME=BASIC
+    
+    # set this to skip the 'REST' test
+    NO_REST_TEST=true
+    
+    # set this to skip the 'Client' test
+    NO_CLIENT_TEST=true
+    
+    # set this for extra verbosity
+    GAAS_VERBOSE=true
+    
+    # set this to NOT delete the bundle in the client test at the end
+    NO_DELETE=true
 
 -----
 

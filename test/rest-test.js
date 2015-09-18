@@ -157,7 +157,11 @@ describe('Check HTTP URL', function() {
 });
 
 describe('BASIC auth as administrator', function() {
-  it('should NOT become ready', function(done) {
+  if(process.env.AUTHENTICATION_SCHEME === 'BASIC') {
+    it('is allowed, AUTHENTICATION_SCHEME=BASIC', function(done) {
+      basicClient.ready(null, done);
+    });
+  } else it('should NOT become ready', function(done) {
     basicClient.ready(null, function(err) {
       if(err) {
         done();
