@@ -40,6 +40,8 @@ var securityHeaders = module.exports.securityHeaders = {
   'x-xss-protection': '1',
   'x-frame-options': 'deny',
   'frame-options': 'deny',
+  'cache-control': 'no-store, no-cache=\"set-cookie\"',
+  'pragma': 'no-cache',
 };
 
 function expectSecurityHeaders(res) {
