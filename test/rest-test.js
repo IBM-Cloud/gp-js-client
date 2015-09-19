@@ -98,6 +98,9 @@ describe('Check URL ' + url+'/', function() {
       };
       process.nextTick(loopy); // first run
     });
+    
+    // verify security headers on landing page
+    gaasTest.verifySecurityHeaders(url+'/');
 
     it('Should let me fetch landing page', function(done) {
     http_or_https.get(url+'/', // trailing slash to avoid 302
