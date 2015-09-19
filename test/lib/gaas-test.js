@@ -49,7 +49,7 @@ function expectSecurityHeaders(res) {
 }
 
 var hstsHeaders = module.exports.hstsHeaders = {
-  'strict-transport-security': 'max-age: 3600'
+  'strict-transport-security': 'max-age=3600'
 };
 
 function expectHSTS(res) {
