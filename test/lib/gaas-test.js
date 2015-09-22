@@ -39,7 +39,7 @@ var cspStrict = {
 };
 
 var cspSwagger = {
-  'content-security-policy': "default-src 'none'; script-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline';"
+  'content-security-policy': "default-src 'none'; script-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self';"
 };
 
 var securityHeaders = module.exports.securityHeaders = {
@@ -232,7 +232,8 @@ module.exports.verifySecurityHeadersSwagger = function verifySecurityHeadersSwag
           if(swaggerUrl.toString().indexOf('https:')===0) {
             expectHSTS(res);
           }
-          expectResSecuritySwagger(res, done);
+          expectSecurityHeadersSwagger(res);
+          done();
         })
         .on('error', done);
       oreq.end();

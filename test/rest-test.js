@@ -112,6 +112,8 @@ describe('Check URL ' + url+'/', function() {
     });
     var swaggerUrl = url+'/rest/swagger.json';
     gaasTest.expectCORSURL(swaggerUrl); // expect CORS here
+    var swaggerUIUrl = url+'/swagger/';
+    gaasTest.verifySecurityHeadersSwagger(swaggerUIUrl); // expect CORS here
     var otherUrl = url+'/';
     gaasTest.expectNonCORSURL(otherUrl); // don't expect CORS here
     it('Should let me fetch version page', function(done) {
