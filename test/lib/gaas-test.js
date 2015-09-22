@@ -34,8 +34,15 @@ function expectHeaders(res, h) {
   });
 }
 
+var cspStrict = {
+  'content-security-policy': "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; font-src 'self';"
+};
+
+var cspSwagger = {
+  'content-security-policy': "default-src 'none'; script-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline';"
+};
+
 var securityHeaders = module.exports.securityHeaders = {
-  'content-security-policy': "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';",
   'x-content-type-options': 'nosniff',
   'x-xss-protection': '1',
   'x-frame-options': 'deny',
@@ -46,6 +53,13 @@ var securityHeaders = module.exports.securityHeaders = {
 
 function expectSecurityHeaders(res) {
   expectHeaders(res, securityHeaders);
+  expectHeaders(res, cspStrict);
+}
+
+
+function expectSecurityHeadersSwagger(res) {
+  expectHeaders(res, securityHeaders);
+  expectHeaders(res, cspSwagger);
 }
 
 var hstsHeaders = module.exports.hstsHeaders = {
@@ -191,6 +205,34 @@ module.exports.verifySecurityHeaders = function verifySecurityHeaders(swaggerUrl
             expectHSTS(res);
           }
           expectResSecurity(res, done);
+        })
+        .on('error', done);
+      oreq.end();
+    });
+  });
+}
+
+/**
+ * verify this URL has the 'typical' security headers
+ * @param swaggerUrl - url to check
+ * @param auth - function(options) -  apply auth to options obj. Can set 'options.auth' or headers, etc
+ */
+module.exports.verifySecurityHeadersSwagger = function verifySecurityHeadersSwagger(swaggerUrl, auth, str) {
+  if(!str) str = '';
+  ['GET'].forEach(function (method) {
+    var optionsGet = optionsCreate(swaggerUrl, method);
+    it('Should NOT let me ' + method + ' ' + swaggerUrl + ' w/ CORS' + (auth?' (auth) ':' ') + str, function (done) {
+      var oreq = byscheme(swaggerUrl).get(optionsAuth(optionsGet, auth),
+        function (res) {
+          if(method === 'GET') {
+            expect(res.statusCode).to.equal(200);
+          } else if(method === 'OPTIONS') {
+            expect(res.statusCode).to.equal(200);
+          }
+          if(swaggerUrl.toString().indexOf('https:')===0) {
+            expectHSTS(res);
+          }
+          expectResSecuritySwagger(res, done);
         })
         .on('error', done);
       oreq.end();
