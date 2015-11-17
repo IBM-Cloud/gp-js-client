@@ -1,4 +1,4 @@
-JavaScript Client for Globalization Pipeline
+JavaScript Client for Globalization Pipeline on IBM Bluemix
 ===
 <!--
 /*	
@@ -24,12 +24,47 @@ JavaScript Client for Globalization Pipeline
  
 -->
 
-# WORK IN PROGRESS
+# What is this?
 
-This code is being updated for the "Beta" (v2 API) version.
-It will very shortly not function with the "Experimental" (v1 API) version.
+This is a JavaScript SDK for the
+[Globalization Pipeline](https://www.ng.bluemix.net/docs/#services/Globalization/index.html#globalization)
+Bluemix service. The Globalization Pipeline service makes it easy for you to provide your global customers
+with Bluemix applications translated into the languages in which they work.
 
-Much of the text will need to be updated.
+The SDK currently supports Node.js, and also provides some sample code showing
+how to use the service from jQuery.
+
+# jQuery Sample
+
+There is an experimental sample showing use of the use in the `jquery-sample` directory.
+See the [Readme](./jquery-sample/README.md) in that directory for more details.
+
+# Node.js
+
+The remainder of this document explains how to use the Globalization service
+with the [Node.js](http://nodejs.org) client.
+
+For a working Bluemix application sample,
+see [g11n-pipeline-nodejs-hello](https://github.com/IBM-Bluemix/g11n-pipeline-nodejs-hello).
+
+## Quickstart - Bluemix
+
+Add `g11n-pipeline` to your project, as well as `cfenv`.
+
+    npm install --save g11n-pipeline cfenv
+
+Load the gaas client object as follows (using [cfenv](https://www.npmjs.com/package/cfenv) ).
+
+    var appEnv = require('cfenv').getAppEnv();
+    var gaasClient = require('gaas').getClient({
+       credentials:  appEnv.getService(/IBM Globalization.*/).credentials
+    });
+
+
+//// gp-* OR g11n-pipeline*
+
+
+# BELOW IS WORK IN PROGRESS
 
 # HOW TO USE THIS TO TEST GAAS-SERVICES (rest)
 
@@ -64,76 +99,6 @@ Much of the text will need to be updated.
     # set this to NOT delete the bundle in the client test at the end
     NO_DELETE=true
 
------
-
-# What is this?
-
-This is a JavaScript client and sample code for the
-IBM [Globalization Pipeline](https://www.ng.bluemix.net/docs/#services/Globalization/index.html#globalization)
-Bluemix service. The Globalization Pipeline service makes it easy for you to provide your global customers
-with Bluemix applications translated into the languages in which they work.
-
-Using the client code in this project, either from node.js, or from any browser using the jQuery sample
-code, your application can dynamically request translations of your application content
-from the IBM Globalization service.
-
-# jQuery Sample
-
-There is an experimental sample showing use of the use in the `jquery-sample` directory.
-See the [Readme](./jquery-sample/README.md) in that directory for more details.
-
-# Node.js
-
-The rest of this document explains how to use the Globalization service
-with the [node.js](http://nodejs.org) client.
-
-For a working Bluemix application sample,
-see [gaas-nodejs-hello](https://github.com/IBM-Bluemix/gaas-nodejs-hello).
-
-## Quickstart - Bluemix
-
-Add `gaas` to your project, as well as `cfenv`.
-
-    npm install --save gaas cfenv
-
-Load the gaas client object as follows (using [cfenv](https://www.npmjs.com/package/cfenv) ).
-Note that `/IBM Globalization.*/` will match any service *named* with something starting
-with `IBM Globalization` (the default). 
-
-    var appEnv = require('cfenv').getAppEnv();
-    var gaasClient = require('gaas').getClient({
-       credentials:  appEnv.getService(/IBM Globalization.*/).credentials
-    });
-
-Or, if you are providing credentials manually:
-
-    var gaasClient = require('gaas').getClient({
-     credentials: {
-        uri: 'https://<GaaS server URL>',
-        api_key: '<your API key>'
-     }
-    });
-
-Note that `api_key` can be from the bound service credentials, or else a "reader key" as
-visible in the IBM Globalization service dashboard.
-
-To load the key "hello" in Spanish from the project named "world" you can use this code:
-
-    var myProject = gaasClient.project('world');
-
-    myProject.getResourceEntry({
-          resKey: 'hello',
-          languageID: 'es'
-        },
-        function(err, entry) {
-            if(err) {
-                console.error(err); return;
-            } else if(entry.value) {
-                console.log( entry.value ); // Print out the value!
-            } else {
-                console.error('Status is ' + entry.translationStatus); // may be: 'inProgress' or 'failed'
-            }
-    });
 
 
 API convention
