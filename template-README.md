@@ -78,7 +78,9 @@ APIs take a callback and use this general pattern:
 These APIs may be promisified easily using a library such as `Q`'s
 [nfcall](http://documentup.com/kriskowal/q/#adapting-node):
 
-    return Q.nfcall(gpClient.function, /*params…*/);
+    return Q.ninvoke(bundle, "delete", {});
+    return Q.ninvoke(gpClient, "getBundleList", {});
+
 
 All language identifiers are [IETF BCP47](http://tools.ietf.org/html/bcp47) codes.
 

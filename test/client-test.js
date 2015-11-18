@@ -21,6 +21,8 @@ require('./lib/localsetenv').applyLocal();
 
 //return true;
 
+var Q = require('q');
+
 var minispin = require('./lib/minispin');
 var randHex = require('./lib/randhex');
 var gaasTest = require ('./lib/gaas-test');
@@ -55,6 +57,7 @@ var qruData = {
 };
 
 var opts = {
+  credentials: gaasTest.getCredentials()
 };
 
 function resterr(o) {
@@ -67,13 +70,9 @@ function resterr(o) {
     return Error(o.message);
   }
 }
-
-describe('Setting up GaaS test', function() {
-
-  opts.credentials = gaasTest.getCredentials();
+var urlEnv = gaas._normalizeUrl(opts.credentials.url); // use GaaS normalize
   
-  var urlEnv = opts.credentials.url;
-
+describe('Setting up GaaS test', function() {
   if ( urlEnv ) {
     var urlToPing = urlEnv+'/';
     if(VERBOSE) console.dir(urlToPing);
@@ -110,15 +109,15 @@ describe('Setting up GaaS test', function() {
     });
     
     
-    it('requiring gaas with GAAS_API_KEY and GAAS_API_URL', function(done) {
+    it('requiring gaas with options', function(done) {
       gaasClient = gaas.getClient(opts);
       //if(VERBOSE) console.log( gaasClient._getUrl() );
       done();
     });
   } else {
     // no creds
-    it('should have had GAAS_API_KEY and GAAS_API_URL',  function(done) {
-      done('please set GAAS_API_KEY and GAAS_API_URL');
+    it('should have had GAAS_USER_ID/GAAS_PASSWORD/GAAS_INSTANCE_ID and GAAS_API_URL',  function(done) {
+      done('please set GAAS_USER_ID/GAAS_PASSWORD/GAAS_INSTANCE_ID and GAAS_API_URL');
     });
   }
 });
@@ -156,13 +155,16 @@ describe('gaasClient.supportedTranslations()', function() {
   });
 });
 
-var instanceName = randHex()+'-'+randHex();
+var randInstanceName = randHex()+'-'+randHex()
+var instanceName = (opts.credentials.instanceId) // given
+                    || randInstanceName;  // random
 
 
 describe('gaasClient.setup instance ' + instanceName, function() {
-  it('should’t let me query the bundle list yet', function(done) {
+  it('should’t let me query the bundle list yet for ' + randInstanceName, function(done) {
+    // ADMIN:  instance should not exist.
     try {
-      gaasClient.getBundleList({serviceInstance: instanceName}, function(err, data) {
+      gaasClient.getBundleList({serviceInstance: randInstanceName}, function(err, data) {
         if(err) {
           if(VERBOSE) console.dir(err);
           done();
@@ -175,7 +177,7 @@ describe('gaasClient.setup instance ' + instanceName, function() {
       done(); // expect
     }
   });
-  it('should let us create our instance', function(done) {
+  if(opts.credentials.isAdmin) it('should let us create our instance', function(done) {
     gaasClient.ready(done, function(err, done, apis) {
       if(err) { done(err); return; }
       apis.admin.createServiceInstance({
@@ -204,18 +206,24 @@ describe('gaasClient.setup instance ' + instanceName, function() {
       if(err) {
         done(err);
       } else {
-        expect(data.length).to.equal(0);
+        if(opts.credentials.isAdmin) {
+          expect(data.length).to.equal(0);
+        } else {
+          if(VERBOSE && data.length >0) {
+            console.log('Note: You have pre existing instances. That’s probably ok, though best to run this test with a clean slate.');
+          }
+        }
         done();
       }
     });
   });
-  it('should now let me query the bundle list (promises!)', function(done) {
-    gaasClient.getBundleList({serviceInstance: instanceName})
-    .then(function(data) {
-        expect(data.length).to.equal(0);
-        done();
-    },done);
-  });
+  // it('should now let me query the bundle list (promises!)', function(done) {
+  //   gaasClient.getBundleList({serviceInstance: instanceName})
+  //   .then(function(data) {
+  //       expect(data.length).to.equal(0);
+  //       done();
+  //   },done);
+  // });
 });
 
 describe('gaasClient.bundle()', function() {
@@ -231,13 +239,13 @@ describe('gaasClient.bundle()', function() {
   });
   it('Should let us create', function(done) {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
-    proj.create({sourceLanguage: 'en', targetLanguages: ['es','qru']})
+    Q.ninvoke(proj, "create", {sourceLanguage: 'en', targetLanguages: ['es','qru']})
     .then(function(resp) {
       done();
     }, done);
   });
   it('should now let me query the bundle list (promises!)', function(done) {
-    gaasClient.getBundleList({serviceInstance: instanceName})
+    Q.ninvoke(gaasClient, "getBundleList", {serviceInstance: instanceName})
     .then(function(data) {
         expect(data).to.contain(projectId);
         done();
@@ -247,7 +255,7 @@ describe('gaasClient.bundle()', function() {
   var myUserInfo = undefined;  
   var readerInfo = undefined;
   it('should let me create an admin user', function(done) {
-    gaasClient.createUser({serviceInstance: instanceName,
+    Q.ninvoke(gaasClient, "createUser", {serviceInstance: instanceName,
                            type:'ADMINISTRATOR',
                            bundles: ['*'],
                            displayName: 'Somebody'})
@@ -270,7 +278,7 @@ describe('gaasClient.bundle()', function() {
     },done);
   });
   it('should let me create a reader user', function(done) {
-    gaasClient.createUser({serviceInstance: instanceName,
+    Q.ninvoke(gaasClient, "createUser", {serviceInstance: instanceName,
                            type:'READER',
                            bundles: [projectId3],
                            displayName: 'Reador'})
@@ -288,7 +296,7 @@ describe('gaasClient.bundle()', function() {
             instanceId: instanceName,
             userId: data.user.id,
             password: data.user.password,
-            uri: opts.credentials.uri
+            url: opts.credentials.url
           },
           bundleId: projectId3
         };
@@ -321,13 +329,21 @@ describe('gaasClient.bundle()', function() {
 //   });
   it('Should let us delete', function(done) {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
-    proj.delete()
+    Q.ninvoke(proj, "delete", {})
     .then(function(resp) {
       done();
     }, done);
   });
   it('should now let me query the bundle list again (promises!)', function(done) {
-    gaasClient.getBundleList({serviceInstance: instanceName})
+    Q.ninvoke(gaasClient, "getBundleList", {serviceInstance: instanceName})
+    .then(function(data) {
+        expect(data).to.not.contain(projectId);
+        done();
+    },done);
+  });
+  if(!opts.credentials.isAdmin)  
+     it('should now let me query the bundle list again without an instance id (promises!)', function(done) {
+    Q.ninvoke(gaasClient, "getBundleList", {})
     .then(function(data) {
         expect(data).to.not.contain(projectId);
         done();
@@ -346,7 +362,7 @@ describe('gaasClient.bundle()', function() {
     subGaasClient = gaas.getClient({credentials: myUserInfo});
     var proj = subGaasClient.bundle({id:projectId3});
     
-    proj.create({sourceLanguage: 'en', targetLanguages: ['es','qru']})
+    Q.ninvoke(proj, "create", {sourceLanguage: 'en', targetLanguages: ['es','qru']})
     .then(function(resp) {
       // I promise to fix this.
       proj.uploadResourceStrings({languageId: 'en', strings: {
@@ -376,34 +392,50 @@ readerInfo{
   // check READER
   var myAuth = function(opts){opts.auth = (readerInfo.credentials.userId+':'+readerInfo.credentials.password); };
 
-  gaasTest.expectCORSURL(opts.credentials.uri + '/rest/swagger.json',
-                      myAuth, ' reader');
-
-  // hardcoded URL here..
-  gaasTest.expectCORSURL(opts.credentials.uri + '/rest/' + instanceName + '/v2/bundles/'+projectId3+'/qru',
-                      myAuth, ' reader');
-
-  // // this should authenticate but NOT be CORS
-
-
-  // check ADMINISTRATOR
-  var myAdminAuth = function(opts) {
-    if(!opts.headers) opts.headers = {};
-    // this is a callback because the user info isn't defined until AFTER the inner 'it()' is called. 
-    var myHmac = new GaasHmac('gaashmac',myUserInfo.userId,
-              myUserInfo.password);
-    myHmac.apply(opts);
-  };
-
-  gaasTest.expectCORSURL(opts.credentials.uri + '/rest/swagger.json',
-                      myAdminAuth, ' admin');
-
-  // hardcoded URL here..
-  gaasTest.expectCORSURL(opts.credentials.uri + '/rest/' + instanceName + '/v2/bundles/'+projectId3+'/qru',
-                      myAdminAuth, ' admin');
-                      
-  gaasTest.expectNonCORSURL(opts.credentials.uri + '/rest/' + instanceName + '/v2/bundles',
-                      myAdminAuth, ' admin');                        
+  if(opts.credentials.isAdmin) {
+  
+    gaasTest.expectCORSURL(urlEnv + '/rest/swagger.json',
+                        myAuth, ' reader');
+  
+    // hardcoded URL here..
+    gaasTest.expectCORSURL(urlEnv + '/rest/' + instanceName + '/v2/bundles/'+projectId3+'/qru',
+                        myAuth, ' reader');
+  
+    // // this should authenticate but NOT be CORS
+  
+  
+    // check ADMINISTRATOR
+    var myAdminAuth = function(opts) {
+      if(!opts.headers) opts.headers = {};
+      // this is a callback because the user info isn't defined until AFTER the inner 'it()' is called. 
+      var myHmac = new GaasHmac('gaashmac',myUserInfo.userId,
+                myUserInfo.password);
+      myHmac.apply(opts);
+    };
+  
+    gaasTest.expectCORSURL(urlEnv + '/rest/swagger.json',
+                        myAdminAuth, ' admin');
+  
+    // hardcoded URL here..
+    gaasTest.expectCORSURL(urlEnv + '/rest/' + instanceName + '/v2/bundles/'+projectId3+'/qru',
+                        myAdminAuth, ' admin');
+                        
+    gaasTest.expectNonCORSURL(urlEnv + '/rest/' + instanceName + '/v2/bundles',
+                        myAdminAuth, ' admin');    
+  } else {
+    it('no CORS tests, not admin.');
+  }
+  
+  if(!NO_DELETE && !opts.credentials.isAdmin) {
+    describe('Clean-up time for ' + instanceName, function() {
+      it('should let me delete an admin user', function(done) {
+        gaasClient.deleteUser({userId: myUserInfo.userId}, done)
+      });
+      it('should let me delete a reader user', function(done) {
+        gaasClient.deleteUser({userId: readerInfo.credentials.userId}, done)
+      });
+    });
+  }
 });
 
 // unless !delete?
@@ -411,25 +443,27 @@ if(NO_DELETE) {
   describe('gaasClient.delete', function() {
     it('(skipped- NO_DELETE)');
   });
-} else describe('gaasClient.delete instance ' + instanceName, function() {
-  it('should let us delete our instance', function(done) {
-    gaasClient.ready(done, function(err, done, apis) {
-      if(err) { done(err); return; }
-      apis.admin.deleteServiceInstance({
-        serviceInstanceId: instanceName
-      }, function onSuccess(o) {
-        if(o.obj.status !== 'SUCCESS') {
-          done(Error(o.obj.status));
-        } else {
-          //console.dir(o.obj, {depth: null, color: true});
-          done();
-        }
-      }, function onFailure(o) {
-        done(Error('Failed: ' + o));
+} else if(opts.credentials.isAdmin) {
+    describe('gaasClient.delete instance ' + instanceName, function() {
+    it('should let us delete our instance', function(done) {
+      gaasClient.ready(done, function(err, done, apis) {
+        if(err) { done(err); return; }
+        apis.admin.deleteServiceInstance({
+          serviceInstanceId: instanceName
+        }, function onSuccess(o) {
+          if(o.obj.status !== 'SUCCESS') {
+            done(Error(o.obj.status));
+          } else {
+            //console.dir(o.obj, {depth: null, color: true});
+            done();
+          }
+        }, function onFailure(o) {
+          done(Error('Failed: ' + o));
+        });
       });
     });
   });
-});
+}
 //  END NO_DELETE
 
 // end of client-test

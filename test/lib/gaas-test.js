@@ -29,7 +29,8 @@ module.exports.getCredentials = function getCredentials() {
     url: process.env.GAAS_API_URL || null,
     instanceId: process.env.GAAS_INSTANCE_ID || "n/a",
     userId: process.env.GAAS_ADMIN_ID || process.env.GAAS_USER_ID || null,
-    password: process.env.GAAS_ADMIN_PASSWORD || process.env.GAAS_USER_PASSWORD || null
+    password: process.env.GAAS_ADMIN_PASSWORD || process.env.GAAS_PASSWORD || null,
+    isAdmin: process.env.GAAS_ADMIN_ID?true:false
   };
 };
 
