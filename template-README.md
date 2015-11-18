@@ -57,7 +57,7 @@ Load the gaas client object as follows (using [cfenv](https://www.npmjs.com/pack
 
     var appEnv = require('cfenv').getAppEnv();
     var gpClient = require('g11n-pipeline').getClient({
-       credentials:  appEnv.getService(/(gp-|g11n-pipeline).*/).credentials
+       appEnv: appEnv
     });
 
 ## Testing

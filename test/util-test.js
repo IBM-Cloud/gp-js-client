@@ -58,58 +58,6 @@ describe('test/lib/randhex', function() {
 });
 
 
-describe('lib/shimcb', function() {
-	var shimcb = require('../lib/shimcb.js');
-	/**
-	 * Add two numbers. Error if the sum = 0.
-	 * @param {Number} x - addend
-	 * @param {Number} y - addend
-	 * @param {Function} cb - optional, if not present, promise is returned
-	 * @return {Promise} - if cb is falsy
-	 */
-	function myFunc(x, y, cb) {
-		var deferred = shimcb.wrap(cb);
-		process.nextTick(function() {
-			var z = (x + y);
-			if(z == 0) {
-				deferred.reject(Error('Result was zero'));
-			} else {
-				deferred.resolve(z);
-			}
-		});
-		return shimcb.return(deferred);
-	}
-	
-	it('Should verify that the shimcb works with a cb function', function(done) {
-		expect(myFunc(2,4, function(err, z) {
-			expect(err).to.be.null;
-			expect(z).to.equal(6);
-			done();
-		})).to.be.true;
-	});
-	it('Should verify that the shimcb works with a promise', function(done) {
-		myFunc(2,4)
-		.then(function(z){
-			expect(z).to.equal(6);
-			done();
-		}, done);
-	});
-	it('Should verify that the shimcb can fail with a cb function', function(done) {
-		expect(myFunc(0, 0, function(err, z) {
-			expect(err).to.not.be.null;
-			done();
-		})).to.be.true;
-	});
-	it('Should verify that the shimcb can fail with a promise', function(done) {
-		myFunc(0, 0)
-		.then(function(z){
-			done(Error('Should have failed (reject)'));
-		}, function(e) {
-			done();
-		});
-	});
-});
-
 describe('lib/utils', function() {
 	var utils = require('../lib/utils.js');
 	

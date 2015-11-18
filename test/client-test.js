@@ -72,7 +72,7 @@ describe('Setting up GaaS test', function() {
 
   opts.credentials = gaasTest.getCredentials();
   
-  var urlEnv = opts.credentials.uri;
+  var urlEnv = opts.credentials.url;
 
   if ( urlEnv ) {
     var urlToPing = urlEnv+'/';
@@ -264,7 +264,7 @@ describe('gaasClient.bundle()', function() {
         instanceId: instanceName,
         userId: data.user.id,
         password: data.user.password,
-        uri: opts.credentials.uri
+        url: opts.credentials.url
       };
       done();
     },done);

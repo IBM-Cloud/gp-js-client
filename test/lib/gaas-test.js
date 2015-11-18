@@ -16,11 +16,17 @@
 var url = require('url');
 var expect = require('chai').expect;
 var byscheme = require('./byscheme');
+var optional = require('optional');
+
+var localCredentials = optional('./local-credentials.json');
 
 module.exports.getCredentials = function getCredentials() {
+ if (localCredentials && localCredentials.credentials) {
+   return localCredentials.credentials;
+ }  
  return {
     // api_key: apiKeyEnv,
-    uri: process.env.GAAS_API_URL || null,
+    url: process.env.GAAS_API_URL || null,
     instanceId: process.env.GAAS_INSTANCE_ID || "n/a",
     userId: process.env.GAAS_ADMIN_ID || process.env.GAAS_USER_ID || null,
     password: process.env.GAAS_ADMIN_PASSWORD || process.env.GAAS_USER_PASSWORD || null
