@@ -1,6 +1,3 @@
 node_modules
 npm-debug.log
-local-setenv.sh
-local-test.properties
-local-swagger.json
-local-credentials.json
+/local-*
