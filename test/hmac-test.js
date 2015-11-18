@@ -23,7 +23,7 @@ var expect = require('chai').expect;
 
 var assert = require('assert');
 
-var GaasHmac = require('../lib/gaas-hmac.js');
+var GaasHmac = require('../lib/gp-hmac.js');
 
 // test of various utilities
 

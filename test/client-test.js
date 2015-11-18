@@ -24,7 +24,7 @@ require('./lib/localsetenv').applyLocal();
 var minispin = require('./lib/minispin');
 var randHex = require('./lib/randhex');
 var gaasTest = require ('./lib/gaas-test');
-var GaasHmac = require('../lib/gaas-hmac');
+var GaasHmac = require('../lib/gp-hmac');
 
 if(process.env.NO_CLIENT_TEST) { console.log('skip: ' + module.filename); return; }
 var gaas = require('../index.js'); // required, below
