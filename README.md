@@ -84,93 +84,93 @@ All language identifiers are [IETF BCP47](http://tools.ietf.org/html/bcp47) code
 
 API reference
 ===
-<a name="module_gaas"></a>
-## gaas
+<a name="module_g11n-pipeline"></a>
+## g11n-pipeline
 **Author:** Steven R. Loomis  
 
-* [gaas](#module_gaas)
-  * [~Client](#module_gaas..Client)
-    * [.ping](#module_gaas..Client+ping) ⇒ <code>Promise</code>
-    * [.apis()](#module_gaas..Client+apis) ⇒ <code>Object</code>
-    * [.ready(arg, cb)](#module_gaas..Client+ready)
-    * [.restCall(fn, restArg)](#module_gaas..Client+restCall) ⇒ <code>Promise</code>
-    * [.getServiceInstance(opts)](#module_gaas..Client+getServiceInstance) ⇒ <code>String</code>
-    * [.getBundleList(opts, cb)](#module_gaas..Client+getBundleList) ⇒ <code>Promise</code>
-    * [.supportedTranslations(args, cb)](#module_gaas..Client+supportedTranslations) ⇒ <code>Promise</code>
-    * [.getServiceInfo(args, cb)](#module_gaas..Client+getServiceInfo) ⇒ <code>Promise</code>
-    * [.bundle(opts)](#module_gaas..Client+bundle) ⇒ <code>Bundle</code>
-  * [~Bundle](#module_gaas..Bundle)
-    * [new Bundle(gaas, props)](#new_module_gaas..Bundle_new)
-    * [.getInfoFields](#module_gaas..Bundle+getInfoFields)
-    * [.delete()](#module_gaas..Bundle+delete) ⇒ <code>Promise</code>
-    * [.create(body)](#module_gaas..Bundle+create) ⇒ <code>Promise</code>
-    * [.getInfo(opts)](#module_gaas..Bundle+getInfo) ⇒ <code>Promise</code>
-    * [.getResourceStrings()](#module_gaas..Bundle+getResourceStrings)
-    * [.uploadResourceStrings(opts)](#module_gaas..Bundle+uploadResourceStrings) ⇒ <code>Promise</code>
+* [g11n-pipeline](#module_g11n-pipeline)
+  * [~Client](#module_g11n-pipeline..Client)
+    * [.ping](#module_g11n-pipeline..Client+ping) ⇒ <code>Promise</code>
+    * [.apis()](#module_g11n-pipeline..Client+apis) ⇒ <code>Object</code>
+    * [.ready(arg, cb)](#module_g11n-pipeline..Client+ready)
+    * [.restCall(fn, restArg)](#module_g11n-pipeline..Client+restCall) ⇒ <code>Promise</code>
+    * [.getServiceInstance(opts)](#module_g11n-pipeline..Client+getServiceInstance) ⇒ <code>String</code>
+    * [.getBundleList(opts, cb)](#module_g11n-pipeline..Client+getBundleList) ⇒ <code>Promise</code>
+    * [.supportedTranslations(args, cb)](#module_g11n-pipeline..Client+supportedTranslations) ⇒ <code>Promise</code>
+    * [.getServiceInfo(args, cb)](#module_g11n-pipeline..Client+getServiceInfo) ⇒ <code>Promise</code>
+    * [.bundle(opts)](#module_g11n-pipeline..Client+bundle) ⇒ <code>Bundle</code>
+  * [~Bundle](#module_g11n-pipeline..Bundle)
+    * [new Bundle(gaas, props)](#new_module_g11n-pipeline..Bundle_new)
+    * [.getInfoFields](#module_g11n-pipeline..Bundle+getInfoFields)
+    * [.delete()](#module_g11n-pipeline..Bundle+delete) ⇒ <code>Promise</code>
+    * [.create(body)](#module_g11n-pipeline..Bundle+create) ⇒ <code>Promise</code>
+    * [.getInfo(opts)](#module_g11n-pipeline..Bundle+getInfo) ⇒ <code>Promise</code>
+    * [.getResourceStrings()](#module_g11n-pipeline..Bundle+getResourceStrings)
+    * [.uploadResourceStrings(opts)](#module_g11n-pipeline..Bundle+uploadResourceStrings) ⇒ <code>Promise</code>
 
-<a name="module_gaas..Client"></a>
-### gaas~Client
-**Kind**: inner class of <code>[gaas](#module_gaas)</code>  
+<a name="module_g11n-pipeline..Client"></a>
+### g11n-pipeline~Client
+**Kind**: inner class of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
 
-* [~Client](#module_gaas..Client)
-  * [.ping](#module_gaas..Client+ping) ⇒ <code>Promise</code>
-  * [.apis()](#module_gaas..Client+apis) ⇒ <code>Object</code>
-  * [.ready(arg, cb)](#module_gaas..Client+ready)
-  * [.restCall(fn, restArg)](#module_gaas..Client+restCall) ⇒ <code>Promise</code>
-  * [.getServiceInstance(opts)](#module_gaas..Client+getServiceInstance) ⇒ <code>String</code>
-  * [.getBundleList(opts, cb)](#module_gaas..Client+getBundleList) ⇒ <code>Promise</code>
-  * [.supportedTranslations(args, cb)](#module_gaas..Client+supportedTranslations) ⇒ <code>Promise</code>
-  * [.getServiceInfo(args, cb)](#module_gaas..Client+getServiceInfo) ⇒ <code>Promise</code>
-  * [.bundle(opts)](#module_gaas..Client+bundle) ⇒ <code>Bundle</code>
+* [~Client](#module_g11n-pipeline..Client)
+  * [.ping](#module_g11n-pipeline..Client+ping) ⇒ <code>Promise</code>
+  * [.apis()](#module_g11n-pipeline..Client+apis) ⇒ <code>Object</code>
+  * [.ready(arg, cb)](#module_g11n-pipeline..Client+ready)
+  * [.restCall(fn, restArg)](#module_g11n-pipeline..Client+restCall) ⇒ <code>Promise</code>
+  * [.getServiceInstance(opts)](#module_g11n-pipeline..Client+getServiceInstance) ⇒ <code>String</code>
+  * [.getBundleList(opts, cb)](#module_g11n-pipeline..Client+getBundleList) ⇒ <code>Promise</code>
+  * [.supportedTranslations(args, cb)](#module_g11n-pipeline..Client+supportedTranslations) ⇒ <code>Promise</code>
+  * [.getServiceInfo(args, cb)](#module_g11n-pipeline..Client+getServiceInfo) ⇒ <code>Promise</code>
+  * [.bundle(opts)](#module_g11n-pipeline..Client+bundle) ⇒ <code>Bundle</code>
 
-<a name="module_gaas..Client+ping"></a>
+<a name="module_g11n-pipeline..Client+ping"></a>
 #### client.ping ⇒ <code>Promise</code>
 Do we have access to the server?
 
-**Kind**: instance property of <code>[Client](#module_gaas..Client)</code>  
+**Kind**: instance property of <code>[Client](#module_g11n-pipeline..Client)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | args | <code>object</code> | (ignored) |
 | cb | <code>callback</code> | if omitted, a promise is returned |
 
-<a name="module_gaas..Client+apis"></a>
+<a name="module_g11n-pipeline..Client+apis"></a>
 #### client.apis() ⇒ <code>Object</code>
 Get the REST APIs. Use with ready()
 
-**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
+**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
 **Returns**: <code>Object</code> - - Map of API operations, otherwise null if not ready.  
-<a name="module_gaas..Client+ready"></a>
+<a name="module_g11n-pipeline..Client+ready"></a>
 #### client.ready(arg, cb)
 Verify that the client is ready before proceeding.
 
-**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
+**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | arg | <code>Object</code> | arg option, passed to cb on success or failure |
 | cb | <code>function</code> | callback (called with (null, arg, apis) on success |
 
-<a name="module_gaas..Client+restCall"></a>
+<a name="module_g11n-pipeline..Client+restCall"></a>
 #### client.restCall(fn, restArg) ⇒ <code>Promise</code>
 Call a REST function. Verify the results.
 cb is called with the same context.
 
 This is designed for internal implementation.
 
-**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
+**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | fn | <code>Array</code> | function name, such as ["admin","getServiceInfo"] |
 | restArg | <code>Object</code> | args to the REST call |
 
-<a name="module_gaas..Client+getServiceInstance"></a>
+<a name="module_g11n-pipeline..Client+getServiceInstance"></a>
 #### client.getServiceInstance(opts) ⇒ <code>String</code>
 Get the serviceInstance id from a parameter or from the 
 client's default.
 
-**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
+**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
 **Returns**: <code>String</code> - - the service instance ID if found  
 
 | Param | Type | Description |
@@ -178,11 +178,11 @@ client's default.
 | opts | <code>Object</code> | can be a map, or falsy. |
 | opts.serviceInstance | <code>String</code> | the service instance |
 
-<a name="module_gaas..Client+getBundleList"></a>
+<a name="module_g11n-pipeline..Client+getBundleList"></a>
 #### client.getBundleList(opts, cb) ⇒ <code>Promise</code>
 Get a list of the bundles
 
-**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
+**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -190,54 +190,54 @@ Get a list of the bundles
 | opts.serviceInstance | <code>String</code> | optional service instance |
 | cb | <code>basicCallback</code> | callback. If omitted, a promise is returned. |
 
-<a name="module_gaas..Client+supportedTranslations"></a>
+<a name="module_g11n-pipeline..Client+supportedTranslations"></a>
 #### client.supportedTranslations(args, cb) ⇒ <code>Promise</code>
 This function returns a map from source language(s) to target language(s).
 
-**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
+**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | args | <code>object</code> |  |
 | cb | <code>supportedTranslationsCallback</code> | If omitted, a promise is returned. |
 
-<a name="module_gaas..Client+getServiceInfo"></a>
+<a name="module_g11n-pipeline..Client+getServiceInfo"></a>
 #### client.getServiceInfo(args, cb) ⇒ <code>Promise</code>
 Get information about this service
 
-**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
+**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | args | <code>object</code> |  |
 | cb | <code>basicCallback</code> | If omitted, a promise is returned. |
 
-<a name="module_gaas..Client+bundle"></a>
+<a name="module_g11n-pipeline..Client+bundle"></a>
 #### client.bundle(opts) ⇒ <code>Bundle</code>
 Create a bundle access object.
 This doesn’t create the bundle itself, just a lightweight
 accessor object.
 
-**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
+**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | String (id) or map {id: bundleId, serviceInstance: serviceInstanceId} |
 
-<a name="module_gaas..Bundle"></a>
-### gaas~Bundle
-**Kind**: inner class of <code>[gaas](#module_gaas)</code>  
+<a name="module_g11n-pipeline..Bundle"></a>
+### g11n-pipeline~Bundle
+**Kind**: inner class of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
 
-* [~Bundle](#module_gaas..Bundle)
-  * [new Bundle(gaas, props)](#new_module_gaas..Bundle_new)
-  * [.getInfoFields](#module_gaas..Bundle+getInfoFields)
-  * [.delete()](#module_gaas..Bundle+delete) ⇒ <code>Promise</code>
-  * [.create(body)](#module_gaas..Bundle+create) ⇒ <code>Promise</code>
-  * [.getInfo(opts)](#module_gaas..Bundle+getInfo) ⇒ <code>Promise</code>
-  * [.getResourceStrings()](#module_gaas..Bundle+getResourceStrings)
-  * [.uploadResourceStrings(opts)](#module_gaas..Bundle+uploadResourceStrings) ⇒ <code>Promise</code>
+* [~Bundle](#module_g11n-pipeline..Bundle)
+  * [new Bundle(gaas, props)](#new_module_g11n-pipeline..Bundle_new)
+  * [.getInfoFields](#module_g11n-pipeline..Bundle+getInfoFields)
+  * [.delete()](#module_g11n-pipeline..Bundle+delete) ⇒ <code>Promise</code>
+  * [.create(body)](#module_g11n-pipeline..Bundle+create) ⇒ <code>Promise</code>
+  * [.getInfo(opts)](#module_g11n-pipeline..Bundle+getInfo) ⇒ <code>Promise</code>
+  * [.getResourceStrings()](#module_g11n-pipeline..Bundle+getResourceStrings)
+  * [.uploadResourceStrings(opts)](#module_g11n-pipeline..Bundle+uploadResourceStrings) ⇒ <code>Promise</code>
 
-<a name="new_module_gaas..Bundle_new"></a>
+<a name="new_module_g11n-pipeline..Bundle_new"></a>
 #### new Bundle(gaas, props)
 
 | Param | Type | Description |
@@ -245,27 +245,27 @@ accessor object.
 | gaas | <code>Client</code> | parent GaaS client object |
 | props | <code>Object</code> | properties to inherit |
 
-<a name="module_gaas..Bundle+getInfoFields"></a>
+<a name="module_g11n-pipeline..Bundle+getInfoFields"></a>
 #### bundle.getInfoFields
 List of fields usable with Bundle.getInfo()
 
-**Kind**: instance property of <code>[Bundle](#module_gaas..Bundle)</code>  
-<a name="module_gaas..Bundle+delete"></a>
+**Kind**: instance property of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
+<a name="module_g11n-pipeline..Bundle+delete"></a>
 #### bundle.delete() ⇒ <code>Promise</code>
-**Kind**: instance method of <code>[Bundle](#module_gaas..Bundle)</code>  
-<a name="module_gaas..Bundle+create"></a>
+**Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
+<a name="module_g11n-pipeline..Bundle+create"></a>
 #### bundle.create(body) ⇒ <code>Promise</code>
-**Kind**: instance method of <code>[Bundle](#module_gaas..Bundle)</code>  
+**Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | body | <code>Object</code> | see API docs |
 
-<a name="module_gaas..Bundle+getInfo"></a>
+<a name="module_g11n-pipeline..Bundle+getInfo"></a>
 #### bundle.getInfo(opts) ⇒ <code>Promise</code>
 Get bundle info
 
-**Kind**: instance method of <code>[Bundle](#module_gaas..Bundle)</code>  
+**Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -275,16 +275,16 @@ Get bundle info
 | opts.reviewStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
 | opts.partnerStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
 
-<a name="module_gaas..Bundle+getResourceStrings"></a>
+<a name="module_g11n-pipeline..Bundle+getResourceStrings"></a>
 #### bundle.getResourceStrings()
 Todo
 
-**Kind**: instance method of <code>[Bundle](#module_gaas..Bundle)</code>  
-<a name="module_gaas..Bundle+uploadResourceStrings"></a>
+**Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
+<a name="module_g11n-pipeline..Bundle+uploadResourceStrings"></a>
 #### bundle.uploadResourceStrings(opts) ⇒ <code>Promise</code>
 Upload some resource strings
 
-**Kind**: instance method of <code>[Bundle](#module_gaas..Bundle)</code>  
+**Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -299,7 +299,8 @@ Upload some resource strings
 Support
 ===
 You can post questions about using this service in the developerWorks Answers site
-using the tag "[Globalization](https://developer.ibm.com/answers/topics/globalization/)".
+using the tag "[globalization-pipeline](https://developer.ibm.com/answers/topics/globalization-pipeline
+/)".
 
 LICENSE
 ===

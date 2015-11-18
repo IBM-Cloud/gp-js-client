@@ -1,7 +1,7 @@
 {
-  "name": "gaas",
-  "version": "2.0.1-PREBETA",
-  "description": "JavaScript (Node.js, etc) client for Globalization-as-a-Service",
+  "name": "g11n-pipeline",
+  "version": "1.0.0-PREALPHA",
+  "description": "JavaScript (Node.js, etc) client for Bluemix Globalization Pipeline",
   "main": "index.js",
   "scripts": {
     "test": "mocha",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/IBM-Bluemix/gaas-js-client"
+    "url": "https://github.com/IBM-Bluemix/gp-js-client"
   },
   "keywords": [
     "l10n"
@@ -18,12 +18,12 @@
   "Author": "Steven R. Loomis <srloomis@us.ibm.com>",
   "license": "Apache-2.0",
   "devDependencies": {
+    "q": "^1.4.1",
     "chai": "^3.2.0",
     "jsdoc-to-markdown": "^1.1.1",
     "mocha": "^2.2.5"
   },
   "dependencies": {
-    "q": "^1.4.1",
     "swagger-client": "^2.1.3"
   }
 }
