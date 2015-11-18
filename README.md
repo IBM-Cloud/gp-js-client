@@ -16,6 +16,12 @@ JavaScript Client for Globalization Pipeline on IBM Bluemix
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
+ 
+ DON’T EDIT README.md <<<<<<<<<<<< <<<<<<<<<<<<<<<<<<<<<<< THIS MEANS YOU!
+ 
+    Edit `template-README.md` and run `npm run docs`
+ 
 -->
 
 # What is this?
@@ -39,7 +45,7 @@ The remainder of this document explains how to use the Globalization service
 with the [Node.js](http://nodejs.org) client.
 
 For a working Bluemix application sample,
-see [gaas-nodejs-hello](https://github.com/IBM-Bluemix/gaas-nodejs-hello).
+see [g11n-pipeline-nodejs-hello](https://github.com/IBM-Bluemix/g11n-pipeline-nodejs-hello).
 
 ## Quickstart - Bluemix
 
@@ -48,301 +54,243 @@ Add `g11n-pipeline` to your project, as well as `cfenv`.
     npm install --save g11n-pipeline cfenv
 
 Load the gaas client object as follows (using [cfenv](https://www.npmjs.com/package/cfenv) ).
-Note that `/IBM Globalization.*/` will match any service *named* with something starting
-with `IBM Globalization` (the default). 
 
     var appEnv = require('cfenv').getAppEnv();
-    var gaasClient = require('gaas').getClient({
-       credentials:  appEnv.getService(/IBM Globalization.*/).credentials
+    var gpClient = require('g11n-pipeline').getClient({
+       credentials:  appEnv.getService(/(gp-|g11n-pipeline).*/).credentials
     });
 
-Or, if you are providing credentials manually:
+## Testing
 
-    var gaasClient = require('gaas').getClient({
-     credentials: {
-        uri: 'https://<GaaS server URL>',
-        api_key: '<your API key>'
-     }
-    });
-
-Note that `api_key` can be from the bound service credentials, or else a "reader key" as
-visible in the IBM Globalization service dashboard.
-
-To load the key "hello" in Spanish from the project named "world" you can use this code:
-
-    var myProject = gaasClient.project('world');
-
-    myProject.getResourceEntry({
-          resKey: 'hello',
-          languageID: 'es'
-        },
-        function(err, entry) {
-            if(err) {
-                console.error(err); return;
-            } else if(entry.value) {
-                console.log( entry.value ); // Print out the value!
-            } else {
-                console.error('Status is ' + entry.translationStatus); // may be: 'inProgress' or 'failed'
-            }
-    });
-
+See [TESTING.md](TESTING.md)
 
 API convention
 ==
 
-APIs which take a callback use this pattern:
+APIs take a callback and use this general pattern:
 
-`obj.function( { /*params*/ } ,  function callback(err, ...))`
+    gpClient.function( { /*params*/ } ,  function callback(err, ...))
 
 * params: an object containing input parameters, if needed.
 * `err`: if truthy, indicates an error has occured.
-* `...`: other parameters (optionally)
+* `...`: other parameters (optional)
+
+These APIs may be promisified easily using a library such as `Q`'s
+[nfcall](http://documentup.com/kriskowal/q/#adapting-node):
+
+    return Q.nfcall(gpClient.function, /*params…*/);
 
 All language identifiers are [IETF BCP47](http://tools.ietf.org/html/bcp47) codes.
 
 API reference
 ===
 <a name="module_gaas"></a>
-#gaas
-**Author**: Steven R. Loomis  
-**Members**
+## gaas
+**Author:** Steven R. Loomis  
 
 * [gaas](#module_gaas)
-  * [callback: gaas~basicCallback](#module_gaas..basicCallback)
-  * [callback: gaas~supportedTranslationsCallback](#module_gaas..supportedTranslationsCallback)
-  * [callback: gaas~projectInfoCallback](#module_gaas..projectInfoCallback)
-  * [callback: gaas~resourceCallback](#module_gaas..resourceCallback)
-  * [callback: gaas~resourceCallback](#module_gaas..resourceCallback)
-  * [callback: gaas~listCallback](#module_gaas..listCallback)
-  * [class: gaas~Client](#module_gaas..Client)
-    * [client.supportedTranslations(args, cb)](#module_gaas..Client#supportedTranslations)
-    * [client.ping(args, cb)](#module_gaas..Client#ping)
-    * [client.project(projectID, props)](#module_gaas..Client#project)
-    * [client.listProjects(args)](#module_gaas..Client#listProjects)
-  * [class: gaas~ResourceData](#module_gaas..ResourceData)
-  * [class: gaas~ResourceEntry](#module_gaas..ResourceEntry)
-  * [class: gaas~Project](#module_gaas..Project)
-    * [project.create(args, cb)](#module_gaas..Project#create)
-    * [project.remove(args, cb)](#module_gaas..Project#remove)
-    * [project.getInfo()](#module_gaas..Project#getInfo)
-    * [project.addTargetLanguages(args, cb)](#module_gaas..Project#addTargetLanguages)
-    * [project.getResourceData(args, cb)](#module_gaas..Project#getResourceData)
-    * [project.updateResourceData(args, cb)](#module_gaas..Project#updateResourceData)
-    * [project.deleteLanguage(args, cb)](#module_gaas..Project#deleteLanguage)
-    * [project.getResourceEntry(args, cb)](#module_gaas..Project#getResourceEntry)
+  * [~Client](#module_gaas..Client)
+    * [.ping](#module_gaas..Client+ping) ⇒ <code>Promise</code>
+    * [.apis()](#module_gaas..Client+apis) ⇒ <code>Object</code>
+    * [.ready(arg, cb)](#module_gaas..Client+ready)
+    * [.restCall(fn, restArg)](#module_gaas..Client+restCall) ⇒ <code>Promise</code>
+    * [.getServiceInstance(opts)](#module_gaas..Client+getServiceInstance) ⇒ <code>String</code>
+    * [.getBundleList(opts, cb)](#module_gaas..Client+getBundleList) ⇒ <code>Promise</code>
+    * [.supportedTranslations(args, cb)](#module_gaas..Client+supportedTranslations) ⇒ <code>Promise</code>
+    * [.getServiceInfo(args, cb)](#module_gaas..Client+getServiceInfo) ⇒ <code>Promise</code>
+    * [.bundle(opts)](#module_gaas..Client+bundle) ⇒ <code>Bundle</code>
+  * [~Bundle](#module_gaas..Bundle)
+    * [new Bundle(gaas, props)](#new_module_gaas..Bundle_new)
+    * [.getInfoFields](#module_gaas..Bundle+getInfoFields)
+    * [.delete()](#module_gaas..Bundle+delete) ⇒ <code>Promise</code>
+    * [.create(body)](#module_gaas..Bundle+create) ⇒ <code>Promise</code>
+    * [.getInfo(opts)](#module_gaas..Bundle+getInfo) ⇒ <code>Promise</code>
+    * [.getResourceStrings()](#module_gaas..Bundle+getResourceStrings)
+    * [.uploadResourceStrings(opts)](#module_gaas..Bundle+uploadResourceStrings) ⇒ <code>Promise</code>
 
-<a name="module_gaas..basicCallback"></a>
-##callback: gaas~basicCallback
-**Params**
-
-- err `object` - if(err), error  
-- result `object` - any result data  
-
-**Scope**: inner typedef of [gaas](#module_gaas)  
-**Type**: `function`  
-<a name="module_gaas..supportedTranslationsCallback"></a>
-##callback: gaas~supportedTranslationsCallback
-**Params**
-
-- err `object` - if(err), error  
-- translations `Object.<string, Array.<string>>` - source : [target...] languages  
-
-**Scope**: inner typedef of [gaas](#module_gaas)  
-**Type**: `function`  
-<a name="module_gaas..projectInfoCallback"></a>
-##callback: gaas~projectInfoCallback
-**Params**
-
-- err `object` - if(err), error  
-- project `Project` - the updated Project object with the latest data  
-
-**Scope**: inner typedef of [gaas](#module_gaas)  
-**Type**: `function`  
-<a name="module_gaas..resourceCallback"></a>
-##callback: gaas~resourceCallback
-**Params**
-
-- err `object` - if(err), error  
-- resource `ResourceData` - the specified resource data  
-  - data `Object.<string, string>` - the translated key/value pairs  
-  - inProgress `Array.<string>` - a list of the keys that are still in progress  
-  - failed `Array.<string>` - a list of the keys that failed to translate  
-
-**Scope**: inner typedef of [gaas](#module_gaas)  
-**Type**: `function`  
-<a name="module_gaas..resourceCallback"></a>
-##callback: gaas~resourceCallback
-**Params**
-
-- err `object` - if(err), error  
-- entry `ResourceEntry` - the specified resource entry  
-  - value `string` - the entry's string value  
-  - translationStatus `string` - the entry's translation status  
-
-**Scope**: inner typedef of [gaas](#module_gaas)  
-**Type**: `function`  
-<a name="module_gaas..listCallback"></a>
-##callback: gaas~listCallback
-**Params**
-
-- err `object` - if(err), error  
-- projects `Object.<string, Project>` - map from project ID to project object  
-
-**Scope**: inner typedef of [gaas](#module_gaas)  
-**Type**: `function`  
 <a name="module_gaas..Client"></a>
-##class: gaas~Client
-**Members**
+### gaas~Client
+**Kind**: inner class of <code>[gaas](#module_gaas)</code>  
 
-* [class: gaas~Client](#module_gaas..Client)
-  * [client.supportedTranslations(args, cb)](#module_gaas..Client#supportedTranslations)
-  * [client.ping(args, cb)](#module_gaas..Client#ping)
-  * [client.project(projectID, props)](#module_gaas..Client#project)
-  * [client.listProjects(args)](#module_gaas..Client#listProjects)
+* [~Client](#module_gaas..Client)
+  * [.ping](#module_gaas..Client+ping) ⇒ <code>Promise</code>
+  * [.apis()](#module_gaas..Client+apis) ⇒ <code>Object</code>
+  * [.ready(arg, cb)](#module_gaas..Client+ready)
+  * [.restCall(fn, restArg)](#module_gaas..Client+restCall) ⇒ <code>Promise</code>
+  * [.getServiceInstance(opts)](#module_gaas..Client+getServiceInstance) ⇒ <code>String</code>
+  * [.getBundleList(opts, cb)](#module_gaas..Client+getBundleList) ⇒ <code>Promise</code>
+  * [.supportedTranslations(args, cb)](#module_gaas..Client+supportedTranslations) ⇒ <code>Promise</code>
+  * [.getServiceInfo(args, cb)](#module_gaas..Client+getServiceInfo) ⇒ <code>Promise</code>
+  * [.bundle(opts)](#module_gaas..Client+bundle) ⇒ <code>Bundle</code>
 
-<a name="module_gaas..Client#supportedTranslations"></a>
-###client.supportedTranslations(args, cb)
-This function returns a map from source language(s) to target language(s).
-
-**Params**
-
-- args `object`  
-- cb `supportedTranslationsCallback`  
-
-<a name="module_gaas..Client#ping"></a>
-###client.ping(args, cb)
+<a name="module_gaas..Client+ping"></a>
+#### client.ping ⇒ <code>Promise</code>
 Do we have access to the server?
 
-**Params**
+**Kind**: instance property of <code>[Client](#module_gaas..Client)</code>  
 
-- args `object` - (ignored)  
-- cb `callback`  
+| Param | Type | Description |
+| --- | --- | --- |
+| args | <code>object</code> | (ignored) |
+| cb | <code>callback</code> | if omitted, a promise is returned |
 
-<a name="module_gaas..Client#project"></a>
-###client.project(projectID, props)
-Create a new Project object for further access.
-Note that this function doesn't create the project or fetch any information.
+<a name="module_gaas..Client+apis"></a>
+#### client.apis() ⇒ <code>Object</code>
+Get the REST APIs. Use with ready()
 
-**Params**
+**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
+**Returns**: <code>Object</code> - - Map of API operations, otherwise null if not ready.  
+<a name="module_gaas..Client+ready"></a>
+#### client.ready(arg, cb)
+Verify that the client is ready before proceeding.
 
-- projectID `string`  
-- props `object` - optional properties to set on the object  
+**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
 
-<a name="module_gaas..Client#listProjects"></a>
-###client.listProjects(args)
-List the projects available
+| Param | Type | Description |
+| --- | --- | --- |
+| arg | <code>Object</code> | arg option, passed to cb on success or failure |
+| cb | <code>function</code> | callback (called with (null, arg, apis) on success |
 
-**Params**
+<a name="module_gaas..Client+restCall"></a>
+#### client.restCall(fn, restArg) ⇒ <code>Promise</code>
+Call a REST function. Verify the results.
+cb is called with the same context.
 
-- args `object` - currently not used  
+This is designed for internal implementation.
 
-<a name="module_gaas..ResourceData"></a>
-##class: gaas~ResourceData
-**Members**
+**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
 
-* [class: gaas~ResourceData](#module_gaas..ResourceData)
+| Param | Type | Description |
+| --- | --- | --- |
+| fn | <code>Array</code> | function name, such as ["admin","getServiceInfo"] |
+| restArg | <code>Object</code> | args to the REST call |
 
-<a name="module_gaas..ResourceEntry"></a>
-##class: gaas~ResourceEntry
-**Members**
+<a name="module_gaas..Client+getServiceInstance"></a>
+#### client.getServiceInstance(opts) ⇒ <code>String</code>
+Get the serviceInstance id from a parameter or from the 
+client's default.
 
-* [class: gaas~ResourceEntry](#module_gaas..ResourceEntry)
+**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
+**Returns**: <code>String</code> - - the service instance ID if found  
 
-<a name="module_gaas..Project"></a>
-##class: gaas~Project
-**Members**
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | can be a map, or falsy. |
+| opts.serviceInstance | <code>String</code> | the service instance |
 
-* [class: gaas~Project](#module_gaas..Project)
-  * [project.create(args, cb)](#module_gaas..Project#create)
-  * [project.remove(args, cb)](#module_gaas..Project#remove)
-  * [project.getInfo()](#module_gaas..Project#getInfo)
-  * [project.addTargetLanguages(args, cb)](#module_gaas..Project#addTargetLanguages)
-  * [project.getResourceData(args, cb)](#module_gaas..Project#getResourceData)
-  * [project.updateResourceData(args, cb)](#module_gaas..Project#updateResourceData)
-  * [project.deleteLanguage(args, cb)](#module_gaas..Project#deleteLanguage)
-  * [project.getResourceEntry(args, cb)](#module_gaas..Project#getResourceEntry)
+<a name="module_gaas..Client+getBundleList"></a>
+#### client.getBundleList(opts, cb) ⇒ <code>Promise</code>
+Get a list of the bundles
 
-<a name="module_gaas..Project#create"></a>
-###project.create(args, cb)
-Create the project
+**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
 
-**Params**
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> |  |
+| opts.serviceInstance | <code>String</code> | optional service instance |
+| cb | <code>basicCallback</code> | callback. If omitted, a promise is returned. |
 
-- args `object` - parameters for creation  
-  - sourceLanguage `string` - BCP47 langauge tag of translation source  
-  - targetLanguages `Array.<string>` - optional array of BCP47 language tags for translation target  
-- cb `basicCallback`  
+<a name="module_gaas..Client+supportedTranslations"></a>
+#### client.supportedTranslations(args, cb) ⇒ <code>Promise</code>
+This function returns a map from source language(s) to target language(s).
 
-<a name="module_gaas..Project#remove"></a>
-###project.remove(args, cb)
-Remove the project
+**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
 
-**Params**
+| Param | Type | Description |
+| --- | --- | --- |
+| args | <code>object</code> |  |
+| cb | <code>supportedTranslationsCallback</code> | If omitted, a promise is returned. |
 
-- args `object` - (ignored)  
-- cb `basicCallback`  
+<a name="module_gaas..Client+getServiceInfo"></a>
+#### client.getServiceInfo(args, cb) ⇒ <code>Promise</code>
+Get information about this service
 
-<a name="module_gaas..Project#getInfo"></a>
-###project.getInfo()
-Fetch project information. The callback is given
-a new Project object with updated information.
+**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
 
-<a name="module_gaas..Project#addTargetLanguages"></a>
-###project.addTargetLanguages(args, cb)
-Add target languages to the project
+| Param | Type | Description |
+| --- | --- | --- |
+| args | <code>object</code> |  |
+| cb | <code>basicCallback</code> | If omitted, a promise is returned. |
 
-**Params**
+<a name="module_gaas..Client+bundle"></a>
+#### client.bundle(opts) ⇒ <code>Bundle</code>
+Create a bundle access object.
+This doesn’t create the bundle itself, just a lightweight
+accessor object.
 
-- args `object`  
-  - newTargetLanguages `Array.<string>` - array of 1 or more languages to add  
-- cb `basicCallback`  
+**Kind**: instance method of <code>[Client](#module_gaas..Client)</code>  
 
-<a name="module_gaas..Project#getResourceData"></a>
-###project.getResourceData(args, cb)
-Get resourcedata for one language
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | String (id) or map {id: bundleId, serviceInstance: serviceInstanceId} |
 
-**Params**
+<a name="module_gaas..Bundle"></a>
+### gaas~Bundle
+**Kind**: inner class of <code>[gaas](#module_gaas)</code>  
 
-- args `object`  
-  - languageID `string` - which BCP47 language to get info for  
-- cb `resourceCallback`  
+* [~Bundle](#module_gaas..Bundle)
+  * [new Bundle(gaas, props)](#new_module_gaas..Bundle_new)
+  * [.getInfoFields](#module_gaas..Bundle+getInfoFields)
+  * [.delete()](#module_gaas..Bundle+delete) ⇒ <code>Promise</code>
+  * [.create(body)](#module_gaas..Bundle+create) ⇒ <code>Promise</code>
+  * [.getInfo(opts)](#module_gaas..Bundle+getInfo) ⇒ <code>Promise</code>
+  * [.getResourceStrings()](#module_gaas..Bundle+getResourceStrings)
+  * [.uploadResourceStrings(opts)](#module_gaas..Bundle+uploadResourceStrings) ⇒ <code>Promise</code>
 
-<a name="module_gaas..Project#updateResourceData"></a>
-###project.updateResourceData(args, cb)
-Update resource data and/or retry translation
+<a name="new_module_gaas..Bundle_new"></a>
+#### new Bundle(gaas, props)
 
-**Params**
+| Param | Type | Description |
+| --- | --- | --- |
+| gaas | <code>Client</code> | parent GaaS client object |
+| props | <code>Object</code> | properties to inherit |
 
-- args `object`  
-  - languageID `string` - language to update (source or target)  
-  - body `object`  
-  - replace `boolean` - if true, replace ALL resource keys instead of just appending  
-  - retry `boolean` - if true, retry translation  
-  - data `Object.<string, string>` - key/value pairs to update  
-- cb `basicCallback`  
+<a name="module_gaas..Bundle+getInfoFields"></a>
+#### bundle.getInfoFields
+List of fields usable with Bundle.getInfo()
 
-<a name="module_gaas..Project#deleteLanguage"></a>
-###project.deleteLanguage(args, cb)
-Delete a target language from the project.
-(Source languages cannot be deleted)
+**Kind**: instance property of <code>[Bundle](#module_gaas..Bundle)</code>  
+<a name="module_gaas..Bundle+delete"></a>
+#### bundle.delete() ⇒ <code>Promise</code>
+**Kind**: instance method of <code>[Bundle](#module_gaas..Bundle)</code>  
+<a name="module_gaas..Bundle+create"></a>
+#### bundle.create(body) ⇒ <code>Promise</code>
+**Kind**: instance method of <code>[Bundle](#module_gaas..Bundle)</code>  
 
-**Params**
+| Param | Type | Description |
+| --- | --- | --- |
+| body | <code>Object</code> | see API docs |
 
-- args `object`  
-  - languageID `string` - BCP47 id of language to delete  
-- cb `basicCallback`  
+<a name="module_gaas..Bundle+getInfo"></a>
+#### bundle.getInfo(opts) ⇒ <code>Promise</code>
+Get bundle info
 
-<a name="module_gaas..Project#getResourceEntry"></a>
-###project.getResourceEntry(args, cb)
-Get a single ResourceEntry
+**Kind**: instance method of <code>[Bundle](#module_gaas..Bundle)</code>  
 
-**Params**
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Options object |
+| opts.fields | <code>String</code> | Comma separated list of fields |
+| opts.translationStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
+| opts.reviewStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
+| opts.partnerStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
 
-- args `object`  
-  - languageID `string` - langauge name to fetch  
-  - resKey `string` - key name to fetch  
-- cb `entryCallback`  
+<a name="module_gaas..Bundle+getResourceStrings"></a>
+#### bundle.getResourceStrings()
+Todo
 
+**Kind**: instance method of <code>[Bundle](#module_gaas..Bundle)</code>  
+<a name="module_gaas..Bundle+uploadResourceStrings"></a>
+#### bundle.uploadResourceStrings(opts) ⇒ <code>Promise</code>
+Upload some resource strings
+
+**Kind**: instance method of <code>[Bundle](#module_gaas..Bundle)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | options |
+| opts.languageId | <code>String</code> | language to update |
+| opts.strings | <code>Object</code> | strings to update |
 
 
 *docs autogenerated via [jsdoc2md](https://github.com/jsdoc2md/jsdoc-to-markdown)*

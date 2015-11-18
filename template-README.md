@@ -56,66 +56,29 @@ Add `g11n-pipeline` to your project, as well as `cfenv`.
 Load the gaas client object as follows (using [cfenv](https://www.npmjs.com/package/cfenv) ).
 
     var appEnv = require('cfenv').getAppEnv();
-    var gaasClient = require('gaas').getClient({
-       credentials:  appEnv.getService(/IBM Globalization.*/).credentials
+    var gpClient = require('g11n-pipeline').getClient({
+       credentials:  appEnv.getService(/(gp-|g11n-pipeline).*/).credentials
     });
 
+## Testing
 
-//// gp-* OR g11n-pipeline*
-
-
-# BELOW IS WORK IN PROGRESS
-
-# HOW TO USE THIS TO TEST GAAS-SERVICES (rest)
-
-* create `local-test.properties` with the following lines:
-
-    # Set the admin ID and password as appropriate
-    GAAS_ADMIN_ID=......
-    GAAS_ADMIN_PASSWORD=......
-    # the server URL to use. Adjust to taste. Include trailing slash.
-    GAAS_API_URL=http://localhost:9080/translate
-    
-* install [node](http://nodejs.org)
-* `npm install`
-* `npm test`
-
-
-# OTHER CONFIG OPTIONS
-
-    # set this if AUTHENTICATION_SCHEME=BASIC is set on the server
-    # assumes that Admins can login with HTTP Basic
-    AUTHENTICATION_SCHEME=BASIC
-    
-    # set this to skip the 'REST' test
-    NO_REST_TEST=true
-    
-    # set this to skip the 'Client' test
-    NO_CLIENT_TEST=true
-    
-    # set this for extra verbosity
-    GAAS_VERBOSE=true
-    
-    # set this to NOT delete the bundle in the client test at the end
-    NO_DELETE=true
-
-
+See [TESTING.md](TESTING.md)
 
 API convention
 ==
 
-APIs return promises, unless a callback is provided.
+APIs take a callback and use this general pattern:
 
-NOTE: The non-promise API is deprecated and will be removed before Beta (as soon
-as the test code can be removed)
-
-APIs which take a callback use this pattern:
-
-`obj.function( { /*params*/ } ,  function callback(err, ...))`
+    gpClient.function( { /*params*/ } ,  function callback(err, ...))
 
 * params: an object containing input parameters, if needed.
 * `err`: if truthy, indicates an error has occured.
-* `...`: other parameters (optionally)
+* `...`: other parameters (optional)
+
+These APIs may be promisified easily using a library such as `Q`'s
+[nfcall](http://documentup.com/kriskowal/q/#adapting-node):
+
+    return Q.nfcall(gpClient.function, /*params…*/);
 
 All language identifiers are [IETF BCP47](http://tools.ietf.org/html/bcp47) codes.
 
@@ -129,7 +92,8 @@ API reference
 Support
 ===
 You can post questions about using this service in the developerWorks Answers site
-using the tag "[Globalization](https://developer.ibm.com/answers/topics/globalization/)".
+using the tag "[globalization-pipeline](https://developer.ibm.com/answers/topics/globalization-pipeline
+/)".
 
 LICENSE
 ===
