@@ -356,16 +356,15 @@ describe('gaasClient.bundle()', function() {
     subGaasClient = gaas.getClient({credentials: myUserInfo});
     subGaasClient.ping({}, done);
   });
-  it('test gaasClient(myuser).createBundle('+projectId3+')', function(done) {
+  it('test gaasClient(myuser).bundle('+projectId3+').create(...)', function(done) {
+    expect(subGaasClient).to.be.ok; // from previous test
     expect(myUserInfo).to.be.ok; // otherwise, user creation failed
     
-    subGaasClient = gaas.getClient({credentials: myUserInfo});
     var proj = subGaasClient.bundle({id:projectId3});
     
     Q.ninvoke(proj, "create", {sourceLanguage: 'en', targetLanguages: ['es','qru']})
     .then(function(resp) {
-      // I promise to fix this.
-      proj.uploadResourceStrings({languageId: 'en', strings: {
+      Q.ninvoke(proj, "uploadResourceStrings", {languageId: 'en', strings: {
         hello: 'Hello, World!'
       }})
       .then(function(resp){ done(); }, done);
@@ -392,7 +391,7 @@ readerInfo{
   // check READER
   var myAuth = function(opts){opts.auth = (readerInfo.credentials.userId+':'+readerInfo.credentials.password); };
 
-  if(opts.credentials.isAdmin) {
+  // if(opts.credentials.isAdmin) {
   
     gaasTest.expectCORSURL(urlEnv + '/rest/swagger.json',
                         myAuth, ' reader');
@@ -422,9 +421,9 @@ readerInfo{
                         
     gaasTest.expectNonCORSURL(urlEnv + '/rest/' + instanceName + '/v2/bundles',
                         myAdminAuth, ' admin');    
-  } else {
-    it('no CORS tests, not admin.');
-  }
+  // } else {
+  //   it('no CORS tests, not admin.');
+  // }
   
   if(!NO_DELETE && !opts.credentials.isAdmin) {
     describe('Clean-up time for ' + instanceName, function() {

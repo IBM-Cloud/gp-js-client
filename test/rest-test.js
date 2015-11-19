@@ -37,6 +37,7 @@ var gaas = require('../index.js');
 
 var gaasTest = require('./lib/gaas-test');
 var opts = {credentials: gaasTest.getCredentials()};
+var isAdmin = opts.credentials.isAdmin; // admin creds available?
 var gaasClient = gaas.getClient(opts);
 var basicOpts = {basicAuth: true, credentials: gaasTest.getCredentials()};
 var basicClient = gaas.getClient(basicOpts);
@@ -161,9 +162,13 @@ describe('Check HTTP URL', function() {
   } 
 });
 
-describe('BASIC auth as administrator', function() {
+describe('BASIC auth', function() {
   if(process.env.AUTHENTICATION_SCHEME === 'BASIC') {
     it('is allowed, AUTHENTICATION_SCHEME=BASIC', function(done) {
+      basicClient.ready(null, done);
+    });
+  } else if(!isAdmin) {
+    it('is allowed, normal user.', function(done) {
       basicClient.ready(null, done);
     });
   } else it('should NOT become ready', function(done) {
@@ -186,7 +191,11 @@ describe('client.apis', function() {
       if(err) { done(err); return; }
       expect(gaasClient.apis()).to.include.keys('help');
       // Verify the APIs are as expected.
-      expect(gaasClient.apis()).to.include.keys('admin','bundle','partner','service','user');
+      if(isAdmin) {
+        expect(gaasClient.apis()).to.include.keys('admin','bundle','partner','service','user');
+      } else {
+        expect(gaasClient.apis()).to.include.keys('bundle','partner','service','user');
+      }
       done();
     });
   });

@@ -151,11 +151,7 @@ module.exports.expectCORSURL = function expectCORSURL(swaggerUrl, auth, str) {
           if(method === 'GET') {
             expect(res.statusCode).to.equal(200);
           } else if(method === 'OPTIONS') {
-            if(swaggerUrl.indexOf('/swagger.json')=== -1) {
-              expect(res.statusCode).to.equal(204);
-            } else {
-              expect(res.statusCode).to.equal(200);
-            }
+            expect(res.statusCode).to.equal(204);
           }
           expectResCORSGET(res, done);
         })
