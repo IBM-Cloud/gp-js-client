@@ -21,17 +21,21 @@ var optional = require('optional');
 var localCredentials = optional('./local-credentials.json');
 
 module.exports.getCredentials = function getCredentials() {
- if (localCredentials && localCredentials.credentials) {
-   return localCredentials.credentials;
- }  
- return {
-    // api_key: apiKeyEnv,
-    url: process.env.GAAS_API_URL || null,
-    instanceId: process.env.GAAS_INSTANCE_ID || "n/a",
-    userId: process.env.GAAS_ADMIN_ID || process.env.GAAS_USER_ID || null,
-    password: process.env.GAAS_ADMIN_PASSWORD || process.env.GAAS_PASSWORD || null,
-    isAdmin: process.env.GAAS_ADMIN_ID?true:false
-  };
+  var creds;
+  if (localCredentials && localCredentials.credentials) {
+    creds =  localCredentials.credentials;
+  } else {
+    creds = {
+      // api_key: apiKeyEnv,
+      url: process.env.GAAS_API_URL || null,
+      instanceId: process.env.GAAS_INSTANCE_ID || "n/a",
+      userId: process.env.GAAS_ADMIN_ID || process.env.GAAS_USER_ID || null,
+      password: process.env.GAAS_ADMIN_PASSWORD || process.env.GAAS_PASSWORD || null,
+      isAdmin: (process.env.GAAS_ADMIN_ID!=null)?true:false
+    };
+  }
+  console.dir(creds);
+  return creds;
 };
 
 function expectHeaders(res, h) {

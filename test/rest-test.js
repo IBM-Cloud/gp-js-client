@@ -168,10 +168,21 @@ describe('BASIC auth', function() {
       basicClient.ready(null, done);
     });
   } else if(!isAdmin) {
-    it('is allowed, normal user.', function(done) {
+    it('is allowed to be ready, normal user.', function(done) {
       basicClient.ready(null, done);
     });
-  } else it('should NOT become ready', function(done) {
+    it('is allowed, to ping as normal user.', function(done) {
+      basicClient.ping(null, done);
+    });
+    it('is NOT allowed, to list bundles as normal user.', function(done) {
+      basicClient.getBundleList({}, function(err, x) {
+        if(err) done();
+        else {
+          done(Error('Expected to fail but worked: ' + x));
+        }
+      });
+    });
+    } else it('should NOT become ready', function(done) {
     basicClient.ready(null, function(err) {
       if(err) {
         done();
