@@ -19,6 +19,7 @@ var byscheme = require('./byscheme');
 var optional = require('optional');
 
 var localCredentials = optional('./local-credentials.json');
+var VERBOSE=false;
 
 module.exports.getCredentials = function getCredentials() {
   var creds;
@@ -34,7 +35,7 @@ module.exports.getCredentials = function getCredentials() {
       isAdmin: (process.env.GAAS_ADMIN_ID!=null)?true:false
     };
   }
-  console.dir(creds);
+  if(VERBOSE) console.dir(creds);
   return creds;
 };
 

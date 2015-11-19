@@ -81,6 +81,9 @@ These APIs may be promisified easily using a library such as `Q`'s
     return Q.ninvoke(bundle, "delete", {});
     return Q.ninvoke(gpClient, "getBundleList", {});
 
+Also, note that there are aliases from the swagger doc function names
+to the convenience name. For example, `bundle.uploadResourceStrings` can be 
+used in place of `bundle.uploadStrings`.
 
 All language identifiers are [IETF BCP47](http://tools.ietf.org/html/bcp47) codes.
 

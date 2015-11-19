@@ -81,6 +81,9 @@ These APIs may be promisified easily using a library such as `Q`'s
     return Q.ninvoke(bundle, "delete", {});
     return Q.ninvoke(gpClient, "getBundleList", {});
 
+Also, note that there are aliases from the swagger doc function names
+to the convenience name. For example, `bundle.uploadResourceStrings` can be 
+used in place of `bundle.uploadStrings`.
 
 All language identifiers are [IETF BCP47](http://tools.ietf.org/html/bcp47) codes.
 
@@ -112,7 +115,12 @@ API reference
       * [.delete(opts, cb)](#module_g11n-pipeline..Bundle+delete)
       * [.create(body, cb)](#module_g11n-pipeline..Bundle+create)
       * [.getInfo(opts, cb)](#module_g11n-pipeline..Bundle+getInfo)
-      * [.uploadResourceStrings(opts, cb)](#module_g11n-pipeline..Bundle+uploadResourceStrings)
+      * [.getStrings(opts, cb)](#module_g11n-pipeline..Bundle+getStrings)
+      * [.getEntryInfo(opts, cb)](#module_g11n-pipeline..Bundle+getEntryInfo)
+      * [.uploadStrings(opts, cb)](#module_g11n-pipeline..Bundle+uploadStrings)
+      * [.update(opts, cb)](#module_g11n-pipeline..Bundle+update)
+      * [.updateStrings(opts, cb)](#module_g11n-pipeline..Bundle+updateStrings)
+      * [.updateEntryInfo(opts, cb)](#module_g11n-pipeline..Bundle+updateEntryInfo)
 
 <a name="module_g11n-pipeline.serviceRegex"></a>
 ### g11n-pipeline.serviceRegex
@@ -278,7 +286,12 @@ accessor object.
     * [.delete(opts, cb)](#module_g11n-pipeline..Bundle+delete)
     * [.create(body, cb)](#module_g11n-pipeline..Bundle+create)
     * [.getInfo(opts, cb)](#module_g11n-pipeline..Bundle+getInfo)
-    * [.uploadResourceStrings(opts, cb)](#module_g11n-pipeline..Bundle+uploadResourceStrings)
+    * [.getStrings(opts, cb)](#module_g11n-pipeline..Bundle+getStrings)
+    * [.getEntryInfo(opts, cb)](#module_g11n-pipeline..Bundle+getEntryInfo)
+    * [.uploadStrings(opts, cb)](#module_g11n-pipeline..Bundle+uploadStrings)
+    * [.update(opts, cb)](#module_g11n-pipeline..Bundle+update)
+    * [.updateStrings(opts, cb)](#module_g11n-pipeline..Bundle+updateStrings)
+    * [.updateEntryInfo(opts, cb)](#module_g11n-pipeline..Bundle+updateEntryInfo)
 
 <a name="new_module_g11n-pipeline..Bundle_new"></a>
 #### new Bundle(gp, props)
@@ -328,8 +341,34 @@ Get bundle info
 | opts.partnerStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
 | cb | <code>basicCallback</code> |  |
 
-<a name="module_g11n-pipeline..Bundle+uploadResourceStrings"></a>
-#### bundle.uploadResourceStrings(opts, cb)
+<a name="module_g11n-pipeline..Bundle+getStrings"></a>
+#### bundle.getStrings(opts, cb)
+Fetch one entry's info
+
+**Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | options |
+| opts.languageId | <code>String</code> | language to fetch |
+| opts.resourceKey | <code>String</code> | resource to fetch |
+| cb | <code>basicCallback</code> |  |
+
+<a name="module_g11n-pipeline..Bundle+getEntryInfo"></a>
+#### bundle.getEntryInfo(opts, cb)
+Fetch one entry's info
+
+**Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | options |
+| opts.languageId | <code>String</code> | language to fetch |
+| opts.resourceKey | <code>String</code> | resource to fetch |
+| cb | <code>basicCallback</code> |  |
+
+<a name="module_g11n-pipeline..Bundle+uploadStrings"></a>
+#### bundle.uploadStrings(opts, cb)
 Upload some resource strings
 
 **Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
@@ -339,6 +378,33 @@ Upload some resource strings
 | opts | <code>Object</code> | options |
 | opts.languageId | <code>String</code> | language to update |
 | opts.strings | <code>Object</code> | strings to update |
+| cb | <code>basicCallback</code> |  |
+
+<a name="module_g11n-pipeline..Bundle+update"></a>
+#### bundle.update(opts, cb)
+**Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | options |
+| cb | <code>basicCallback</code> |  |
+
+<a name="module_g11n-pipeline..Bundle+updateStrings"></a>
+#### bundle.updateStrings(opts, cb)
+**Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | options |
+| cb | <code>basicCallback</code> |  |
+
+<a name="module_g11n-pipeline..Bundle+updateEntryInfo"></a>
+#### bundle.updateEntryInfo(opts, cb)
+**Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | options |
 | cb | <code>basicCallback</code> |  |
 
 
