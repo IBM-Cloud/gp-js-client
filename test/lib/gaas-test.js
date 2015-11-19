@@ -170,7 +170,7 @@ module.exports.expectNonCORSURL = function expectNonCORSURL(swaggerUrl, auth, st
   if(!str) str = '';
   methods.forEach(function (method) {
     var optionsGet = optionsCreate(swaggerUrl, method);
-    it('Should NOT let me ' + method + ' ' + swaggerUrl + ' w/ CORS' + (auth?' (auth) ':' ') + str, function (done) {
+    it('NonCORS: Should NOT let me ' + method + ' ' + swaggerUrl + ' w/ CORS' + (auth?' (auth) ':' ') + str, function (done) {
       var oreq = byscheme(swaggerUrl).get(optionsAuth(optionsGet, auth),
         function (res) {
           if(method === 'GET') {
@@ -196,7 +196,7 @@ module.exports.verifySecurityHeaders = function verifySecurityHeaders(swaggerUrl
   if(!str) str = '';
   ['GET'].forEach(function (method) {
     var optionsGet = optionsCreate(swaggerUrl, method);
-    it('Should NOT let me ' + method + ' ' + swaggerUrl + ' w/ CORS' + (auth?' (auth) ':' ') + str, function (done) {
+    it('Sec: Should NOT let me ' + method + ' ' + swaggerUrl + ' w/ CORS' + (auth?' (auth) ':' ') + str, function (done) {
       var oreq = byscheme(swaggerUrl).get(optionsAuth(optionsGet, auth),
         function (res) {
           if(method === 'GET') {

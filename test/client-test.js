@@ -418,12 +418,10 @@ readerInfo{
     // hardcoded URL here..
     gaasTest.expectCORSURL(urlEnv + '/rest/' + instanceName + '/v2/bundles/'+projectId3+'/qru',
                         myAdminAuth, ' admin');
-                        
-    gaasTest.expectNonCORSURL(urlEnv + '/rest/' + instanceName + '/v2/bundles',
-                        myAdminAuth, ' admin');    
-  // } else {
-  //   it('no CORS tests, not admin.');
-  // }
+    // if(isAdmin) {
+    //   gaasTest.expectNonCORSURL(urlEnv + '/rest/' + instanceName + '/v2/bundles',
+    //                       myAdminAuth, ' admin');    
+    // }
   
   if(!NO_DELETE && !opts.credentials.isAdmin) {
     describe('Clean-up time for ' + instanceName, function() {
