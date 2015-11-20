@@ -18,19 +18,24 @@ Testing the JavaScript Client for IBM Bluemix Globalization-as-a-Service
  */
 -->
 
-# This document describes how to test the `gaas` client code.
+# This document describes how to test the `g11n-pipeline` client code.
 
 *NOTE/WARNING:* Running the tests will create and delete various translation projects in your service!
 Don't run this test against an account with valuable data.
 Running this test may incur service costs.
 
-* create `local-test.properties` with the following lines:
+* create a `local-credentials.json` file with the credentials
+as given in the bound service:
 
-    # Set the admin ID and password as appropriate
-    GAAS_ADMIN_ID=......
-    GAAS_ADMIN_PASSWORD=......
-    # the server URL to use. Adjust to taste. Include trailing slash.
-    GAAS_API_URL=http://localhost:9080/translate
+      {
+        "credentials": {
+          "url": "https://…",
+          "userId": "…",
+          "password": "……",
+          "instanceId": "………"
+        }
+      }
+
     
 * install [node](http://nodejs.org)
 * `npm install`
@@ -50,44 +55,13 @@ Running this test may incur service costs.
     NO_CLIENT_TEST=true
     
     # set this for extra verbosity
-    GAAS_VERBOSE=true
+    GP_VERBOSE=true
     
     # set this to NOT delete the bundle in the client test at the end
     NO_DELETE=true
-
-
-## Node.js - running local tests
-
-
-
-* Create and bind the IBM Globalization service in Bluemix
-* view the credentials, they should look like this:
-
-```
-{
-  "IBM Globalization": [
-    {
-      "name": "IBM Globalization-sl",
-      "label": "IBM Globalization",
-      "plan": "Experimental",
-      "credentials": {
-        "api_key": "2b9eaf03-3440-4bd4-b523-f6f3c0236fbd",
-        "uri": "https://ibm-gaas-server.example.com/translate"
-      }
-    }
-  ]
-}
-```
-
-Set these as variables:
-* `set GAAS_API_KEY=2b9eaf03-3440-4bd4-b523-f6f3c0236fbd`
-* `set GAAS_API_URL=https://ibm-gaas-server.example.com/translate`
-
-Optionally set `GAAS_PROJECT` to an alternate project name to use for testing,
-otherwise one will be randomly chosen.
-
-* `npm install`
-* `npm test`
+    
+    # an alternate project name (else random)
+    GP_PROJECT=someproject
 
 LICENSE
 ===

@@ -198,7 +198,8 @@ Do we have access to the server?
 
 <a name="module_g11n-pipeline..Client+getBundleList"></a>
 #### client.getBundleList(opts, cb)
-Get a list of the bundles
+Get a list of the bundles.
+Note: This function may be deprecated soon, but won't be removed.
 
 **Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
 
@@ -206,7 +207,7 @@ Get a list of the bundles
 | --- | --- | --- |
 | opts | <code>Object</code> |  |
 | opts.serviceInstance | <code>String</code> | optional service instance |
-| cb | <code>[bundleListCallback](#Client..bundleListCallback)</code> | callback |
+| cb | <code>[bundleListCallback](#Client..bundleListCallback)</code> | callback: (err, array-of-ids) |
 
 <a name="module_g11n-pipeline..Client+supportedTranslations"></a>
 #### client.supportedTranslations(args, cb)
@@ -214,10 +215,10 @@ This function returns a map from source language(s) to target language(s).
 
 **Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
 
-| Param | Type |
-| --- | --- |
-| args | <code>object</code> | 
-| cb | <code>supportedTranslationsCallback</code> | 
+| Param | Type | Description |
+| --- | --- | --- |
+| args | <code>object</code> |  |
+| cb | <code>supportedTranslationsCallback</code> | (err, map-of-languages) |
 
 <a name="module_g11n-pipeline..Client+getServiceInfo"></a>
 #### client.getServiceInfo(args, cb)
@@ -233,30 +234,39 @@ Get information about this service
 <a name="module_g11n-pipeline..Client+createUser"></a>
 #### client.createUser(args, cb)
 Create a user
+Note: This function may be deprecated soon, but won't be removed.
 
 **Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| args | <code>object</code> | TBD |
-| cb | <code>callback</code> |  |
+| args | <code>object</code> |  |
+| args.type | <code>string</code> | User type (ADMINISTRATOR, TRANSLATOR, or READER) |
+| args.displayName | <code>string</code> | Optional display name for the user. This can be any string. |
+| args.comment | <code>string</code> | Optional comment |
+| args.bundles | <code>Array</code> | set of accessible bundle ids or ['*'] to mean “all bundles” |
+| args.metadata | <code>Object</code> | optional key/value pairs for user metadata |
+| args.externalId | <code>string</code> | optional external user ID for your application’s use |
+| cb | <code>basicCallback</code> |  |
 
 <a name="module_g11n-pipeline..Client+deleteUser"></a>
 #### client.deleteUser(args, cb)
-Delete a user
+Delete a user.
+Note: This function may be deprecated soon, but won't be removed.
 
 **Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | args | <code>object</code> | TBD |
-| cb | <code>callback</code> |  |
+| args.userId | <code>string</code> | user ID to be deleted. |
+| cb | <code>basicCallback</code> |  |
 
 <a name="module_g11n-pipeline..Client+bundle"></a>
 #### client.bundle(opts) ⇒ <code>Bundle</code>
 Create a bundle access object.
-This doesn’t create the bundle itself, just a lightweight
-accessor object.
+This doesn’t create the bundle itself, just a handle object.
+Call create() on the bundle to create it.
 
 **Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
 
@@ -307,11 +317,17 @@ Delete this bundle.
 
 <a name="module_g11n-pipeline..Bundle+create"></a>
 #### bundle.create(body, cb)
+Create this bundle.
+
 **Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| body | <code>Object</code> | see API docs |
+| body | <code>Object</code> | - |
+| body.sourceLanguage | <code>string</code> | bcp47 id of source language such as 'en' |
+| body.targetLanguages | <code>Array</code> | optional array of target languages |
+| body.metadata | <code>Object</code> | optional metadata for the bundle |
+| body.partner | <code>string</code> | optional ID of partner assigned to translate this bundle |
 | cb | <code>basicCallback</code> |  |
 
 <a name="module_g11n-pipeline..Bundle+getInfo"></a>
@@ -327,11 +343,11 @@ Get bundle info
 | opts.translationStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
 | opts.reviewStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
 | opts.partnerStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
-| cb | <code>basicCallback</code> |  |
+| cb | <code>basicCallback</code> | callback (err, { updatedBy, updatedAt, sourceLanguage, targetLanguages, readOnly, metadata, partner} ) |
 
 <a name="module_g11n-pipeline..Bundle+getStrings"></a>
 #### bundle.getStrings(opts, cb)
-Fetch one entry's info
+Fetch one entry's strings
 
 **Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
 
@@ -340,11 +356,12 @@ Fetch one entry's info
 | opts | <code>Object</code> | options |
 | opts.languageId | <code>String</code> | language to fetch |
 | opts.resourceKey | <code>String</code> | resource to fetch |
-| cb | <code>basicCallback</code> |  |
+| cb | <code>basicCallback</code> | callback (err, { resourceStrings: { strings … } }) |
 
 <a name="module_g11n-pipeline..Bundle+getEntryInfo"></a>
 #### bundle.getEntryInfo(opts, cb)
 Fetch one entry's info
+Note: This function may be deprecated soon, but won't be removed.
 
 **Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
 
@@ -353,11 +370,11 @@ Fetch one entry's info
 | opts | <code>Object</code> | options |
 | opts.languageId | <code>String</code> | language to fetch |
 | opts.resourceKey | <code>String</code> | resource to fetch |
-| cb | <code>basicCallback</code> |  |
+| cb | <code>basicCallback</code> | callback (err, { resourceEntry: { updatedBy, updatedAt, value, sourceValue, reviewed, translationStatus, metadata, partnerStatus } }  ) |
 
 <a name="module_g11n-pipeline..Bundle+uploadStrings"></a>
 #### bundle.uploadStrings(opts, cb)
-Upload some resource strings
+Upload resource strings, replacing all current contents for the language
 
 **Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
 
@@ -365,7 +382,7 @@ Upload some resource strings
 | --- | --- | --- |
 | opts | <code>Object</code> | options |
 | opts.languageId | <code>String</code> | language to update |
-| opts.strings | <code>Object</code> | strings to update |
+| opts.strings | <code>Object.&lt;string, string&gt;</code> | strings to update |
 | cb | <code>basicCallback</code> |  |
 
 <a name="module_g11n-pipeline..Bundle+update"></a>
@@ -375,24 +392,38 @@ Upload some resource strings
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | options |
-| cb | <code>basicCallback</code> |  |
+| opts.targetLanguages | <code>array</code> | optional: list of target languages to update |
+| opts.readOnly | <code>boolean</code> | optional: set this bundle to be readonly or not |
+| opts.metadata | <code>object</code> | optional: metadata to update |
+| opts.partner | <code>string</code> | optional: partner id to update |
+| cb | <code>basicCallback</code> | callback |
 
 <a name="module_g11n-pipeline..Bundle+updateStrings"></a>
 #### bundle.updateStrings(opts, cb)
+Update some strings in a language.
+
 **Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | options |
+| opts.strings | <code>Object.&lt;string, string&gt;</code> | strings to update. |
+| opts.resync | <code>Boolean</code> | optional: If true, resynchronize strings in the target language and resubmit previously-failing translation operations |
 | cb | <code>basicCallback</code> |  |
 
 <a name="module_g11n-pipeline..Bundle+updateEntryInfo"></a>
 #### bundle.updateEntryInfo(opts, cb)
+Note: This function may be deprecated soon, but won't be removed.
+
 **Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | options |
+| opts.value | <code>string</code> | string value to update |
+| opts.reviewed | <code>boolean</code> | optional boolean indicating if value was reviewed |
+| opts.metadata | <code>object</code> | optional metadata to update |
+| opts.partnerStatus | <code>string</code> | translation status maintained by partner |
 | cb | <code>basicCallback</code> |  |
 
 <a name="module_g11n-pipeline..getClient"></a>

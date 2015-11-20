@@ -28,11 +28,11 @@ module.exports.getCredentials = function getCredentials() {
   } else {
     creds = {
       // api_key: apiKeyEnv,
-      url: process.env.GAAS_API_URL || null,
-      instanceId: process.env.GAAS_INSTANCE_ID || "n/a",
-      userId: process.env.GAAS_ADMIN_ID || process.env.GAAS_USER_ID || null,
-      password: process.env.GAAS_ADMIN_PASSWORD || process.env.GAAS_PASSWORD || null,
-      isAdmin: (process.env.GAAS_ADMIN_ID!=null)?true:false
+      url: process.env.GP_URL || process.env.GAAS_API_URL || null,
+      instanceId: process.env.GP_INSTANCE_ID || process.env.GAAS_INSTANCE_ID || "n/a",
+      userId: process.env.GP_ADMIN_ID || process.env.GAAS_ADMIN_ID || process.env.GAAS_USER_ID || null,
+      password: process.env.GP_ADMIN_PASSWORD || process.env.GAAS_ADMIN_PASSWORD || process.env.GAAS_PASSWORD || null,
+      isAdmin: ((process.env.GP_ADMIN_ID || process.env.GAAS_ADMIN_ID)!=null)?true:false
     };
   }
   if(VERBOSE) console.dir(creds);

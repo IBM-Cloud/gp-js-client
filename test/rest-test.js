@@ -19,10 +19,10 @@
 // load locals
 require('./lib/localsetenv').applyLocal();
 
-var projectId = process.env.GAAS_PROJECT  || 'MyLLProject'+Math.random();
-var projectId2 = process.env.GAAS_PROJECT2 || 'MyOtherLLProject'+Math.random();
+var projectId = process.env.GP_PROJECT  || 'MyLLProject'+Math.random();
+var projectId2 = process.env.GP_PROJECT2 || 'MyOtherLLProject'+Math.random();
 var CLEANSLATE = false; // CLEANSLATE: assume no other projects
-var VERBOSE = process.env.GAAS_VERBOSE || false;
+var VERBOSE = process.env.GP_VERBOSE || false;
 if(process.env.NO_REST_TEST) { console.log('skip: ' + module.filename); return; }
 
 if(VERBOSE) console.dir(module.filename);
@@ -35,7 +35,7 @@ var assert = require('assert');
 
 var gaas = require('../index.js');
 
-var gaasTest = require('./lib/gaas-test');
+var gaasTest = require ('./lib/gp-test');
 var opts = {credentials: gaasTest.getCredentials()};
 var isAdmin = opts.credentials.isAdmin; // admin creds available?
 var gaasClient = gaas.getClient(opts);

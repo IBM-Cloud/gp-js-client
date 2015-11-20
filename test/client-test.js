@@ -25,7 +25,7 @@ var Q = require('q');
 
 var minispin = require('./lib/minispin');
 var randHex = require('./lib/randhex');
-var gaasTest = require ('./lib/gaas-test');
+var gaasTest = require ('./lib/gp-test');
 var GaasHmac = require('../lib/gp-hmac');
 
 if(process.env.NO_CLIENT_TEST) { console.log('skip: ' + module.filename); return; }
@@ -38,13 +38,13 @@ var ourReaderClient; // to be filled in - separate client that's just a reader.
 var expect = require('chai').expect;
 var assert = require('assert');
 
-var VERBOSE = process.env.GAAS_VERBOSE || false;
+var VERBOSE = process.env.GP_VERBOSE || false;
 var NO_DELETE = process.env.NO_DELETE || false;
 if(VERBOSE) console.dir(module.filename);
 
-var projectId = process.env.GAAS_PROJECT  || 'MyHLProject'+Math.random();
-var projectId2 = process.env.GAAS_PROJECT2 || 'MyOtherHLProject'+Math.random();
-var projectId3 = process.env.GAAS_PROJECT3 || 'MyUserProject'+Math.random();
+var projectId = process.env.GP_PROJECT  || 'MyHLProject'+Math.random();
+var projectId2 = process.env.GP_PROJECT2 || 'MyOtherHLProject'+Math.random();
+var projectId3 = process.env.GP_PROJECT3 || 'MyUserProject'+Math.random();
 
 var sourceData = {
     "key1": "@DELAY@First string to translate",
@@ -116,8 +116,8 @@ describe('Setting up GaaS test', function() {
     });
   } else {
     // no creds
-    it('should have had GAAS_USER_ID/GAAS_PASSWORD/GAAS_INSTANCE_ID and GAAS_API_URL',  function(done) {
-      done('please set GAAS_USER_ID/GAAS_PASSWORD/GAAS_INSTANCE_ID and GAAS_API_URL');
+    it('should have had credentials',  function(done) {
+      done('please create local-credentials.json or have GP_URL/GP_USER_ID/GP_PASSWORD/GP_INSTANCE set');
     });
   }
 });
