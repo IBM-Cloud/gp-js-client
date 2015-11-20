@@ -4,7 +4,7 @@ Simple jQuery client for IBM Globalization Pipeline (beta)
 # What is this?
 
 This is a sample application demonstrating a  preliminary client for
-[IBM Globalization](https://ibm.biz/BluemixGlobalization) using [jQuery](https://jquery.org/)
+[Globalization Pipeline](https://ibm.biz/BluemixGlobalization) using [jQuery](https://jquery.org/)
 from a web browser.
 
 The IBM Globalization service allows your JavaScript-based web app to dynamically load
@@ -27,7 +27,7 @@ You will need to create a `READER` user to be able to generate the following cre
         { instanceId: '<instanceid>',
             userId: '<READER userid>',
             password: '<READER password>',
-            uri: '<uri>' },
+            url: '<uri>' },
         bundleId: 'your bundleid' };
          
 * view the file `gaas4jq-sample.html` in a browser. You should see the "Hello" string translated into Spanish.

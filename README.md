@@ -31,7 +31,9 @@ This is a JavaScript SDK for the
 Bluemix service. The Globalization Pipeline service makes it easy for you to provide your global customers
 with Bluemix applications translated into the languages in which they work.
 
-The SDK currently supports Node.js, and also provides some sample code showing
+The SDK currently supports Node.js.
+
+<!-- and also provides some sample code showing
 how to use the service from jQuery.
 
 # jQuery Sample
@@ -39,13 +41,15 @@ how to use the service from jQuery.
 There is an experimental sample showing use of the use in the `jquery-sample` directory.
 See the [Readme](./jquery-sample/README.md) in that directory for more details.
 
+-->
+
 # Node.js
 
 The remainder of this document explains how to use the Globalization service
 with the [Node.js](http://nodejs.org) client.
 
 For a working Bluemix application sample,
-see [g11n-pipeline-nodejs-hello](https://github.com/IBM-Bluemix/g11n-pipeline-nodejs-hello).
+see [gp-nodejs-sample](https://github.com/IBM-Bluemix/gp-nodejs-sample).
 
 ## Quickstart - Bluemix
 
@@ -55,10 +59,36 @@ Add `g11n-pipeline` to your project, as well as `cfenv`.
 
 Load the gaas client object as follows (using [cfenv](https://www.npmjs.com/package/cfenv) ).
 
-    var appEnv = require('cfenv').getAppEnv();
+CSve
     var gpClient = require('g11n-pipeline').getClient({
        appEnv: appEnv
     });
+    
+## Using
+
+To fetch the strings for a bundle named "hello", first create a bundle accessor:
+
+    var mybundle = gpClient.bundle('hello');
+
+Then, call the `getStrings` function with a callback:
+
+    mybundle.getStrings({ languageId: 'es'}, function (err, result) {
+        if (err) {
+            // handle err..
+            console.error(err);
+        } else {
+            var myStrings = result.resourceStrings;
+            console.dir(myStrings);
+        }
+    });
+
+This code snippet will output the translated strings such as the following:
+
+    {
+        hello:   '¡Hola!',
+        goodbye: '¡Adiós!',
+        …
+    }
 
 ## Testing
 
@@ -89,20 +119,15 @@ All language identifiers are [IETF BCP47](http://tools.ietf.org/html/bcp47) code
 
 API reference
 ===
-<a name="module_g11n-pipeline"></a>
-## g11n-pipeline
 **Author:** Steven R. Loomis  
 
 * [g11n-pipeline](#module_g11n-pipeline)
   * _static_
     * [.serviceRegex](#module_g11n-pipeline.serviceRegex)
+    * [.exampleCredentials](#module_g11n-pipeline.exampleCredentials)
   * _inner_
     * [~Client](#module_g11n-pipeline..Client)
       * [.ping](#module_g11n-pipeline..Client+ping)
-      * [.apis()](#module_g11n-pipeline..Client+apis) ⇒ <code>Object</code>
-      * [.ready(arg, cb)](#module_g11n-pipeline..Client+ready)
-      * [.restCall(fn, restArg, cb)](#module_g11n-pipeline..Client+restCall)
-      * [.getServiceInstance(opts)](#module_g11n-pipeline..Client+getServiceInstance) ⇒ <code>String</code>
       * [.getBundleList(opts, cb)](#module_g11n-pipeline..Client+getBundleList)
       * [.supportedTranslations(args, cb)](#module_g11n-pipeline..Client+supportedTranslations)
       * [.getServiceInfo(args, cb)](#module_g11n-pipeline..Client+getServiceInfo)
@@ -121,6 +146,7 @@ API reference
       * [.update(opts, cb)](#module_g11n-pipeline..Bundle+update)
       * [.updateStrings(opts, cb)](#module_g11n-pipeline..Bundle+updateStrings)
       * [.updateEntryInfo(opts, cb)](#module_g11n-pipeline..Bundle+updateEntryInfo)
+    * [~getClient(params)](#module_g11n-pipeline..getClient) ⇒ <code>Client</code>
 
 <a name="module_g11n-pipeline.serviceRegex"></a>
 ### g11n-pipeline.serviceRegex
@@ -133,7 +159,18 @@ Usage: var credentials = require('cfEnv')
 
 | Name |
 | --- |
-| gp.serviceRegex | 
+| serviceRegex | 
+
+<a name="module_g11n-pipeline.exampleCredentials"></a>
+### g11n-pipeline.exampleCredentials
+Example credentials
+
+**Kind**: static property of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
+**Properties**
+
+| Name |
+| --- |
+| exampleCredentials | 
 
 <a name="module_g11n-pipeline..Client"></a>
 ### g11n-pipeline~Client
@@ -141,10 +178,6 @@ Usage: var credentials = require('cfEnv')
 
   * [~Client](#module_g11n-pipeline..Client)
     * [.ping](#module_g11n-pipeline..Client+ping)
-    * [.apis()](#module_g11n-pipeline..Client+apis) ⇒ <code>Object</code>
-    * [.ready(arg, cb)](#module_g11n-pipeline..Client+ready)
-    * [.restCall(fn, restArg, cb)](#module_g11n-pipeline..Client+restCall)
-    * [.getServiceInstance(opts)](#module_g11n-pipeline..Client+getServiceInstance) ⇒ <code>String</code>
     * [.getBundleList(opts, cb)](#module_g11n-pipeline..Client+getBundleList)
     * [.supportedTranslations(args, cb)](#module_g11n-pipeline..Client+supportedTranslations)
     * [.getServiceInfo(args, cb)](#module_g11n-pipeline..Client+getServiceInfo)
@@ -163,51 +196,6 @@ Do we have access to the server?
 | args | <code>object</code> | (ignored) |
 | cb | <code>callback</code> |  |
 
-<a name="module_g11n-pipeline..Client+apis"></a>
-#### client.apis() ⇒ <code>Object</code>
-Get the REST APIs. Use with ready()
-
-**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
-**Returns**: <code>Object</code> - - Map of API operations, otherwise null if not ready.  
-<a name="module_g11n-pipeline..Client+ready"></a>
-#### client.ready(arg, cb)
-Verify that the client is ready before proceeding.
-
-**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| arg | <code>Object</code> | arg option, passed to cb on success or failure |
-| cb | <code>function</code> | callback (called with (null, arg, apis) on success |
-
-<a name="module_g11n-pipeline..Client+restCall"></a>
-#### client.restCall(fn, restArg, cb)
-Call a REST function. Verify the results.
-cb is called with the same context.
-
-This is designed for internal implementation.
-
-**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| fn | <code>Array</code> | function name, such as ["admin","getServiceInfo"] |
-| restArg | <code>Object</code> | args to the REST call |
-| cb | <code>function</code> |  |
-
-<a name="module_g11n-pipeline..Client+getServiceInstance"></a>
-#### client.getServiceInstance(opts) ⇒ <code>String</code>
-Get the serviceInstance id from a parameter or from the 
-client's default.
-
-**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
-**Returns**: <code>String</code> - - the service instance ID if found  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| opts | <code>Object</code> | can be a map, or falsy. |
-| opts.serviceInstance | <code>String</code> | the service instance |
-
 <a name="module_g11n-pipeline..Client+getBundleList"></a>
 #### client.getBundleList(opts, cb)
 Get a list of the bundles
@@ -218,7 +206,7 @@ Get a list of the bundles
 | --- | --- | --- |
 | opts | <code>Object</code> |  |
 | opts.serviceInstance | <code>String</code> | optional service instance |
-| cb | <code>basicCallback</code> | callback. |
+| cb | <code>[bundleListCallback](#Client..bundleListCallback)</code> | callback |
 
 <a name="module_g11n-pipeline..Client+supportedTranslations"></a>
 #### client.supportedTranslations(args, cb)
@@ -406,6 +394,24 @@ Upload some resource strings
 | --- | --- | --- |
 | opts | <code>Object</code> | options |
 | cb | <code>basicCallback</code> |  |
+
+<a name="module_g11n-pipeline..getClient"></a>
+### g11n-pipeline~getClient(params) ⇒ <code>Client</code>
+Construct a g11n-pipeline client. 
+params.credentials is required unless params.appEnv is supplied.
+
+**Kind**: inner method of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| params | <code>Object</code> | configuration params |
+| params.appEnv | <code>Object</code> | pass the result of cfEnv.getAppEnv(). Ignored if params.credentials is supplied. |
+| params.credentials | <code>Object.&lt;string, string&gt;</code> | Bound credentials as from the CF service broker (overrides appEnv) |
+| params.credentials.url | <code>string</code> | service URL. (should end in '/translate') |
+| params.credentials.userId | <code>string</code> | service API key. |
+| params.credentials.password | <code>string</code> | service API key. |
+| params.credentials.instanceId | <code>string</code> | instance ID |
+
 
 
 *docs autogenerated via [jsdoc2md](https://github.com/jsdoc2md/jsdoc-to-markdown)*
