@@ -18,41 +18,50 @@ Testing the JavaScript Client for IBM Bluemix Globalization-as-a-Service
  */
 -->
 
-# This document describes how to test the `gaas` client code.
+# This document describes how to test the `g11n-pipeline` client code.
 
-## Node.js - running local tests
-
-*note:* Running the test will create and delete various translation projects in your service!
+*NOTE/WARNING:* Running the tests will create and delete various translation projects in your service!
 Don't run this test against an account with valuable data.
+Running this test may incur service costs.
 
-* Create and bind the IBM Globalization service in Bluemix
-* view the credentials, they should look like this:
+* create a `local-credentials.json` file with the credentials
+as given in the bound service:
 
-```
-{
-  "IBM Globalization": [
-    {
-      "name": "IBM Globalization-sl",
-      "label": "IBM Globalization",
-      "plan": "Experimental",
-      "credentials": {
-        "api_key": "2b9eaf03-3440-4bd4-b523-f6f3c0236fbd",
-        "uri": "https://ibm-gaas-server.example.com/translate"
+      {
+        "credentials": {
+          "url": "https://…",
+          "userId": "…",
+          "password": "……",
+          "instanceId": "………"
+        }
       }
-    }
-  ]
-}
-```
 
-Set these as variables:
-* `set GAAS_API_KEY=2b9eaf03-3440-4bd4-b523-f6f3c0236fbd`
-* `set GAAS_API_URL=https://ibm-gaas-server.example.com/translate`
-
-Optionally set `GAAS_PROJECT` to an alternate project name to use for testing,
-otherwise one will be randomly chosen.
-
+    
+* install [node](http://nodejs.org)
 * `npm install`
 * `npm test`
+
+
+# OTHER CONFIG OPTIONS
+
+    # set this if AUTHENTICATION_SCHEME=BASIC is set on the server
+    # assumes that Admins can login with HTTP Basic
+    AUTHENTICATION_SCHEME=BASIC
+    
+    # set this to skip the 'REST' test
+    NO_REST_TEST=true
+    
+    # set this to skip the 'Client' test
+    NO_CLIENT_TEST=true
+    
+    # set this for extra verbosity
+    GP_VERBOSE=true
+    
+    # set this to NOT delete the bundle in the client test at the end
+    NO_DELETE=true
+    
+    # an alternate project name (else random)
+    GP_PROJECT=someproject
 
 LICENSE
 ===

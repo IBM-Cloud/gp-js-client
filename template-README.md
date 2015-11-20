@@ -1,4 +1,4 @@
-JavaScript Client for IBM Bluemix Globalization-as-a-Service
+JavaScript Client for Globalization Pipeline on IBM Bluemix
 ===
 <!--
 /*	
@@ -16,94 +16,116 @@ JavaScript Client for IBM Bluemix Globalization-as-a-Service
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
+ 
+ DON’T EDIT README.md <<<<<<<<<<<< <<<<<<<<<<<<<<<<<<<<<<< THIS MEANS YOU!
+ 
+    Edit `template-README.md` and run `npm run docs`
+ 
 -->
 
 # What is this?
 
-This is a JavaScript client and sample code for the
-[IBM Globalization](https://www.ng.bluemix.net/docs/#services/Globalization/index.html#globalization)
-Bluemix service. The IBM Globalization service makes it easy for you to provide your global customers
+This is a JavaScript SDK for the
+[Globalization Pipeline](https://www.ng.bluemix.net/docs/#services/Globalization/index.html#globalization)
+Bluemix service. The Globalization Pipeline service makes it easy for you to provide your global customers
 with Bluemix applications translated into the languages in which they work.
 
-Using the client code in this project, either from node.js, or from any browser using the jQuery sample
-code, your application can dynamically request translations of your application content
-from the IBM Globalization service.
+The SDK currently supports Node.js.
+
+<!-- and also provides some sample code showing
+how to use the service from jQuery.
 
 # jQuery Sample
 
 There is an experimental sample showing use of the use in the `jquery-sample` directory.
 See the [Readme](./jquery-sample/README.md) in that directory for more details.
 
+-->
+
 # Node.js
 
-The rest of this document explains how to use the Globalization service
-with the [node.js](http://nodejs.org) client.
+The remainder of this document explains how to use the Globalization service
+with the [Node.js](http://nodejs.org) client.
 
 For a working Bluemix application sample,
-see [gaas-nodejs-hello](https://github.com/IBM-Bluemix/gaas-nodejs-hello).
+see [gp-nodejs-sample](https://github.com/IBM-Bluemix/gp-nodejs-sample).
 
 ## Quickstart - Bluemix
 
-Add `gaas` to your project, as well as `cfenv`.
+Add `g11n-pipeline` to your project, as well as `cfenv`.
 
-    npm install --save gaas cfenv
+    npm install --save g11n-pipeline cfenv
 
 Load the gaas client object as follows (using [cfenv](https://www.npmjs.com/package/cfenv) ).
-Note that `/IBM Globalization.*/` will match any service *named* with something starting
-with `IBM Globalization` (the default). 
 
     var appEnv = require('cfenv').getAppEnv();
-    var gaasClient = require('gaas').getClient({
-       credentials:  appEnv.getService(/IBM Globalization.*/).credentials
+    var gpClient = require('g11n-pipeline').getClient({
+       appEnv: appEnv
+    });
+    
+## Using
+
+To fetch the strings for a bundle named "hello", first create a bundle accessor:
+
+    var mybundle = gpClient.bundle('hello');
+
+Then, call the `getStrings` function with a callback:
+
+    mybundle.getStrings({ languageId: 'es'}, function (err, result) {
+        if (err) {
+            // handle err..
+            console.error(err);
+        } else {
+            var myStrings = result.resourceStrings;
+            console.dir(myStrings);
+        }
     });
 
-Or, if you are providing credentials manually:
+This code snippet will output the translated strings such as the following:
 
-    var gaasClient = require('gaas').getClient({
-     credentials: {
-        uri: 'https://<GaaS server URL>',
-        api_key: '<your API key>'
-     }
-    });
+    {
+        hello:   '¡Hola!',
+        goodbye: '¡Adiós!',
+        …
+    }
 
-Note that `api_key` can be from the bound service credentials, or else a "reader key" as
-visible in the IBM Globalization service dashboard.
+## Testing
 
-To load the key "hello" in Spanish from the project named "world" you can use this code:
-
-    var myProject = gaasClient.project('world');
-
-    myProject.getResourceEntry({
-          resKey: 'hello',
-          languageID: 'es'
-        },
-        function(err, entry) {
-            if(err) {
-                console.error(err); return;
-            } else if(entry.value) {
-                console.log( entry.value ); // Print out the value!
-            } else {
-                console.error('Status is ' + entry.translationStatus); // may be: 'inProgress' or 'failed'
-            }
-    });
-
+See [TESTING.md](TESTING.md)
 
 API convention
 ==
 
-APIs which take a callback use this pattern:
+APIs take a callback and use this general pattern:
 
-`obj.function( { /*params*/ } ,  function callback(err, ...))`
+    gpClient.function( { /*params*/ } ,  function callback(err, ...))
 
 * params: an object containing input parameters, if needed.
 * `err`: if truthy, indicates an error has occured.
-* `...`: other parameters (optionally)
+* `...`: other parameters (optional)
+
+These APIs may be promisified easily using a library such as `Q`'s
+[nfcall](http://documentup.com/kriskowal/q/#adapting-node):
+
+    return Q.ninvoke(bundle, "delete", {});
+    return Q.ninvoke(gpClient, "getBundleList", {});
+
+Also, note that there are aliases from the swagger doc function names
+to the convenience name. For example, `bundle.uploadResourceStrings` can be 
+used in place of `bundle.uploadStrings`.
 
 All language identifiers are [IETF BCP47](http://tools.ietf.org/html/bcp47) codes.
 
 API reference
 ===
-{{>main}}
+{{#module name="g11n-pipeline"}}
+{{>body~}}
+{{>member-index~}}
+{{>separator~}}
+{{>members~}}
+{{/module}}
+
 
 *docs autogenerated via [jsdoc2md](https://github.com/jsdoc2md/jsdoc-to-markdown)*
 
@@ -111,7 +133,8 @@ API reference
 Support
 ===
 You can post questions about using this service in the developerWorks Answers site
-using the tag "[Globalization](https://developer.ibm.com/answers/topics/globalization/)".
+using the tag "[globalization-pipeline](https://developer.ibm.com/answers/topics/globalization-pipeline
+/)".
 
 LICENSE
 ===

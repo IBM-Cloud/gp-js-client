@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 
+var txt = '/-\\|';
+var len = txt.length;
+var n = 0;
+
 /**
- * This is just a list of which RESTful endpoints
- * should be exposed as rest_* functions.
- * @ignore
+ * Advance the spinner
  */
-module.exports ={
-    projects: [
-        'getProjectList',
-        'createProject',
-        'getProject',
-        'updateProject',
-        'deleteProject',
-        'getResourceData',
-        'updateResourceData',
-        'deleteLanguage',
-        'getResourceEntry'
-    ],
-    service: [
-        'getInfo'
-    ]
+function dospin() {
+	n++;
+	process.stderr.write(txt[n%(txt.length)]+'\b');
+}
+
+/**
+ * Write a space and delete. Clear the spinner
+ */
+function doclear() {
+	process.stderr.write(' \b');
+}
+
+module.exports = {
+	step: dospin,
+	clear: doclear 
 };

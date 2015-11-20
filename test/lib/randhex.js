@@ -14,16 +14,4 @@
  * limitations under the License.
  */
 
-body {
-    margin:  1em;
-    background-color: #fcfaf4;
-}
-
-#hello {
-    border:  1px solid gray;
-    display:  inline;
-    padding:  .25em;
-    font-size:  x-large;
-    margin:  1em;
-    font-family: 'Lora', serif;
-}
+module.exports = function() { return new Number(Math.random()*10E16,16).toString(16); }
