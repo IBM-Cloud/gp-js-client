@@ -59,7 +59,7 @@ Add `g11n-pipeline` to your project, as well as `cfenv`.
 
 Load the gaas client object as follows (using [cfenv](https://www.npmjs.com/package/cfenv) ).
 
-CSve
+    var appEnv = require('cfenv').getAppEnv();
     var gpClient = require('g11n-pipeline').getClient({
        appEnv: appEnv
     });
