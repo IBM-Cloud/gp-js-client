@@ -2,7 +2,7 @@ Globalization Pipeline Client for JavaScript
 ============================================
 
 This is the JavaScript SDK for the
-[Globalization Pipeline](https://www.ng.bluemix.net/docs/#services/Globalization/index.html#globalization)
+[Globalization Pipeline](https://www.ng.bluemix.net/docs/#services/GlobalizationPipeline/index.html#globalization)
 Bluemix service. 
 The Globalization Pipeline service makes it easy for you to provide your global customers
 with Bluemix applications translated into the languages in which they work. 
