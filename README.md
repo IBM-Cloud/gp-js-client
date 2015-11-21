@@ -24,8 +24,6 @@ JavaScript Client for Globalization Pipeline on IBM Bluemix
  
 -->
 
-# What is this?
-
 This is a JavaScript SDK for the
 [Globalization Pipeline](https://www.ng.bluemix.net/docs/#services/Globalization/index.html#globalization)
 Bluemix service. The Globalization Pipeline service makes it easy for you to provide your global customers
@@ -50,6 +48,8 @@ with the [Node.js](http://nodejs.org) client.
 
 For a working Bluemix application sample,
 see [gp-nodejs-sample](https://github.com/IBM-Bluemix/gp-nodejs-sample).
+
+[![npm version](https://badge.fury.io/js/g11n-pipeline.svg)](https://badge.fury.io/js/g11n-pipeline)
 
 ## Quickstart - Bluemix
 
