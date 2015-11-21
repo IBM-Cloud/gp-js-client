@@ -1,28 +1,5 @@
-JavaScript Client for Globalization Pipeline on IBM Bluemix
-===
-<!--
-/*	
- * Copyright IBM Corp. 2015
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
- 
- 
- DON’T EDIT README.md <<<<<<<<<<<< <<<<<<<<<<<<<<<<<<<<<<< THIS MEANS YOU!
- 
-    Edit `template-README.md` and run `npm run docs`
- 
--->
+Globalization Pipeline client
+=============================
 
 This is a JavaScript SDK for the
 [Globalization Pipeline](https://www.ng.bluemix.net/docs/#services/Globalization/index.html#globalization)
@@ -31,17 +8,8 @@ with Bluemix applications translated into the languages in which they work.
 
 The SDK currently supports Node.js.
 
-<!-- and also provides some sample code showing
-how to use the service from jQuery.
-
-# jQuery Sample
-
-There is an experimental sample showing use of the use in the `jquery-sample` directory.
-See the [Readme](./jquery-sample/README.md) in that directory for more details.
-
--->
-
-# Node.js
+Node.js
+-------
 
 The remainder of this document explains how to use the Globalization service
 with the [Node.js](http://nodejs.org) client.
@@ -457,3 +425,5 @@ using the tag "[globalization-pipeline](https://developer.ibm.com/answers/topics
 LICENSE
 ===
 Apache 2.0. See [LICENSE.txt](LICENSE.txt)
+
+Copyright IBM Corp. 2015
