@@ -252,6 +252,8 @@ describe('gaasClient.bundle()', function() {
     },done);
   });
 
+  it('Should let us call client.listUsers() once available');
+
   var myUserInfo = undefined;  
   var readerInfo = undefined;
   it('should let me create an admin user', function(done) {
@@ -305,6 +307,7 @@ describe('gaasClient.bundle()', function() {
       },{color:true});
       done();
     },done);
+    it('Should let us call client.listUsers() once available');
   });
   //   it('Should let us verify the project info', function(done) {
 //     var proj = gaasClient.project(projectId);
@@ -426,10 +429,10 @@ readerInfo{
   if(!NO_DELETE && !opts.credentials.isAdmin) {
     describe('Clean-up time for ' + instanceName, function() {
       it('should let me delete an admin user', function(done) {
-        gaasClient.deleteUser({userId: myUserInfo.userId}, done)
+        gaasClient.user(myUserInfo.userId).delete(done);
       });
       it('should let me delete a reader user', function(done) {
-        gaasClient.deleteUser({userId: readerInfo.credentials.userId}, done)
+        gaasClient.user(readerInfo.credentials.userId).delete(done);
       });
     });
   }
@@ -459,6 +462,7 @@ if(NO_DELETE) {
         });
       });
     });
+    it('Should let us call client.listUsers() once available');
   });
 }
 //  END NO_DELETE
