@@ -6,7 +6,9 @@
   "scripts": {
     "test": "mocha",
     "mocha": "mocha --reporter dot",
-    "docs": "jsdoc2md lib/client.js --template template-README.md > README.md"
+    "docs": "jsdoc2md lib/client.js --template template-README.md > README.md",
+    "vscode-typings": "tsd query node mocha --action install",
+    "coverage": "istanbul cover _mocha"
   },
   "repository": {
     "type": "git",
