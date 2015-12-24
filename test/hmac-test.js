@@ -25,6 +25,8 @@ var assert = require('assert');
 
 var GaasHmac = require('../lib/gp-hmac.js');
 
+if(process.env.NO_UTIL_TEST) { console.log('skip: ' + module.filename); return; }
+
 // test of various utilities
 
 describe('lib/gaas-hmac', function() {

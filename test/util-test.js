@@ -18,6 +18,10 @@ var expect = require('chai').expect;
 
 var assert = require('assert');
 
+// process locals
+require('./lib/localsetenv').applyLocal();
+
+if(process.env.NO_UTIL_TEST) { console.log('skip: ' + module.filename); return; }
 // test of various utilities
 
 describe('test/lib/byscheme', function() {

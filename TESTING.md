@@ -53,7 +53,10 @@ as given in the bound service:
     
     # set this to skip the 'Client' test
     NO_CLIENT_TEST=true
-    
+
+    # set this to skip the 'utilities' tests (everything else)
+    NO_UTIL_TEST=true
+        
     # set this for extra verbosity
     GP_VERBOSE=true
     
