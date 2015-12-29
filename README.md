@@ -17,17 +17,21 @@ see [gp-nodejs-sample](https://github.com/IBM-Bluemix/gp-nodejs-sample).
 
 ## Quickstart - Bluemix
 
-Add `g11n-pipeline` to your project, as well as `cfenv`.
+Add `g11n-pipeline` to your project, as well as `cfenv` and `optional`.
 
-    npm install --save g11n-pipeline cfenv
+    npm install --save g11n-pipeline cfenv optional
 
 Load the gaas client object as follows (using [cfenv](https://www.npmjs.com/package/cfenv) ).
+You can store a copy of the credentials in `local-credentials.json` for local
+operation.
 
 ```javascript
-    var appEnv = require('cfenv').getAppEnv();
-    var gpClient = require('g11n-pipeline').getClient({
-       appEnv: appEnv
-    });
+var optional = require('optional');
+var appEnv = require('cfenv').getAppEnv();
+var gpClient = require('g11n-pipeline').getClient(
+  optional('./local-credentials.json')   // if it exists, use local-credentials.json
+    || {appEnv: appEnv}                  // otherwise, the appEnv
+);
 ```
 
 ## Using
@@ -98,37 +102,42 @@ API reference
 **Author:** Steven R. Loomis  
 
 * [g11n-pipeline](#module_g11n-pipeline)
-  * _static_
-    * [.serviceRegex](#module_g11n-pipeline.serviceRegex)
-    * [.exampleCredentials](#module_g11n-pipeline.exampleCredentials)
-  * _inner_
-    * [~Client](#module_g11n-pipeline..Client)
-      * [.ping](#module_g11n-pipeline..Client+ping)
-      * [.getBundleList(opts, cb)](#module_g11n-pipeline..Client+getBundleList)
-      * [.supportedTranslations(args, cb)](#module_g11n-pipeline..Client+supportedTranslations)
-      * [.getServiceInfo(args, cb)](#module_g11n-pipeline..Client+getServiceInfo)
-      * [.createUser(args, cb)](#module_g11n-pipeline..Client+createUser)
-      * [.deleteUser(args, cb)](#module_g11n-pipeline..Client+deleteUser)
-      * [.bundle(opts)](#module_g11n-pipeline..Client+bundle) ⇒ <code>Bundle</code>
-    * [~Bundle](#module_g11n-pipeline..Bundle)
-      * [new Bundle(gp, props)](#new_module_g11n-pipeline..Bundle_new)
-      * [.getInfoFields](#module_g11n-pipeline..Bundle+getInfoFields)
-      * [.delete(opts, cb)](#module_g11n-pipeline..Bundle+delete)
-      * [.create(body, cb)](#module_g11n-pipeline..Bundle+create)
-      * [.getInfo(opts, cb)](#module_g11n-pipeline..Bundle+getInfo)
-      * [.getStrings(opts, cb)](#module_g11n-pipeline..Bundle+getStrings)
-      * [.getEntryInfo(opts, cb)](#module_g11n-pipeline..Bundle+getEntryInfo)
-      * [.uploadStrings(opts, cb)](#module_g11n-pipeline..Bundle+uploadStrings)
-      * [.update(opts, cb)](#module_g11n-pipeline..Bundle+update)
-      * [.updateStrings(opts, cb)](#module_g11n-pipeline..Bundle+updateStrings)
-      * [.updateEntryInfo(opts, cb)](#module_g11n-pipeline..Bundle+updateEntryInfo)
-    * [~getClient(params)](#module_g11n-pipeline..getClient) ⇒ <code>Client</code>
+    * _static_
+        * [.serviceRegex](#module_g11n-pipeline.serviceRegex)
+        * [.exampleCredentials](#module_g11n-pipeline.exampleCredentials)
+    * _inner_
+        * [~Client](#module_g11n-pipeline..Client)
+            * [.ping](#module_g11n-pipeline..Client+ping)
+            * [.getBundleList(opts, cb)](#module_g11n-pipeline..Client+getBundleList)
+            * [.supportedTranslations(args, cb)](#module_g11n-pipeline..Client+supportedTranslations)
+            * [.getServiceInfo(args, cb)](#module_g11n-pipeline..Client+getServiceInfo)
+            * [.createUser(args, cb)](#module_g11n-pipeline..Client+createUser)
+            * [.bundle(opts)](#module_g11n-pipeline..Client+bundle) ⇒ <code>Bundle</code>
+            * [.user(opts)](#module_g11n-pipeline..Client+user) ⇒ <code>User</code>
+        * [~Bundle](#module_g11n-pipeline..Bundle)
+            * [new Bundle(gp, props)](#new_module_g11n-pipeline..Bundle_new)
+            * [.getInfoFields](#module_g11n-pipeline..Bundle+getInfoFields)
+            * [.delete(opts, cb)](#module_g11n-pipeline..Bundle+delete)
+            * [.create(body, cb)](#module_g11n-pipeline..Bundle+create)
+            * [.getInfo(opts, cb)](#module_g11n-pipeline..Bundle+getInfo)
+            * [.getStrings(opts, cb)](#module_g11n-pipeline..Bundle+getStrings)
+            * [.getEntryInfo(opts, cb)](#module_g11n-pipeline..Bundle+getEntryInfo)
+            * [.uploadStrings(opts, cb)](#module_g11n-pipeline..Bundle+uploadStrings)
+            * [.update(opts, cb)](#module_g11n-pipeline..Bundle+update)
+            * [.updateStrings(opts, cb)](#module_g11n-pipeline..Bundle+updateStrings)
+            * [.updateEntryInfo(opts, cb)](#module_g11n-pipeline..Bundle+updateEntryInfo)
+        * [~User](#module_g11n-pipeline..User)
+            * [new User(gp, props)](#new_module_g11n-pipeline..User_new)
+            * [.delete(cb)](#module_g11n-pipeline..User+delete)
+        * [~getClient(params)](#module_g11n-pipeline..getClient) ⇒ <code>Client</code>
+        * [~_initSubObject(o, gp, props)](#module_g11n-pipeline.._initSubObject)
 
 <a name="module_g11n-pipeline.serviceRegex"></a>
 ### g11n-pipeline.serviceRegex
 a Regex for matching the service.
 Usage: var credentials = require('cfEnv')
      .getAppEnv().getServiceCreds(gp.serviceRegex);
+(except that it needs to match by label)
 
 **Kind**: static property of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
 **Properties**
@@ -152,14 +161,14 @@ Example credentials
 ### g11n-pipeline~Client
 **Kind**: inner class of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
 
-  * [~Client](#module_g11n-pipeline..Client)
+* [~Client](#module_g11n-pipeline..Client)
     * [.ping](#module_g11n-pipeline..Client+ping)
     * [.getBundleList(opts, cb)](#module_g11n-pipeline..Client+getBundleList)
     * [.supportedTranslations(args, cb)](#module_g11n-pipeline..Client+supportedTranslations)
     * [.getServiceInfo(args, cb)](#module_g11n-pipeline..Client+getServiceInfo)
     * [.createUser(args, cb)](#module_g11n-pipeline..Client+createUser)
-    * [.deleteUser(args, cb)](#module_g11n-pipeline..Client+deleteUser)
     * [.bundle(opts)](#module_g11n-pipeline..Client+bundle) ⇒ <code>Bundle</code>
+    * [.user(opts)](#module_g11n-pipeline..Client+user) ⇒ <code>User</code>
 
 <a name="module_g11n-pipeline..Client+ping"></a>
 #### client.ping
@@ -223,20 +232,7 @@ Note: This function may be deprecated soon, but won't be removed.
 | args.bundles | <code>Array</code> | set of accessible bundle ids or ['*'] to mean “all bundles” |
 | args.metadata | <code>Object</code> | optional key/value pairs for user metadata |
 | args.externalId | <code>string</code> | optional external user ID for your application’s use |
-| cb | <code>basicCallback</code> |  |
-
-<a name="module_g11n-pipeline..Client+deleteUser"></a>
-#### client.deleteUser(args, cb)
-Delete a user.
-Note: This function may be deprecated soon, but won't be removed.
-
-**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| args | <code>object</code> | TBD |
-| args.userId | <code>string</code> | user ID to be deleted. |
-| cb | <code>basicCallback</code> |  |
+| cb | <code>basicCallback</code> | passed a new User object |
 
 <a name="module_g11n-pipeline..Client+bundle"></a>
 #### client.bundle(opts) ⇒ <code>Bundle</code>
@@ -250,11 +246,23 @@ Call create() on the bundle to create it.
 | --- | --- | --- |
 | opts | <code>Object</code> | String (id) or map {id: bundleId, serviceInstance: serviceInstanceId} |
 
+<a name="module_g11n-pipeline..Client+user"></a>
+#### client.user(opts) ⇒ <code>User</code>
+Create a user access object.
+This doesn’t create the user itself, just a handle object.
+Use createUser() to create a user.
+
+**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | String (id) or map {id: bundleId, serviceInstance: serviceInstanceId} |
+
 <a name="module_g11n-pipeline..Bundle"></a>
 ### g11n-pipeline~Bundle
 **Kind**: inner class of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
 
-  * [~Bundle](#module_g11n-pipeline..Bundle)
+* [~Bundle](#module_g11n-pipeline..Bundle)
     * [new Bundle(gp, props)](#new_module_g11n-pipeline..Bundle_new)
     * [.getInfoFields](#module_g11n-pipeline..Bundle+getInfoFields)
     * [.delete(opts, cb)](#module_g11n-pipeline..Bundle+delete)
@@ -402,6 +410,32 @@ Note: This function may be deprecated soon, but won't be removed.
 | opts.partnerStatus | <code>string</code> | translation status maintained by partner |
 | cb | <code>basicCallback</code> |  |
 
+<a name="module_g11n-pipeline..User"></a>
+### g11n-pipeline~User
+**Kind**: inner class of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
+
+* [~User](#module_g11n-pipeline..User)
+    * [new User(gp, props)](#new_module_g11n-pipeline..User_new)
+    * [.delete(cb)](#module_g11n-pipeline..User+delete)
+
+<a name="new_module_g11n-pipeline..User_new"></a>
+#### new User(gp, props)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| gp | <code>Client</code> | parent g11n-pipeline client object |
+| props | <code>Object</code> | properties to inherit |
+
+<a name="module_g11n-pipeline..User+delete"></a>
+#### user.delete(cb)
+Delete this user
+
+**Kind**: instance method of <code>[User](#module_g11n-pipeline..User)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| cb | <code>basicCallback</code> | callback with success or failure |
+
 <a name="module_g11n-pipeline..getClient"></a>
 ### g11n-pipeline~getClient(params) ⇒ <code>Client</code>
 Construct a g11n-pipeline client. 
@@ -418,6 +452,18 @@ params.credentials is required unless params.appEnv is supplied.
 | params.credentials.userId | <code>string</code> | service API key. |
 | params.credentials.password | <code>string</code> | service API key. |
 | params.credentials.instanceId | <code>string</code> | instance ID |
+
+<a name="module_g11n-pipeline.._initSubObject"></a>
+### g11n-pipeline~_initSubObject(o, gp, props)
+Init a subsidiary client object from a Client
+
+**Kind**: inner method of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| o | <code>Object</code> | client object to init |
+| gp | <code>Client</code> | parent g11n-pipeline client object |
+| props | <code>Object</code> | properties to inherit |
 
 
 
