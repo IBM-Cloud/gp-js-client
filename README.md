@@ -195,6 +195,7 @@ Do we have access to the server?
 <a name="module_g11n-pipeline..Client+supportedTranslations"></a>
 #### client.supportedTranslations(args, cb)
 This function returns a map from source language(s) to target language(s).
+Example: `{ en: ['de', 'ja']}` (English translates to German and Japanese.)
 
 **Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
 
@@ -322,13 +323,15 @@ Delete this bundle.
 
 <a name="module_g11n-pipeline..Bundle+create"></a>
 #### bundle.create(body, cb)
-Create this bundle.
+Create this bundle with the specified params.
+Note that on failure, such as an illegal language being specified,
+the bundle is not created.
 
 **Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| body | <code>Object</code> | - |
+| body | <code>Object</code> |  |
 | body.sourceLanguage | <code>string</code> | bcp47 id of source language such as 'en' |
 | body.targetLanguages | <code>Array</code> | optional array of target languages |
 | body.metadata | <code>Object</code> | optional metadata for the bundle |
