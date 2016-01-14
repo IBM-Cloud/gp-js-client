@@ -86,7 +86,8 @@ function expectResCORSHeaders(res) {
   expect(res.headers).to.be.ok;
   expectSecurityHeaders(res);
   expect(res.headers).to.contain.key('access-control-allow-headers');
-  expect(res.headers['access-control-allow-headers']).to.equal('x-requested-with, Content-Type, api-key, Authorization, Date');
+  expect(res.headers['access-control-allow-headers'])
+    .to.match(/^x-requested-with, Content-Type, api-key, Authorization/); // has Date in some versions
   expect(res.headers).to.contain.key('access-control-allow-methods');
   expect(res.headers['access-control-allow-methods']).to.equal('GET');
   expect(res.headers).to.contain.key('access-control-allow-origin');

@@ -26,7 +26,7 @@ var interval;
  */
 function dospin() {
     if(!interval) {
-        interval = spinner();
+        interval = spinner({delay:50});
     }
 }
 
