@@ -29,7 +29,7 @@ module.exports.getCredentials = function getCredentials() {
     creds = {
       // api_key: apiKeyEnv,
       url: process.env.GP_URL || process.env.GAAS_API_URL || null,
-      instanceId: process.env.GP_INSTANCE_ID || process.env.GAAS_INSTANCE_ID || "n/a",
+      instanceId: process.env.GP_INSTANCE_ID || process.env.GAAS_INSTANCE_ID || null /*admin*/,
       userId: process.env.GP_ADMIN_ID || process.env.GAAS_ADMIN_ID || process.env.GAAS_USER_ID || null,
       password: process.env.GP_ADMIN_PASSWORD || process.env.GAAS_ADMIN_PASSWORD || process.env.GAAS_PASSWORD || null,
       isAdmin: ((process.env.GP_ADMIN_ID || process.env.GAAS_ADMIN_ID)!=null)?true:false
@@ -86,7 +86,7 @@ function expectResCORSHeaders(res) {
   expect(res.headers).to.be.ok;
   expectSecurityHeaders(res);
   expect(res.headers).to.contain.key('access-control-allow-headers');
-  expect(res.headers['access-control-allow-headers']).to.equal('x-requested-with, Content-Type, api-key, Authorization');
+  expect(res.headers['access-control-allow-headers']).to.equal('x-requested-with, Content-Type, api-key, Authorization, Date');
   expect(res.headers).to.contain.key('access-control-allow-methods');
   expect(res.headers['access-control-allow-methods']).to.equal('GET');
   expect(res.headers).to.contain.key('access-control-allow-origin');
@@ -151,7 +151,8 @@ module.exports.expectCORSURL = function expectCORSURL(swaggerUrl, auth, str) {
   methods.forEach(function (method) {
     var optionsGet = optionsCreate(swaggerUrl, method);
     it('Should let me ' + method + ' ' + swaggerUrl + ' w/ CORS ' + (auth?' (auth) ':' ') + str, function (done) {
-      var oreq = byscheme(swaggerUrl).request(optionsAuth(optionsGet, auth),
+      optionsGet = optionsAuth(optionsGet, auth);
+      var oreq = byscheme(swaggerUrl).request(optionsGet,
         function (res) {
           if(method === 'GET') {
             expect(res.statusCode).to.equal(200);
@@ -160,7 +161,11 @@ module.exports.expectCORSURL = function expectCORSURL(swaggerUrl, auth, str) {
           }
           expectResCORSGET(res, done);
         })
-        .on('error', done);
+        .on('error', function(e) {
+            // console.dir(e);
+            // console.dir(optionsGet);
+            done(Error(e.message+':'+e.code));
+        });
       oreq.end();
     });
   });

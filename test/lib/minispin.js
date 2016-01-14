@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
-var txt = '/-\\|';
-var len = txt.length;
-var n = 0;
+/**
+ * Used to have my own implementation. Not anymore.
+ */
+var spinner = require('char-spinner');
+
+var interval;
 
 /**
- * Advance the spinner
+ * Start the spinner. No effect if already started.
  */
 function dospin() {
-	n++;
-	process.stderr.write(txt[n%(txt.length)]+'\b');
+    if(!interval) {
+        interval = spinner();
+    }
 }
 
 /**
- * Write a space and delete. Clear the spinner
+ * Stop the spinner.
  */
 function doclear() {
-	process.stderr.write(' \b');
+    interval = clearInterval(interval);
 }
 
 module.exports = {

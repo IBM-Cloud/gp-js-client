@@ -109,9 +109,8 @@ API reference
 
 Support
 ===
-You can post questions about using this service in the developerWorks Answers site
-using the tag "[globalization-pipeline](https://developer.ibm.com/answers/topics/globalization-pipeline
-/)".
+You can post questions about using this service to StackOverflow
+using the tag "[globalization-pipeline](http://stackoverflow.com/questions/tagged/globalization-pipeline/)".
 
 LICENSE
 ===

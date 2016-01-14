@@ -28,7 +28,7 @@ var randHex = require('./lib/randhex');
 var gaasTest = require ('./lib/gp-test');
 var GaasHmac = require('../lib/gp-hmac');
 
-if(process.env.NO_CLIENT_TEST) { console.log('skip: ' + module.filename); return; }
+if(process.env.NO_CLIENT_TEST) { describe = describe.skip;  }
 var gaas = require('../index.js'); // required, below
 var gaasClient;
 
@@ -46,14 +46,22 @@ var projectId = process.env.GP_PROJECT  || 'MyHLProject'+Math.random();
 var projectId2 = process.env.GP_PROJECT2 || 'MyOtherHLProject'+Math.random();
 var projectId3 = process.env.GP_PROJECT3 || 'MyUserProject'+Math.random();
 
+var DELAY_AVAIL = process.env.DELAY_AVAIL || false;
+
+// Delay prefix (for QRU)
+var DELAY = (DELAY_AVAIL)?"@DELAY@":"";
+
+// MS to loop when waiting for things to happen.
+var UNTIL_DELAY = 1024;
+
 var sourceData = {
-    "key1": "@DELAY@First string to translate",
-    "key2": "Second string to translate"
+    "key1": DELAY+"First string to translate",
+    "key2": "Second string to\n\"\\\'\ttranslate"
 };
 var str3 = 'The main pump fixing screws with the correct strength class';
 var qruData = {
   key1: "Фирст стринг то транслате",
-  key2: "Сецонд стринг то транслате"
+  key2: "Сецонд стринг то\n\"\\\'\tтранслате"
 };
 
 var opts = {
@@ -150,6 +158,7 @@ describe('gaasClient.supportedTranslations()', function() {
       if(VERBOSE) console.dir(translations);
       expect(translations).to.include.keys('en');
       expect(translations.en).to.include('de');
+      expect(translations.en).to.include('es');
       done();
     });
   });
@@ -161,10 +170,26 @@ var instanceName = (opts.credentials.instanceId) // given
 
 
 describe('gaasClient.setup instance ' + instanceName, function() {
-  it('should’t let me query the bundle list yet for ' + randInstanceName, function(done) {
+  it('should’t let me call deprecated getBundleList() yet for ' + randInstanceName, function(done) {
     // ADMIN:  instance should not exist.
     try {
       gaasClient.getBundleList({serviceInstance: randInstanceName}, function(err, data) {
+        if(err) {
+          if(VERBOSE) console.dir(err);
+          done();
+        } else {
+          done(Error('Expected failure here.'));
+        }
+      });
+    } catch(e) {
+      if(VERBOSE) console.dir(e);
+      done(); // expect
+    }
+  });
+  it('should’t let me call bundles() yet for ' + randInstanceName, function(done) {
+    // ADMIN:  instance should not exist.
+    try {
+      gaasClient.bundles({serviceInstance: randInstanceName}, function(err, data) {
         if(err) {
           if(VERBOSE) console.dir(err);
           done();
@@ -201,7 +226,7 @@ describe('gaasClient.setup instance ' + instanceName, function() {
       });
     });
   });
-  it('should now let me query the bundle list (cb)', function(done) {
+  it('should now let me call deprecated getBundleList() (cb)', function(done) {
     gaasClient.getBundleList({serviceInstance: instanceName}, function(err, data) {
       if(err) {
         done(err);
@@ -217,13 +242,23 @@ describe('gaasClient.setup instance ' + instanceName, function() {
       }
     });
   });
-  // it('should now let me query the bundle list (promises!)', function(done) {
-  //   gaasClient.getBundleList({serviceInstance: instanceName})
-  //   .then(function(data) {
-  //       expect(data.length).to.equal(0);
-  //       done();
-  //   },done);
-  // });
+  it('should now let me call bundles() (cb)', function(done) {
+    gaasClient.bundles({serviceInstance: instanceName}, function(err, data) {
+      if(err) {
+        done(err);
+      } else {
+        if(opts.credentials.isAdmin) {
+          expect(data).to.be.ok;
+          expect(data).to.eql({});
+        } else {
+          if(VERBOSE && data.length >0) {
+            console.log('Note: You have pre existing instances. That’s probably ok, though best to run this test with a clean slate.');
+          }
+        }
+        done();
+      }
+    });
+  });
 });
 
 describe('gaasClient.bundle()', function() {
@@ -237,6 +272,23 @@ describe('gaasClient.bundle()', function() {
     expect(proj.id).to.equal('Something');
     done();
   });
+  it('Should fail if bundle does not exist', function(done) {
+    var bundle = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
+    expect(bundle.sourceLanguage).to.not.be.ok;
+    bundle.getInfo({}, function(err, bundle2) {
+        if(err) return done();
+        done('Expected error.');
+    });
+  });
+  it('Should fail if resource does not exist', function(done) {
+    var bundle = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
+    expect(bundle.sourceLanguage).to.not.be.ok;
+    bundle.entry({languageId: 'tlh', resourceKey: 'key0'})
+       .getInfo({}, function(err, entry2) {
+        if(err) return done();
+        done('Expected error.');
+    });
+  });
   it('Should let us create', function(done) {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
     Q.ninvoke(proj, "create", {sourceLanguage: 'en', targetLanguages: ['es','qru']})
@@ -244,18 +296,207 @@ describe('gaasClient.bundle()', function() {
       done();
     }, done);
   });
-  it('should now let me query the bundle list (promises!)', function(done) {
+  it('Should now be able to get info', function(done) {
+    var bundle = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
+    expect(bundle.sourceLanguage).to.not.be.ok;
+    bundle.getInfo({}, function(err, bundle2) {
+        if(err) return done(err); // not ok
+        expect(bundle2).to.be.ok;
+        expect(bundle2.sourceLanguage).to.equal('en');
+        done();
+    });
+  });
+  it('should now let me call bundles() and see our bundle', function(done) {
+    gaasClient.bundles({serviceInstance: instanceName}, function(err, list) {
+        if(err) return done(err);
+        expect(list).to.be.ok;
+        expect(list).to.contain.keys(projectId);
+        expect(list[projectId]).to.be.ok;
+        expect(list[projectId].sourceLanguage).to.not.be.ok;
+        // it's a bundle, call it
+        list[projectId].getInfo({}, function(err, bundle2) {
+            if(err) return done(err);
+            expect(bundle2).to.be.ok;
+            expect(bundle2.sourceLanguage).to.equal('en');
+            return done();
+        });
+    });
+  });
+  it('Should let us upload some strings', function(done) {
+    var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
+    proj.uploadStrings({
+        languageId: 'en',
+        strings: sourceData
+    }, done);
+  });
+  if(DELAY_AVAIL) it('should let us verify the target entry(qru).key1 is in progress', function(done) {
+    var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
+    proj.getEntryInfo({ languageId: 'qru', resourceKey: 'key1'},
+    function(err, data) {
+      if(err) {done(err); return; }
+    //   console.dir(data);
+    //   expect(data.language).to.equal('en');
+      expect(data).to.have.a.property('resourceEntry');
+      expect(data.resourceEntry).to.have.a.property('translationStatus');
+      expect(data.resourceEntry.translationStatus).to.equal('IN_PROGRESS');
+    //   expect(JSON.stringify(data.resourceStrings)).to.equal(JSON.stringify(qruData));
+      done();
+    });
+  });
+  // In any event, wait until key2 has SUCCEEDED. if @DELAY@ is used this may take some time, otherwise could already be done.
+  it('Should let us wait until key2 has TRANSLATED', function(done) {
+    var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
+    var entry = proj.entry({ languageId: 'qru', resourceKey: 'key2'});
+    var loopy = function() {
+        minispin.step();
+        entry.getInfo({},
+            function(err, data) {
+                if(err) {minispin.clear(); done(err); return; }
+                if(VERBOSE) console.dir(data);
+                if(data.translationStatus === 'IN_PROGRESS') {
+                    setTimeout(loopy, 1024);
+                } else {
+                    expect(data.translationStatus).to.equal('TRANSLATED');
+                    expect(data.value).to.equal(qruData.key2);
+                    minispin.clear();
+                    done();
+                }
+            });
+    };
+    process.nextTick(loopy);
+  });
+//   it('should let us verify the target entry(qru) is in progress', function(done) {
+//     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
+//     proj.getEntryInfo({ languageId: 'qru', resourceKey: 'key1'},
+//     function(err, data) {
+//       if(err) {done(err); return; }
+//       console.dir(data);
+//     //   expect(data.language).to.equal('en');
+//       expect(data).to.have.a.property('translationStatus');
+//       expect(data.resourceEntry.translationStatus).to.equal('IN_PROGRESS');
+//     //   expect(JSON.stringify(data.resourceStrings)).to.equal(JSON.stringify(qruData));
+//       done();
+//     });
+//   });
+  it('should let us verify the target data(qru)', function(done) {
+    var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
+    proj.getStrings({ languageId: 'qru'},
+    function(err, data) {
+      if(err) {done(err); return; }
+    //   console.dir(data);
+    //   expect(data.language).to.equal('en');
+      expect(data).to.have.a.property('resourceStrings');
+      expect(JSON.stringify(data.resourceStrings)).to.equal(JSON.stringify(qruData));
+      done();
+    });
+  });
+  it('should let us verify some source entries', function(done) {
+    var bund = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
+    var entry = bund.entry({languageId:'en',resourceKey:'key1'});
+    expect(entry.resourceKey).to.equal('key1');
+    expect(entry.languageId).to.equal('en');
+    expect(entry.value).to.not.be.ok;
+    entry.getInfo({}, function(err, entry2) {
+        if(err) return(done(err));
+        expect(entry2).to.be.ok;
+        expect(entry2.resourceKey).to.equal(entry.resourceKey);
+        expect(entry2.languageId).to.equal(entry.languageId);
+        expect(entry2.value).to.be.ok;
+        expect(entry2.value).to.equal(sourceData.key1);
+        done();
+    });
+  });
+  it('should let us verify some target entries', function(done) {
+    var bund = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
+    var entry = bund.entry({languageId:'qru',resourceKey:'key1'});
+    expect(entry.resourceKey).to.equal('key1');
+    expect(entry.languageId).to.equal('qru');
+    expect(entry.value).to.not.be.ok;
+    entry.getInfo({}, function(err, entry2) {
+        if(err) return(done(err));
+        expect(entry2).to.be.ok;
+        expect(entry2.resourceKey).to.equal(entry.resourceKey);
+        expect(entry2.languageId).to.equal(entry.languageId);
+        expect(entry2.value).to.be.ok;
+        expect(entry2.value).to.equal(qruData.key1);
+        done();
+    });
+  });
+  it('should NOT us update the wrong language(tlh)', function(done) {
+    var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
+    proj.uploadStrings({ languageId: 'tlh',
+                              strings: sourceData},
+    function(err){if(err){done(); return;} done(Error('should have failed')); });
+  });
+  it('should let us verify the source data(en)', function(done) {
+    var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
+    proj.getStrings({ languageId: 'en'},
+    function(err, data) {
+      if(err) {done(err); return; }
+    //   expect(data.language).to.equal('en');
+      expect(data).to.have.a.property('resourceStrings');
+      expect(JSON.stringify(data.resourceStrings)).to.equal(JSON.stringify(sourceData));
+      done();
+    });
+  });
+  it('should now let me call old getBundleList  (promises!)', function(done) {
     Q.ninvoke(gaasClient, "getBundleList", {serviceInstance: instanceName})
     .then(function(data) {
         expect(data).to.contain(projectId);
         done();
     },done);
   });
+  it('Should let me update the review status of a bundle', function(done) {
+    var entry = gaasClient
+                    .bundle({id:projectId, serviceInstance: instanceName})
+                    .entry({languageId:'qru',resourceKey:'key1'});
+    entry.update({
+        reviewed: true
+    }, function(err, data) {
+        if(err) return done(err);
+        
+        entry.getInfo({},
+        function(err, entry2) {
+            if(err) return done(err);
+            expect(entry2.reviewed).to.be.true;
+            entry.update({
+                reviewed: false
+            }, function(err, data) {
+                if(err) return done(err);
+                expect(entry2.reviewed).to.be.true; // unchanged
+                entry.getInfo({},
+                function(err, entry3){ 
+                    if(err) return done(err);
+                    expect(entry3.reviewed).to.be.false;
+                    done();
+                });
+            })
+        });
+    });
+  });
 
-  it('Should let us call client.listUsers() once available');
+  it('Should let us call client.users()', function (done) {
+      gaasClient.users({ serviceInstance: instanceName }, function (err, users) {
+          if (err) return done(err);
+          expect(users).to.be.ok;
+          done();
+      });
+  });
 
   var myUserInfo = undefined;  
   var readerInfo = undefined;
+  var adminInfo  = undefined;
+  var gaasReaderClient = undefined;
+  var gaasAdminClient = undefined;
+  it('should not let me create a bad user', function(done) {
+    Q.ninvoke(gaasClient, "createUser", {serviceInstance: instanceName,
+                           type:'SOME_BAD_TYPE',
+                           bundles: ['*'],
+                           displayName: 'Somebody'})
+    .then(function(data) {
+      done(Error('Should have failed.'));
+    },function(err){done();});
+  });
   it('should let me create an admin user', function(done) {
     Q.ninvoke(gaasClient, "createUser", {serviceInstance: instanceName,
                            type:'ADMINISTRATOR',
@@ -276,6 +517,7 @@ describe('gaasClient.bundle()', function() {
         password: data.user.password,
         url: opts.credentials.url
       };
+      adminInfo = { credentials: myUserInfo };
       done();
     },done);
   });
@@ -307,29 +549,357 @@ describe('gaasClient.bundle()', function() {
       },{color:true});
       done();
     },done);
-    it('Should let us call client.listUsers() once available');
+    it('Should let us call client.users()', function (done) {
+        gaasClient.users({ serviceInstance: instanceName }, function (err, users) {
+            if (err) return done(err);
+            expect(users).to.be.ok('object');
+            expect(users).to.contain.keys([myUserInfo.userId, readerInfo.credentials.userId]);
+            done();
+        });
+    });
   });
-  //   it('Should let us verify the project info', function(done) {
-//     var proj = gaasClient.project(projectId);
-//     proj.getInfo({}, function(err, proj2) {
-//       if(err) { done(err); return; }
-//       expect(proj2.readerKey).to.be.a('string');
-//       expect(proj2.id).to.equal(projectId);
-//       expect(proj2.sourceLanguage).to.equal('en');
-//       expect(proj2.targetLanguages).to.include('es');
-//       expect(proj2.targetLanguages).to.include('qru');
-//       expect(proj2.targetLanguages).to.not.include('zxx');
-//       done();
-//     });
-//   });
-//   it('Should NOT let us verify nonexistent ' + projectId2, function(done) {
-//     var proj = gaasClient.project(projectId2);
-//     proj.getInfo({}, function(err, proj2) {
-//       if(err) { done(); return; }
-// console.dir(proj2);
-//       done(Error('expected this to fail.'));
-//     });
-//   });
+
+  // Let's test that reader user
+    
+  it('Should verify the reader user can ping', function(done) {
+    expect(myUserInfo).to.be.ok; // otherwise, user creation failed
+    gaasReaderClient = gaas.getClient(readerInfo);
+    gaasReaderClient.ping({}, done);
+  });
+  
+  it('Should verify the admin user can ping', function(done) {
+    expect(adminInfo).to.be.ok; // otherwise, user creation failed
+    gaasAdminClient = gaas.getClient(adminInfo);
+    gaasAdminClient.ping({}, done);
+  });
+  
+  // Metadata test here.
+ (describe.skip || describe) ('Metadata Test [broken, server side bugs]', function() {
+        var kinds = {
+            bundle: function () { 
+                return gaasAdminClient
+                    .bundle(projectId3); 
+            },
+            user: function () { 
+                return gaasAdminClient
+                    .user(readerInfo.credentials.userId); 
+            },
+            entry: function () { 
+                return gaasAdminClient
+                    .bundle(projectId3)
+                    .entry({languageId:'en', resourceKey:'hello'}); 
+            }
+        };
+        Object.keys(kinds).forEach(function(k) {
+            describe('Metadata test over ' + k, function() {
+                it('Should verify that the test object exists', function(done) {
+                    var t = kinds[k]();
+                    expect(t).to.be.ok;
+                    done();
+                });
+                it('Should verify that the test object has clear metadata', function(done) {
+                    var t = kinds[k]();
+                    expect(t).to.be.ok; // to avoid cascading failure
+                    t.getInfo({}, function(err, t2) {
+                        if(err) return done(err);
+                        expect(t2).to.be.ok;
+                        expect(t2.metadata).to.deep.equal({});
+                        done();
+                    });
+                });
+                it('Should set k=v', function(done) {
+                    var t = kinds[k]();
+                    expect(t).to.be.ok; // to avoid cascading failure
+                    t.update({metadata: {k:"v"}},done);
+                });
+                it('Should do noop update', function(done) {
+                    var t = kinds[k]();
+                    expect(t).to.be.ok; // to avoid cascading failure
+                    t.update({},done);
+                });
+                it('Should verify that the test object has k=v', function(done) {
+                    var t = kinds[k]();
+                    expect(t).to.be.ok; // to avoid cascading failure
+                    t.getInfo({}, function(err, t2) {
+                        if(err) return done(err);
+                        expect(t2).to.be.ok;
+                        expect(t2.metadata).to.deep.equal({k:"v"});
+                        done();
+                    });
+                });
+                it('Should do noop update', function(done) {
+                    var t = kinds[k]();
+                    expect(t).to.be.ok; // to avoid cascading failure
+                    t.update({},done);
+                });
+                it('Should verify that the test object still has k=v', function(done) {
+                    var t = kinds[k]();
+                    expect(t).to.be.ok; // to avoid cascading failure
+                    t.getInfo({}, function(err, t2) {
+                        if(err) return done(err);
+                        expect(t2).to.be.ok;
+                        expect(t2.metadata).to.deep.equal({k:"v"});
+                        done();
+                    });
+                });
+                it('Should set k2=v2,k3=v3', function(done) {
+                    var t = kinds[k]();
+                    expect(t).to.be.ok; // to avoid cascading failure
+                    t.update({metadata: {k2:"v2",k3:"v3"}},done);
+                });
+                it('Should verify that the test object has k=v,k2=v2,k3=v3', function(done) {
+                    var t = kinds[k]();
+                    expect(t).to.be.ok; // to avoid cascading failure
+                    t.getInfo({}, function(err, t2) {
+                        if(err) return done(err);
+                        expect(t2).to.be.ok;
+                        expect(t2.metadata).to.deep.equal({k:"v",k2:"v2",k3:"v3"});
+                        done();
+                    });
+                });
+                it('Should set k2=v2x,k=null,k3=', function(done) {
+                    var t = kinds[k]();
+                    expect(t).to.be.ok; // to avoid cascading failure
+                    t.update({metadata: {k2:"v2x",k:null,k3:""}},done);
+                });
+                it('Should verify that the test object has k2=v2x', function(done) {
+                    var t = kinds[k]();
+                    expect(t).to.be.ok; // to avoid cascading failure
+                    t.getInfo({}, function(err, t2) {
+                        if(err) return done(err);
+                        expect(t2).to.be.ok;
+                        expect(t2.metadata).to.deep.equal({k2:"v2x",k3:""});
+                        done();
+                    });
+                });
+                it('Should set null (clear metadata)', function(done) {
+                    var t = kinds[k]();
+                    expect(t).to.be.ok; // to avoid cascading failure
+                    t.update({metadata: null},done); // clear
+                });
+                it('Should verify that the test object has clear metadata again', function(done) {
+                    var t = kinds[k]();
+                    expect(t).to.be.ok; // to avoid cascading failure
+                    t.getInfo({}, function(err, t2) {
+                        if(err) return done(err);
+                        expect(t2).to.be.ok;
+                        expect(t2.metadata).to.deep.equal({});
+                        done();
+                    });
+                });
+            });
+        });
+    });
+        
+  it('Should verify the reader user can NOT getInfo ' + projectId, function(done) {
+    //  console.dir(readerInfo);
+    expect(gaasReaderClient).to.be.ok; // otherwise, user creation failed
+    gaasReaderClient
+        .bundle(projectId)
+        .getInfo({}, function(err, bund) {
+            expect(err).to.be.ok;
+            done();
+        });
+  });
+  
+ it('should verify the reader user can NOT read the source data(en)', function(done) {
+    var proj = gaasReaderClient.bundle(projectId);
+    proj.getStrings({ languageId: 'en'},
+    function(err, data) {
+        expect(err).to.be.ok;
+        done();
+    });
+  });
+ it('should verify the reader user can NOT read the target data(qru)', function(done) {
+    var proj = gaasReaderClient.bundle(projectId);
+    proj.getStrings({ languageId: 'qru'},
+    function(err, data) {
+        expect(err).to.be.ok;
+        done();
+    });
+  });
+
+  it('Should verify the reader user can NOT read qru:key1 in ' + projectId, function(done) {
+    expect(gaasReaderClient).to.be.ok; // otherwise, user creation failed
+    gaasReaderClient
+        .bundle(projectId)
+        .entry({languageId: 'qru', resourceKey: 'key1'})
+        .getInfo({}, function(err, r) {
+            expect(err).to.be.ok;
+            done();
+        });
+  });
+  
+    it('Should verify the reader user can NOT read en:key1 in ' + projectId, function(done) {
+    expect(gaasReaderClient).to.be.ok; // otherwise, user creation failed
+    gaasReaderClient
+        .bundle(projectId)
+        .entry({languageId: 'en', resourceKey: 'key1'})
+        .getInfo({}, function(err, r) {
+            expect(err).to.be.ok;
+            done();
+        });
+  });
+    
+  it('Should change the reader user to read ' + projectId, function(done) {
+    expect(gaasAdminClient).to.be.ok; // otherwise, user creation failed
+    gaasAdminClient
+        .user(readerInfo.credentials.userId)
+        .update({
+            bundles: [projectId3, projectId] // change bundles
+        }, done);
+  });
+  
+  it('Should verify the admin user can getInfo ' + projectId, function(done) {
+    //   console.dir(adminInfo);
+    expect(gaasAdminClient).to.be.ok; // otherwise, user creation failed
+    gaasAdminClient
+        .bundle(projectId)
+        .getInfo({}, function(err, bund) {
+            if(err) return done(err);
+            expect(bund).to.be.ok;
+            expect(bund.sourceLanguage).to.equal('en');
+            expect(bund.metadata).to.deep.equal({});
+            done();
+        });
+  });
+  
+  it('Should let the admin user set metadata ' + projectId, function(done) {
+    expect(gaasAdminClient).to.be.ok; // otherwise, user creation failed
+    gaasAdminClient
+        .bundle(projectId)
+        .update({
+            metadata: { key: 'value'}
+        }, done);
+  });
+
+
+  it('Should verify the admin user can read a key ' + projectId, function(done) {
+    expect(gaasAdminClient).to.be.ok; // otherwise, user creation failed
+    gaasAdminClient
+        .bundle(projectId)
+        .entry({languageId: 'qru', resourceKey: 'key1'})
+        .getInfo({}, function(err, r) {
+            if(err) return done(err);
+            expect(r).to.be.ok;
+            expect(r.value).to.equal(qruData[r.resourceKey]);
+            done();
+        });
+  });
+
+  it('should let the admin user verify the target data(qru)', function(done) {
+    var proj = gaasAdminClient.bundle(projectId);
+    proj.getStrings({ languageId: 'qru'},
+    function(err, data) {
+      if(err) {done(err); return; }
+      expect(data).to.have.a.property('resourceStrings');
+      expect(JSON.stringify(data.resourceStrings)).to.equal(JSON.stringify(qruData));
+      done();
+    });
+  });
+
+  it('(not allowed) Should verify the reader user can now read a key ' + projectId/*, function(done) {
+    expect(gaasReaderClient).to.be.ok; // otherwise, user creation failed
+    gaasReaderClient
+        .bundle(projectId)
+        .entry({languageId: 'qru', resourceKey: 'key1'})
+        .getInfo({}, function(err, r) {
+            if(err) return done(err);
+            expect(r).to.be.ok;
+            expect(r.value).to.equal(qruData[r.resourceKey]);
+            done();
+        });
+  }*/);
+  
+  it('Should verify the reader can get basic bundle info ' + projectId, function(done) {
+    expect(gaasReaderClient).to.be.ok; // otherwise, user creation failed
+    gaasReaderClient
+        .bundle(projectId)
+        .getInfo({}, function(err, b) {
+            if(err) return done(err);
+            expect(b).to.be.ok;
+            expect(b.sourceLanguage).to.equal('en');
+            expect(b.metadata).to.not.be.ok;
+            done();
+        });
+  });
+
+  it('Should verify the admin can get full bundle info ' + projectId, function(done) {
+    expect(gaasAdminClient).to.be.ok; // otherwise, user creation failed
+    gaasAdminClient
+        .bundle(projectId)
+        .getInfo({}, function(err, b) {
+            if(err) return done(err);
+            expect(b).to.be.ok;
+            expect(b.sourceLanguage).to.equal('en');
+            expect(b.metadata).to.deep.equal({key:'value'});
+            done();
+        });
+  });
+    
+  it('should let the reader user verify the target data(qru)', function(done) {
+    var proj = gaasReaderClient.bundle(projectId);
+    proj.getStrings({ languageId: 'qru'},
+    function(err, data) {
+      if(err) {done(err); return; }
+      expect(data).to.have.a.property('resourceStrings');
+      expect(JSON.stringify(data.resourceStrings)).to.equal(JSON.stringify(qruData));
+      done();
+    });
+  });
+  
+    it('should let the admin user verify the source data(en)', function(done) {
+    var proj = gaasAdminClient.bundle(projectId);
+    proj.getStrings({ languageId: 'en'},
+    function(err, data) {
+      if(err) {done(err); return; }
+      expect(data).to.have.a.property('resourceStrings');
+      expect(JSON.stringify(data.resourceStrings)).to.equal(JSON.stringify(sourceData));
+      done();
+    });
+  });
+
+  it('should let the reader user verify the source data(en)', function(done) {
+    var proj = gaasReaderClient.bundle(projectId);
+    proj.getStrings({ languageId: 'en'},
+    function(err, data) {
+      if(err) {done(err); return; }
+      expect(data).to.have.a.property('resourceStrings');
+      expect(JSON.stringify(data.resourceStrings)).to.equal(JSON.stringify(sourceData));
+      done();
+    });
+  });
+    
+  it('Should let us verify the reader user has access to read ' + projectId, function (done) {
+      gaasClient.users({ serviceInstance: instanceName }, function (err, users) {
+          if (err) return done(err);
+          expect(users).to.be.ok;
+          expect(users).to.contain.keys([myUserInfo.userId, readerInfo.credentials.userId]);
+          var u = users[readerInfo.credentials.userId];
+          u.getInfo({}, function(err, user) {
+                if(err) return done(err);
+                expect(user).to.be.ok;
+                expect(user.id).to.equal(readerInfo.credentials.userId);
+                expect(user.bundles).to.have.members( [projectId3, projectId]);
+                done();
+            });
+      });
+  });
+
+  it('Should verify the reader user can now getInfo ' + projectId, function(done) {
+    //   console.dir(adminInfo);
+    expect(gaasReaderClient).to.be.ok; // otherwise, user creation failed
+    gaasReaderClient
+        .bundle(projectId)
+        .getInfo({}, function(err, bund) {
+            if(err) return done(err);
+            expect(bund).to.be.ok;
+            expect(bund.sourceLanguage).to.equal('en');
+            done();
+        });
+  });
+
+
   it('Should let us delete', function(done) {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
     Q.ninvoke(proj, "delete", {})
@@ -352,18 +922,10 @@ describe('gaasClient.bundle()', function() {
         done();
     },done);
   });
-  var subGaasClient;
-  it('test gaasClient(myuser).ping', function(done) {
-    expect(myUserInfo).to.be.ok; // otherwise, user creation failed
+  it('test gaasClient(admin).bundle('+projectId3+').create(...)', function(done) {
+    expect(gaasAdminClient).to.be.ok; // from previous test
     
-    subGaasClient = gaas.getClient({credentials: myUserInfo});
-    subGaasClient.ping({}, done);
-  });
-  it('test gaasClient(myuser).bundle('+projectId3+').create(...)', function(done) {
-    expect(subGaasClient).to.be.ok; // from previous test
-    expect(myUserInfo).to.be.ok; // otherwise, user creation failed
-    
-    var proj = subGaasClient.bundle({id:projectId3});
+    var proj = gaasAdminClient.bundle({id:projectId3});
     
     Q.ninvoke(proj, "create", {sourceLanguage: 'en', targetLanguages: ['es','qru']})
     .then(function(resp) {
@@ -373,29 +935,16 @@ describe('gaasClient.bundle()', function() {
       .then(function(resp){ done(); }, done);
     }, done);
   });
-/*
-    var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
-    proj.create({sourceLanguage: 'en', targetLanguages: ['es','qru']})
-    .then(function(resp) {
-      done();
-    }, done);*/
-/*
-readerInfo{
-          credentials: {
-            instanceId: instanceName,
-            userId: data.user.id,
-            password: data.user.password,
-            uri: opts.credentials.uri
-          },
-          bundleId: projectId3
-        }
-         */
         
   // check READER
   var myAuth = function(opts){opts.auth = (readerInfo.credentials.userId+':'+readerInfo.credentials.password); };
 
   // if(opts.credentials.isAdmin) {
-  
+ 
+    
+    gaasTest.expectCORSURL(urlEnv + '/rest/swagger.json',
+                        null, ' noauth');
+                        
     gaasTest.expectCORSURL(urlEnv + '/rest/swagger.json',
                         myAuth, ' reader');
   
@@ -425,14 +974,49 @@ readerInfo{
     //   gaasTest.expectNonCORSURL(urlEnv + '/rest/' + instanceName + '/v2/bundles',
     //                       myAdminAuth, ' admin');    
     // }
-  
+
+
+    it('Should verify the admin user can read bundle info ' + projectId3, function(done) {
+        expect(gaasAdminClient).to.be.ok; // otherwise, user creation failed
+        gaasAdminClient
+            .bundle(projectId3)
+            .getInfo({}, function(err, bund) {
+                if(err) return done(err);
+                expect(bund).to.be.ok;
+                expect(bund.sourceLanguage).to.equal('en');
+                done();
+            });
+    });
+
+    it('Should verify the reader user can read bundle info ' + projectId3, function(done) {
+        expect(gaasReaderClient).to.be.ok; // otherwise, user creation failed
+        gaasReaderClient
+            .bundle(projectId3)
+            .getInfo({}, function(err, bund) {
+                if(err) return done(err);
+                expect(bund).to.be.ok;
+                expect(bund.sourceLanguage).to.equal('en');
+                done();
+            });
+    });
+
   if(!NO_DELETE && !opts.credentials.isAdmin) {
     describe('Clean-up time for ' + instanceName, function() {
       it('should let me delete an admin user', function(done) {
+        expect(myUserInfo.userId).to.be.ok;
         gaasClient.user(myUserInfo.userId).delete(done);
       });
       it('should let me delete a reader user', function(done) {
+        expect(readerInfo.credentials.userId).to.be.ok;
         gaasClient.user(readerInfo.credentials.userId).delete(done);
+      });
+      it('Should let us call client.users() and verify users gone', function(done) {
+        gaasClient.users({serviceInstance: instanceName}, function(err, users) {
+            if(err) return done(err);
+            expect(users).to.be.ok;
+            expect(users).to.not.contain.keys([myUserInfo.userId, readerInfo.credentials.userId])
+            done();
+        });
       });
     });
   }
@@ -462,7 +1046,6 @@ if(NO_DELETE) {
         });
       });
     });
-    it('Should let us call client.listUsers() once available');
   });
 }
 //  END NO_DELETE

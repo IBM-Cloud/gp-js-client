@@ -65,6 +65,9 @@ as given in the bound service:
     
     # an alternate project name (else random)
     GP_PROJECT=someproject
+    
+    # is the @DELAY@ option available? (normally false)
+    DELAY_AVAIL=false
 
 LICENSE
 ===

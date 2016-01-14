@@ -19,7 +19,7 @@ require('./lib/localsetenv').applyLocal();
 var gaasTest = require ('./lib/gp-test');
 var expect = require('chai').expect;
 
-if(process.env.NO_UTIL_TEST) { console.log('skip: ' + module.filename); return; }
+if(process.env.NO_UTIL_TEST) { describe = describe.skip; }
 
 var cfenvUtils = require('../lib/cfenv-credsbylabel');
 
