@@ -21,7 +21,7 @@ Add `g11n-pipeline` to your project, as well as `cfenv` and `optional`.
 
     npm install --save g11n-pipeline cfenv optional
 
-Load the gaas client object as follows (using [cfenv](https://www.npmjs.com/package/cfenv) ).
+Load the client object as follows (using [cfenv](https://www.npmjs.com/package/cfenv) ).
 You can store a copy of the credentials in `local-credentials.json` for local
 operation.
 

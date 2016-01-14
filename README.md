@@ -21,7 +21,7 @@ Add `g11n-pipeline` to your project, as well as `cfenv` and `optional`.
 
     npm install --save g11n-pipeline cfenv optional
 
-Load the gaas client object as follows (using [cfenv](https://www.npmjs.com/package/cfenv) ).
+Load the client object as follows (using [cfenv](https://www.npmjs.com/package/cfenv) ).
 You can store a copy of the credentials in `local-credentials.json` for local
 operation.
 
@@ -105,42 +105,42 @@ API reference
 **Author:** Steven R. Loomis  
 
 * [g11n-pipeline](#module_g11n-pipeline)
-    * _static_
-        * [.serviceRegex](#module_g11n-pipeline.serviceRegex)
-        * [.exampleCredentials](#module_g11n-pipeline.exampleCredentials)
-    * _inner_
-        * [~Client](#module_g11n-pipeline..Client)
-            * [.ping](#module_g11n-pipeline..Client+ping)
-            * [.supportedTranslations(args, cb)](#module_g11n-pipeline..Client+supportedTranslations)
-            * [.getServiceInfo(args, cb)](#module_g11n-pipeline..Client+getServiceInfo)
-            * [.createUser(args, cb)](#module_g11n-pipeline..Client+createUser)
-            * [.bundle(opts)](#module_g11n-pipeline..Client+bundle) ⇒ <code>Bundle</code>
-            * [.user(id)](#module_g11n-pipeline..Client+user) ⇒ <code>User</code>
-            * [.users(opts, cb)](#module_g11n-pipeline..Client+users)
-            * [.bundles(opts, cb)](#module_g11n-pipeline..Client+bundles)
-        * [~Bundle](#module_g11n-pipeline..Bundle)
-            * [new Bundle(gp, props)](#new_module_g11n-pipeline..Bundle_new)
-            * [.getInfoFields](#module_g11n-pipeline..Bundle+getInfoFields)
-            * [.delete(opts, cb)](#module_g11n-pipeline..Bundle+delete)
-            * [.create(body, cb)](#module_g11n-pipeline..Bundle+create)
-            * [.getInfo(opts, cb)](#module_g11n-pipeline..Bundle+getInfo)
-            * [.getStrings(opts, cb)](#module_g11n-pipeline..Bundle+getStrings)
-            * [.entry(opts)](#module_g11n-pipeline..Bundle+entry)
-            * [.uploadStrings(opts, cb)](#module_g11n-pipeline..Bundle+uploadStrings)
-            * [.update(opts, cb)](#module_g11n-pipeline..Bundle+update)
-            * [.updateStrings(opts, cb)](#module_g11n-pipeline..Bundle+updateStrings)
-        * [~User](#module_g11n-pipeline..User)
-            * [new User(gp, props)](#new_module_g11n-pipeline..User_new)
-            * [.update(opts, cb)](#module_g11n-pipeline..User+update)
-            * [.delete(cb)](#module_g11n-pipeline..User+delete)
-            * [.getInfo(opts, cb)](#module_g11n-pipeline..User+getInfo)
-        * [~ResourceEntry](#module_g11n-pipeline..ResourceEntry)
-            * [new ResourceEntry(bundle, props)](#new_module_g11n-pipeline..ResourceEntry_new)
-            * [.getInfo(opts, cb)](#module_g11n-pipeline..ResourceEntry+getInfo)
-            * [.update()](#module_g11n-pipeline..ResourceEntry+update)
-        * [~getClient(params)](#module_g11n-pipeline..getClient) ⇒ <code>Client</code>
-        * [~listUsersCallback](#module_g11n-pipeline..listUsersCallback) : <code>function</code>
-        * [~basicCallback](#module_g11n-pipeline..basicCallback) : <code>function</code>
+  * _static_
+    * [.serviceRegex](#module_g11n-pipeline.serviceRegex)
+    * [.exampleCredentials](#module_g11n-pipeline.exampleCredentials)
+  * _inner_
+    * [~Client](#module_g11n-pipeline..Client)
+      * [.ping](#module_g11n-pipeline..Client+ping)
+      * [.supportedTranslations(args, cb)](#module_g11n-pipeline..Client+supportedTranslations)
+      * [.getServiceInfo(args, cb)](#module_g11n-pipeline..Client+getServiceInfo)
+      * [.createUser(args, cb)](#module_g11n-pipeline..Client+createUser)
+      * [.bundle(opts)](#module_g11n-pipeline..Client+bundle) ⇒ <code>Bundle</code>
+      * [.user(id)](#module_g11n-pipeline..Client+user) ⇒ <code>User</code>
+      * [.users(opts, cb)](#module_g11n-pipeline..Client+users)
+      * [.bundles(opts, cb)](#module_g11n-pipeline..Client+bundles)
+    * [~Bundle](#module_g11n-pipeline..Bundle)
+      * [new Bundle(gp, props)](#new_module_g11n-pipeline..Bundle_new)
+      * [.getInfoFields](#module_g11n-pipeline..Bundle+getInfoFields)
+      * [.delete(opts, cb)](#module_g11n-pipeline..Bundle+delete)
+      * [.create(body, cb)](#module_g11n-pipeline..Bundle+create)
+      * [.getInfo(opts, cb)](#module_g11n-pipeline..Bundle+getInfo)
+      * [.getStrings(opts, cb)](#module_g11n-pipeline..Bundle+getStrings)
+      * [.entry(opts)](#module_g11n-pipeline..Bundle+entry)
+      * [.uploadStrings(opts, cb)](#module_g11n-pipeline..Bundle+uploadStrings)
+      * [.update(opts, cb)](#module_g11n-pipeline..Bundle+update)
+      * [.updateStrings(opts, cb)](#module_g11n-pipeline..Bundle+updateStrings)
+    * [~User](#module_g11n-pipeline..User)
+      * [new User(gp, props)](#new_module_g11n-pipeline..User_new)
+      * [.update(opts, cb)](#module_g11n-pipeline..User+update)
+      * [.delete(cb)](#module_g11n-pipeline..User+delete)
+      * [.getInfo(opts, cb)](#module_g11n-pipeline..User+getInfo)
+    * [~ResourceEntry](#module_g11n-pipeline..ResourceEntry)
+      * [new ResourceEntry(bundle, props)](#new_module_g11n-pipeline..ResourceEntry_new)
+      * [.getInfo(opts, cb)](#module_g11n-pipeline..ResourceEntry+getInfo)
+      * [.update()](#module_g11n-pipeline..ResourceEntry+update)
+    * [~getClient(params)](#module_g11n-pipeline..getClient) ⇒ <code>Client</code>
+    * [~listUsersCallback](#module_g11n-pipeline..listUsersCallback) : <code>function</code>
+    * [~basicCallback](#module_g11n-pipeline..basicCallback) : <code>function</code>
 
 <a name="module_g11n-pipeline.serviceRegex"></a>
 ### g11n-pipeline.serviceRegex
@@ -171,7 +171,7 @@ Example credentials
 ### g11n-pipeline~Client
 **Kind**: inner class of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
 
-* [~Client](#module_g11n-pipeline..Client)
+  * [~Client](#module_g11n-pipeline..Client)
     * [.ping](#module_g11n-pipeline..Client+ping)
     * [.supportedTranslations(args, cb)](#module_g11n-pipeline..Client+supportedTranslations)
     * [.getServiceInfo(args, cb)](#module_g11n-pipeline..Client+getServiceInfo)
@@ -285,7 +285,7 @@ bundle access objects.
 ### g11n-pipeline~Bundle
 **Kind**: inner class of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
 
-* [~Bundle](#module_g11n-pipeline..Bundle)
+  * [~Bundle](#module_g11n-pipeline..Bundle)
     * [new Bundle(gp, props)](#new_module_g11n-pipeline..Bundle_new)
     * [.getInfoFields](#module_g11n-pipeline..Bundle+getInfoFields)
     * [.delete(opts, cb)](#module_g11n-pipeline..Bundle+delete)
@@ -437,7 +437,7 @@ Update some strings in a language.
 | bundles | <code>Array.&lt;string&gt;</code> | list of bundles managed by this user |
 
 
-* [~User](#module_g11n-pipeline..User)
+  * [~User](#module_g11n-pipeline..User)
     * [new User(gp, props)](#new_module_g11n-pipeline..User_new)
     * [.update(opts, cb)](#module_g11n-pipeline..User+update)
     * [.delete(cb)](#module_g11n-pipeline..User+delete)
@@ -508,7 +508,7 @@ Creating this object does not modify any data.
 | resourceKey | <code>String</code> | key for the resource |
 
 
-* [~ResourceEntry](#module_g11n-pipeline..ResourceEntry)
+  * [~ResourceEntry](#module_g11n-pipeline..ResourceEntry)
     * [new ResourceEntry(bundle, props)](#new_module_g11n-pipeline..ResourceEntry_new)
     * [.getInfo(opts, cb)](#module_g11n-pipeline..ResourceEntry+getInfo)
     * [.update()](#module_g11n-pipeline..ResourceEntry+update)
