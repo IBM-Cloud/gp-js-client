@@ -66,6 +66,28 @@ This code snippet will output the translated strings such as the following:
     }
 ```
 
+### Async
+
+Note that all calls that take a callback are asynchronous.
+For example, the following code:
+
+```javascript
+var bundle = client.bundle('someBundle');
+bundle.create({…}, function(…){…});
+bundle.uploadStrings({…}, function(…){…});
+```
+
+…will fail, because the bundle `someBundle` hasn’t been `create`d by the time the
+`uploadStrings` call is made. Instead, make the `uploadStrings` call within a callback:
+
+```javascript
+var bundle = client.bundle('someBundle');
+bundle.create({…}, function(…){
+    …
+    bundle.uploadStrings({…}, function(…){…});
+});
+```
+
 ## Testing
 
 See [TESTING.md](TESTING.md)
