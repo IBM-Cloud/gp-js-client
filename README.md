@@ -122,126 +122,123 @@ All language identifiers are [IETF BCP47](http://tools.ietf.org/html/bcp47) code
 API reference
 ===
 
-<a name="module_g11n-pipeline"></a>
-## g11n-pipeline
-**Author:** Steven R. Loomis  
+## Classes
 
-* [g11n-pipeline](#module_g11n-pipeline)
-  * _static_
-    * [.serviceRegex](#module_g11n-pipeline.serviceRegex)
-    * [.exampleCredentials](#module_g11n-pipeline.exampleCredentials)
-  * _inner_
-    * [~Client](#module_g11n-pipeline..Client)
-      * [.ping](#module_g11n-pipeline..Client+ping)
-      * [.supportedTranslations(args, cb)](#module_g11n-pipeline..Client+supportedTranslations)
-      * [.getServiceInfo(args, cb)](#module_g11n-pipeline..Client+getServiceInfo)
-      * [.createUser(args, cb)](#module_g11n-pipeline..Client+createUser)
-      * [.bundle(opts)](#module_g11n-pipeline..Client+bundle) ⇒ <code>Bundle</code>
-      * [.user(id)](#module_g11n-pipeline..Client+user) ⇒ <code>User</code>
-      * [.users(opts, cb)](#module_g11n-pipeline..Client+users)
-      * [.bundles(opts, cb)](#module_g11n-pipeline..Client+bundles)
-    * [~Bundle](#module_g11n-pipeline..Bundle)
-      * [new Bundle(gp, props)](#new_module_g11n-pipeline..Bundle_new)
-      * [.getInfoFields](#module_g11n-pipeline..Bundle+getInfoFields)
-      * [.delete(opts, cb)](#module_g11n-pipeline..Bundle+delete)
-      * [.create(body, cb)](#module_g11n-pipeline..Bundle+create)
-      * [.getInfo(opts, cb)](#module_g11n-pipeline..Bundle+getInfo)
-      * [.getStrings(opts, cb)](#module_g11n-pipeline..Bundle+getStrings)
-      * [.entry(opts)](#module_g11n-pipeline..Bundle+entry)
-      * [.uploadStrings(opts, cb)](#module_g11n-pipeline..Bundle+uploadStrings)
-      * [.update(opts, cb)](#module_g11n-pipeline..Bundle+update)
-      * [.updateStrings(opts, cb)](#module_g11n-pipeline..Bundle+updateStrings)
-    * [~User](#module_g11n-pipeline..User)
-      * [new User(gp, props)](#new_module_g11n-pipeline..User_new)
-      * [.update(opts, cb)](#module_g11n-pipeline..User+update)
-      * [.delete(cb)](#module_g11n-pipeline..User+delete)
-      * [.getInfo(opts, cb)](#module_g11n-pipeline..User+getInfo)
-    * [~ResourceEntry](#module_g11n-pipeline..ResourceEntry)
-      * [new ResourceEntry(bundle, props)](#new_module_g11n-pipeline..ResourceEntry_new)
-      * [.getInfo(opts, cb)](#module_g11n-pipeline..ResourceEntry+getInfo)
-      * [.update()](#module_g11n-pipeline..ResourceEntry+update)
-    * [~getClient(params)](#module_g11n-pipeline..getClient) ⇒ <code>Client</code>
-    * [~listUsersCallback](#module_g11n-pipeline..listUsersCallback) : <code>function</code>
-    * [~basicCallback](#module_g11n-pipeline..basicCallback) : <code>function</code>
+<dl>
+<dt><a href="#Client">Client</a></dt>
+<dd></dd>
+<dt><a href="#Bundle">Bundle</a></dt>
+<dd></dd>
+<dt><a href="#User">User</a></dt>
+<dd></dd>
+<dt><a href="#ResourceEntry">ResourceEntry</a></dt>
+<dd><p>ResourceEntry
+Creating this object does not modify any data.</p>
+</dd>
+</dl>
 
-<a name="module_g11n-pipeline.serviceRegex"></a>
-### g11n-pipeline.serviceRegex
-a Regex for matching the service.
-Usage: var credentials = require('cfEnv')
+## Members
+
+<dl>
+<dt><a href="#serviceRegex">serviceRegex</a></dt>
+<dd><p>a Regex for matching the service.
+Usage: var credentials = require(&#39;cfEnv&#39;)
      .getAppEnv().getServiceCreds(gp.serviceRegex);
-(except that it needs to match by label)
+(except that it needs to match by label)</p>
+</dd>
+<dt><a href="#exampleCredentials">exampleCredentials</a></dt>
+<dd><p>Example credentials</p>
+</dd>
+</dl>
 
-**Kind**: static property of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
-**Properties**
+## Functions
 
-| Name |
-| --- |
-| serviceRegex | 
+<dl>
+<dt><a href="#getClient">getClient(params)</a> ⇒ <code><a href="#Client">Client</a></code></dt>
+<dd><p>Construct a g11n-pipeline client. 
+params.credentials is required unless params.appEnv is supplied.</p>
+</dd>
+<dt><a href="#isMissingField">isMissingField(obj, fields)</a> ⇒</dt>
+<dd><p>Return a list of missing fields. Special cases the instanceId field.</p>
+</dd>
+</dl>
 
-<a name="module_g11n-pipeline.exampleCredentials"></a>
-### g11n-pipeline.exampleCredentials
-Example credentials
+## Typedefs
 
-**Kind**: static property of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
-**Properties**
+<dl>
+<dt><a href="#basicCallback">basicCallback</a> : <code>function</code></dt>
+<dd><p>Basic Callback used thr</p>
+</dd>
+</dl>
 
-| Name |
-| --- |
-| exampleCredentials | 
+<a name="Client"></a>
+## Client
+**Kind**: global class  
 
-<a name="module_g11n-pipeline..Client"></a>
-### g11n-pipeline~Client
-**Kind**: inner class of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
+* [Client](#Client)
+    * [new Client()](#new_Client_new)
+    * _instance_
+        * [.version](#Client+version)
+        * [.ping](#Client+ping)
+        * [.supportedTranslations(args, cb)](#Client+supportedTranslations)
+        * [.getServiceInfo(args, cb)](#Client+getServiceInfo)
+        * [.createUser(args, cb)](#Client+createUser)
+        * [.bundle(opts)](#Client+bundle) ⇒ <code>[Bundle](#Bundle)</code>
+        * [.user(id)](#Client+user) ⇒ <code>[User](#User)</code>
+        * [.users(opts, cb)](#Client+users)
+        * [.bundles(opts, cb)](#Client+bundles)
+    * _inner_
+        * [~listUsersCallback](#Client..listUsersCallback) : <code>function</code>
+        * [~listBundlesCallback](#Client..listBundlesCallback) : <code>function</code>
 
-  * [~Client](#module_g11n-pipeline..Client)
-    * [.ping](#module_g11n-pipeline..Client+ping)
-    * [.supportedTranslations(args, cb)](#module_g11n-pipeline..Client+supportedTranslations)
-    * [.getServiceInfo(args, cb)](#module_g11n-pipeline..Client+getServiceInfo)
-    * [.createUser(args, cb)](#module_g11n-pipeline..Client+createUser)
-    * [.bundle(opts)](#module_g11n-pipeline..Client+bundle) ⇒ <code>Bundle</code>
-    * [.user(id)](#module_g11n-pipeline..Client+user) ⇒ <code>User</code>
-    * [.users(opts, cb)](#module_g11n-pipeline..Client+users)
-    * [.bundles(opts, cb)](#module_g11n-pipeline..Client+bundles)
+<a name="new_Client_new"></a>
+### new Client()
+Client object for Globalization Pipeline
 
-<a name="module_g11n-pipeline..Client+ping"></a>
-#### client.ping
+<a name="Client+version"></a>
+### client.version
+Version number of the REST service used. Currently ‘V2’.
+
+**Kind**: instance property of <code>[Client](#Client)</code>  
+<a name="Client+ping"></a>
+### client.ping
 Do we have access to the server?
 
-**Kind**: instance property of <code>[Client](#module_g11n-pipeline..Client)</code>  
+**Kind**: instance property of <code>[Client](#Client)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | args | <code>object</code> | (ignored) |
 | cb | <code>callback</code> |  |
 
-<a name="module_g11n-pipeline..Client+supportedTranslations"></a>
-#### client.supportedTranslations(args, cb)
+<a name="Client+supportedTranslations"></a>
+### client.supportedTranslations(args, cb)
 This function returns a map from source language(s) to target language(s).
 Example: `{ en: ['de', 'ja']}` (English translates to German and Japanese.)
 
-**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
+**Kind**: instance method of <code>[Client](#Client)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | args | <code>object</code> |  |
 | cb | <code>supportedTranslationsCallback</code> | (err, map-of-languages) |
 
-<a name="module_g11n-pipeline..Client+getServiceInfo"></a>
-#### client.getServiceInfo(args, cb)
+<a name="Client+getServiceInfo"></a>
+### client.getServiceInfo(args, cb)
 Get information about this service
 
-**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
+**Kind**: instance method of <code>[Client](#Client)</code>  
 
 | Param | Type |
 | --- | --- |
 | args | <code>object</code> | 
-| cb | <code>basicCallback</code> | 
+| cb | <code>[basicCallback](#basicCallback)</code> | 
 
-<a name="module_g11n-pipeline..Client+createUser"></a>
-#### client.createUser(args, cb)
+<a name="Client+createUser"></a>
+### client.createUser(args, cb)
 Create a user
 
-**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
+**Kind**: instance method of <code>[Client](#Client)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -252,104 +249,127 @@ Create a user
 | args.bundles | <code>Array</code> | set of accessible bundle ids or ['*'] to mean “all bundles” |
 | args.metadata | <code>Object</code> | optional key/value pairs for user metadata |
 | args.externalId | <code>string</code> | optional external user ID for your application’s use |
-| cb | <code>basicCallback</code> | passed a new User object |
+| cb | <code>[basicCallback](#basicCallback)</code> | passed a new User object |
 
-<a name="module_g11n-pipeline..Client+bundle"></a>
-#### client.bundle(opts) ⇒ <code>Bundle</code>
+<a name="Client+bundle"></a>
+### client.bundle(opts) ⇒ <code>[Bundle](#Bundle)</code>
 Create a bundle access object.
 This doesn’t create the bundle itself, just a handle object.
 Call create() on the bundle to create it.
 
-**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
+**Kind**: instance method of <code>[Client](#Client)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | String (id) or map {id: bundleId, serviceInstance: serviceInstanceId} |
 
-<a name="module_g11n-pipeline..Client+user"></a>
-#### client.user(id) ⇒ <code>User</code>
+<a name="Client+user"></a>
+### client.user(id) ⇒ <code>[User](#User)</code>
 Create a user access object.
 This doesn’t create the user itself,
 nor query the server, but is just a handle object.
 Use createUser() to create a user.
 
-**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
+**Kind**: instance method of <code>[Client](#Client)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | id | <code>Object</code> | String (id) or map {id: bundleId, serviceInstance: serviceInstanceId} |
 
-<a name="module_g11n-pipeline..Client+users"></a>
-#### client.users(opts, cb)
+<a name="Client+users"></a>
+### client.users(opts, cb)
 List users. Callback is called with an array of 
 user access objects.
 
-**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
+**Kind**: instance method of <code>[Client](#Client)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | ignored |
-| cb | <code>listUsersCallback</code> |  |
+| cb | <code>[listUsersCallback](#Client..listUsersCallback)</code> | callback |
 
-<a name="module_g11n-pipeline..Client+bundles"></a>
-#### client.bundles(opts, cb)
+<a name="Client+bundles"></a>
+### client.bundles(opts, cb)
 List bundles. Callback is called with an map of 
 bundle access objects.
 
-**Kind**: instance method of <code>[Client](#module_g11n-pipeline..Client)</code>  
+**Kind**: instance method of <code>[Client](#Client)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | ignored |
-| cb | <code>listBundlesCallback</code> | given a map of Bundle objects |
+| cb | <code>[listBundlesCallback](#Client..listBundlesCallback)</code> | given a map of Bundle objects |
 
-<a name="module_g11n-pipeline..Bundle"></a>
-### g11n-pipeline~Bundle
-**Kind**: inner class of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
+<a name="Client..listUsersCallback"></a>
+### Client~listUsersCallback : <code>function</code>
+Called by users()
 
-  * [~Bundle](#module_g11n-pipeline..Bundle)
-    * [new Bundle(gp, props)](#new_module_g11n-pipeline..Bundle_new)
-    * [.getInfoFields](#module_g11n-pipeline..Bundle+getInfoFields)
-    * [.delete(opts, cb)](#module_g11n-pipeline..Bundle+delete)
-    * [.create(body, cb)](#module_g11n-pipeline..Bundle+create)
-    * [.getInfo(opts, cb)](#module_g11n-pipeline..Bundle+getInfo)
-    * [.getStrings(opts, cb)](#module_g11n-pipeline..Bundle+getStrings)
-    * [.entry(opts)](#module_g11n-pipeline..Bundle+entry)
-    * [.uploadStrings(opts, cb)](#module_g11n-pipeline..Bundle+uploadStrings)
-    * [.update(opts, cb)](#module_g11n-pipeline..Bundle+update)
-    * [.updateStrings(opts, cb)](#module_g11n-pipeline..Bundle+updateStrings)
-
-<a name="new_module_g11n-pipeline..Bundle_new"></a>
-#### new Bundle(gp, props)
+**Kind**: inner typedef of <code>[Client](#Client)</code>  
+**See**: User  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| gp | <code>Client</code> | parent g11n-pipeline client object |
+| err | <code>object</code> | error, or null |
+| users | <code>Object.&lt;string, User&gt;</code> | map from user ID to User object |
+
+<a name="Client..listBundlesCallback"></a>
+### Client~listBundlesCallback : <code>function</code>
+Bundle list callback
+
+**Kind**: inner typedef of <code>[Client](#Client)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| err | <code>object</code> | error, or null |
+| bundles | <code>Object.&lt;string, Bundle&gt;</code> | map from bundle ID to Bundle object |
+
+<a name="Bundle"></a>
+## Bundle
+**Kind**: global class  
+
+* [Bundle](#Bundle)
+    * [new Bundle(gp, props)](#new_Bundle_new)
+    * [.getInfoFields](#Bundle+getInfoFields)
+    * [.delete(opts, cb)](#Bundle+delete)
+    * [.create(body, cb)](#Bundle+create)
+    * [.getInfo(opts, cb)](#Bundle+getInfo)
+    * [.getStrings(opts, cb)](#Bundle+getStrings)
+    * [.entry(opts)](#Bundle+entry)
+    * [.uploadStrings(opts, cb)](#Bundle+uploadStrings)
+    * [.update(opts, cb)](#Bundle+update)
+    * [.updateStrings(opts, cb)](#Bundle+updateStrings)
+
+<a name="new_Bundle_new"></a>
+### new Bundle(gp, props)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| gp | <code>[Client](#Client)</code> | parent g11n-pipeline client object |
 | props | <code>Object</code> | properties to inherit |
 
-<a name="module_g11n-pipeline..Bundle+getInfoFields"></a>
-#### bundle.getInfoFields
+<a name="Bundle+getInfoFields"></a>
+### bundle.getInfoFields
 List of fields usable with Bundle.getInfo()
 
-**Kind**: instance property of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
-<a name="module_g11n-pipeline..Bundle+delete"></a>
-#### bundle.delete(opts, cb)
+**Kind**: instance property of <code>[Bundle](#Bundle)</code>  
+<a name="Bundle+delete"></a>
+### bundle.delete(opts, cb)
 Delete this bundle.
 
-**Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
+**Kind**: instance method of <code>[Bundle](#Bundle)</code>  
 
 | Param | Type |
 | --- | --- |
 | opts | <code>Object</code> | 
-| cb | <code>basicCallback</code> | 
+| cb | <code>[basicCallback](#basicCallback)</code> | 
 
-<a name="module_g11n-pipeline..Bundle+create"></a>
-#### bundle.create(body, cb)
+<a name="Bundle+create"></a>
+### bundle.create(body, cb)
 Create this bundle with the specified params.
 Note that on failure, such as an illegal language being specified,
 the bundle is not created.
 
-**Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
+**Kind**: instance method of <code>[Bundle](#Bundle)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -358,13 +378,13 @@ the bundle is not created.
 | body.targetLanguages | <code>Array</code> | optional array of target languages |
 | body.metadata | <code>Object</code> | optional metadata for the bundle |
 | body.partner | <code>string</code> | optional ID of partner assigned to translate this bundle |
-| cb | <code>basicCallback</code> |  |
+| cb | <code>[basicCallback](#basicCallback)</code> |  |
 
-<a name="module_g11n-pipeline..Bundle+getInfo"></a>
-#### bundle.getInfo(opts, cb)
+<a name="Bundle+getInfo"></a>
+### bundle.getInfo(opts, cb)
 Get bundle info
 
-**Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
+**Kind**: instance method of <code>[Bundle](#Bundle)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -373,25 +393,25 @@ Get bundle info
 | opts.translationStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
 | opts.reviewStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
 | opts.partnerStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
-| cb | <code>basicCallback</code> | callback (err, { updatedBy, updatedAt, sourceLanguage, targetLanguages, readOnly, metadata, partner} ) |
+| cb | <code>[basicCallback](#basicCallback)</code> | callback (err, { updatedBy, updatedAt, sourceLanguage, targetLanguages, readOnly, metadata, partner} ) |
 
-<a name="module_g11n-pipeline..Bundle+getStrings"></a>
-#### bundle.getStrings(opts, cb)
+<a name="Bundle+getStrings"></a>
+### bundle.getStrings(opts, cb)
 Fetch one language's strings
 
-**Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
+**Kind**: instance method of <code>[Bundle](#Bundle)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | options |
 | opts.languageId | <code>String</code> | language to fetch |
-| cb | <code>basicCallback</code> | callback (err, { resourceStrings: { strings … } }) |
+| cb | <code>[basicCallback](#basicCallback)</code> | callback (err, { resourceStrings: { strings … } }) |
 
-<a name="module_g11n-pipeline..Bundle+entry"></a>
-#### bundle.entry(opts)
+<a name="Bundle+entry"></a>
+### bundle.entry(opts)
 Create an entry object. Doesn't fetch data,
 
-**Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
+**Kind**: instance method of <code>[Bundle](#Bundle)</code>  
 **See**: ResourceEntry~getInfo  
 
 | Param | Type | Description |
@@ -400,22 +420,22 @@ Create an entry object. Doesn't fetch data,
 | opts.languageId | <code>String</code> | language |
 | opts.resourceKey | <code>String</code> | resource key |
 
-<a name="module_g11n-pipeline..Bundle+uploadStrings"></a>
-#### bundle.uploadStrings(opts, cb)
+<a name="Bundle+uploadStrings"></a>
+### bundle.uploadStrings(opts, cb)
 Upload resource strings, replacing all current contents for the language
 
-**Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
+**Kind**: instance method of <code>[Bundle](#Bundle)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | options |
 | opts.languageId | <code>String</code> | language to update |
 | opts.strings | <code>Object.&lt;string, string&gt;</code> | strings to update |
-| cb | <code>basicCallback</code> |  |
+| cb | <code>[basicCallback](#basicCallback)</code> |  |
 
-<a name="module_g11n-pipeline..Bundle+update"></a>
-#### bundle.update(opts, cb)
-**Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
+<a name="Bundle+update"></a>
+### bundle.update(opts, cb)
+**Kind**: instance method of <code>[Bundle](#Bundle)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -424,24 +444,24 @@ Upload resource strings, replacing all current contents for the language
 | opts.readOnly | <code>boolean</code> | optional: set this bundle to be readonly or not |
 | opts.metadata | <code>object</code> | optional: metadata to update |
 | opts.partner | <code>string</code> | optional: partner id to update |
-| cb | <code>basicCallback</code> | callback |
+| cb | <code>[basicCallback](#basicCallback)</code> | callback |
 
-<a name="module_g11n-pipeline..Bundle+updateStrings"></a>
-#### bundle.updateStrings(opts, cb)
+<a name="Bundle+updateStrings"></a>
+### bundle.updateStrings(opts, cb)
 Update some strings in a language.
 
-**Kind**: instance method of <code>[Bundle](#module_g11n-pipeline..Bundle)</code>  
+**Kind**: instance method of <code>[Bundle](#Bundle)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | options |
 | opts.strings | <code>Object.&lt;string, string&gt;</code> | strings to update. |
 | opts.resync | <code>Boolean</code> | optional: If true, resynchronize strings in the target language and resubmit previously-failing translation operations |
-| cb | <code>basicCallback</code> |  |
+| cb | <code>[basicCallback](#basicCallback)</code> |  |
 
-<a name="module_g11n-pipeline..User"></a>
-### g11n-pipeline~User
-**Kind**: inner class of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
+<a name="User"></a>
+## User
+**Kind**: global class  
 **Properties**
 
 | Name | Type | Description |
@@ -449,7 +469,7 @@ Update some strings in a language.
 | id | <code>String</code> | the userid |
 | updatedBy | <code>String</code> | gives information about which user updated this user last |
 | updatedAt | <code>Date</code> | the date when the item was updated |
-| type | <code>String</code> | ADMINISTRATOR|TRANSLATOR|READER |
+| type | <code>String</code> | `ADMINISTRATOR`, `TRANSLATOR`, or `READER` |
 | displayName | <code>String</code> | optional human friendly name |
 | metadata | <code>Object.&lt;string, string&gt;</code> | optional user-defined data |
 | serviceManaged | <code>Boolean</code> | if true, the GP service is managing this user |
@@ -459,26 +479,26 @@ Update some strings in a language.
 | bundles | <code>Array.&lt;string&gt;</code> | list of bundles managed by this user |
 
 
-  * [~User](#module_g11n-pipeline..User)
-    * [new User(gp, props)](#new_module_g11n-pipeline..User_new)
-    * [.update(opts, cb)](#module_g11n-pipeline..User+update)
-    * [.delete(cb)](#module_g11n-pipeline..User+delete)
-    * [.getInfo(opts, cb)](#module_g11n-pipeline..User+getInfo)
+* [User](#User)
+    * [new User(gp, props)](#new_User_new)
+    * [.update(opts, cb)](#User+update)
+    * [.delete(cb)](#User+delete)
+    * [.getInfo(opts, cb)](#User+getInfo)
 
-<a name="new_module_g11n-pipeline..User_new"></a>
-#### new User(gp, props)
+<a name="new_User_new"></a>
+### new User(gp, props)
 
 | Param | Type | Description |
 | --- | --- | --- |
-| gp | <code>Client</code> | parent g11n-pipeline client object |
+| gp | <code>[Client](#Client)</code> | parent g11n-pipeline client object |
 | props | <code>Object</code> | properties to inherit |
 
-<a name="module_g11n-pipeline..User+update"></a>
-#### user.update(opts, cb)
+<a name="User+update"></a>
+### user.update(opts, cb)
 Update this user. 
 All fields of opts are optional. For strings, falsy = no change, empty string '' = deletion.
 
-**Kind**: instance method of <code>[User](#module_g11n-pipeline..User)</code>  
+**Kind**: instance method of <code>[User](#User)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -488,40 +508,40 @@ All fields of opts are optional. For strings, falsy = no change, empty string ''
 | opts.bundles | <code>Array.&lt;string&gt;</code> | Accessible bundle IDs. |
 | opts.metadata | <code>object.&lt;string, string&gt;</code> | User defined user metadata containg key/value pairs.  Data will be merged in. Pass in "{}" to erase all metadata. |
 | opts.externalId | <code>string</code> | User ID used by another system associated with this user - falsy = no change, empty string '' = deletion. |
-| cb | <code>basicCallback</code> | callback with success or failure |
+| cb | <code>[basicCallback](#basicCallback)</code> | callback with success or failure |
 
-<a name="module_g11n-pipeline..User+delete"></a>
-#### user.delete(cb)
+<a name="User+delete"></a>
+### user.delete(cb)
 Delete this user. 
 Note that the service managed user
 (the initial users created by the service) may not be
  deleted.
 
-**Kind**: instance method of <code>[User](#module_g11n-pipeline..User)</code>  
+**Kind**: instance method of <code>[User](#User)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| cb | <code>basicCallback</code> | callback with success or failure |
+| cb | <code>[basicCallback](#basicCallback)</code> | callback with success or failure |
 
-<a name="module_g11n-pipeline..User+getInfo"></a>
-#### user.getInfo(opts, cb)
+<a name="User+getInfo"></a>
+### user.getInfo(opts, cb)
 Fetch user info.
 The callback is given a new User instance, with
 all properties filled in.
 
-**Kind**: instance method of <code>[User](#module_g11n-pipeline..User)</code>  
+**Kind**: instance method of <code>[User](#User)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | optional, ignored |
 | cb | <code>getUserCallback</code> |  |
 
-<a name="module_g11n-pipeline..ResourceEntry"></a>
-### g11n-pipeline~ResourceEntry
+<a name="ResourceEntry"></a>
+## ResourceEntry
 ResourceEntry
 Creating this object does not modify any data.
 
-**Kind**: inner class of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
+**Kind**: global class  
 **See**: Bundle~entries  
 **Properties**
 
@@ -530,36 +550,36 @@ Creating this object does not modify any data.
 | resourceKey | <code>String</code> | key for the resource |
 
 
-  * [~ResourceEntry](#module_g11n-pipeline..ResourceEntry)
-    * [new ResourceEntry(bundle, props)](#new_module_g11n-pipeline..ResourceEntry_new)
-    * [.getInfo(opts, cb)](#module_g11n-pipeline..ResourceEntry+getInfo)
-    * [.update()](#module_g11n-pipeline..ResourceEntry+update)
+* [ResourceEntry](#ResourceEntry)
+    * [new ResourceEntry(bundle, props)](#new_ResourceEntry_new)
+    * [.getInfo(opts, cb)](#ResourceEntry+getInfo)
+    * [.update()](#ResourceEntry+update)
 
-<a name="new_module_g11n-pipeline..ResourceEntry_new"></a>
-#### new ResourceEntry(bundle, props)
+<a name="new_ResourceEntry_new"></a>
+### new ResourceEntry(bundle, props)
 
 | Param | Type | Description |
 | --- | --- | --- |
-| bundle | <code>Bundle</code> | parent Bundle object |
+| bundle | <code>[Bundle](#Bundle)</code> | parent Bundle object |
 | props | <code>Object</code> | properties to inherit |
 
-<a name="module_g11n-pipeline..ResourceEntry+getInfo"></a>
-#### resourceEntry.getInfo(opts, cb)
+<a name="ResourceEntry+getInfo"></a>
+### resourceEntry.getInfo(opts, cb)
 Load this entry's information. Callback is given
 another ResourceEntry but one with all current data filled in.
 
-**Kind**: instance method of <code>[ResourceEntry](#module_g11n-pipeline..ResourceEntry)</code>  
+**Kind**: instance method of <code>[ResourceEntry](#ResourceEntry)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | options (currently ignored) |
-| cb | <code>basicCallback</code> | callback (err, ResourceEntry) |
+| cb | <code>[basicCallback](#basicCallback)</code> | callback (err, ResourceEntry) |
 
-<a name="module_g11n-pipeline..ResourceEntry+update"></a>
-#### resourceEntry.update()
+<a name="ResourceEntry+update"></a>
+### resourceEntry.update()
 Update this resource entry's fields.
 
-**Kind**: instance method of <code>[ResourceEntry](#module_g11n-pipeline..ResourceEntry)</code>  
+**Kind**: instance method of <code>[ResourceEntry](#ResourceEntry)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -568,12 +588,37 @@ Update this resource entry's fields.
 | opts.metadata | <code>object</code> | optional metadata to update |
 | opts.partnerStatus | <code>string</code> | translation status maintained by partner |
 
-<a name="module_g11n-pipeline..getClient"></a>
-### g11n-pipeline~getClient(params) ⇒ <code>Client</code>
+<a name="serviceRegex"></a>
+## serviceRegex
+a Regex for matching the service.
+Usage: var credentials = require('cfEnv')
+     .getAppEnv().getServiceCreds(gp.serviceRegex);
+(except that it needs to match by label)
+
+**Kind**: global variable  
+**Properties**
+
+| Name |
+| --- |
+| serviceRegex | 
+
+<a name="exampleCredentials"></a>
+## exampleCredentials
+Example credentials
+
+**Kind**: global variable  
+**Properties**
+
+| Name |
+| --- |
+| exampleCredentials | 
+
+<a name="getClient"></a>
+## getClient(params) ⇒ <code>[Client](#Client)</code>
 Construct a g11n-pipeline client. 
 params.credentials is required unless params.appEnv is supplied.
 
-**Kind**: inner method of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
+**Kind**: global function  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -585,35 +630,31 @@ params.credentials is required unless params.appEnv is supplied.
 | params.credentials.password | <code>string</code> | service API key. |
 | params.credentials.instanceId | <code>string</code> | instance ID |
 
-<a name="module_g11n-pipeline..listUsersCallback"></a>
-### g11n-pipeline~listUsersCallback : <code>function</code>
-Called when listusers completes
+<a name="isMissingField"></a>
+## isMissingField(obj, fields) ⇒
+Return a list of missing fields. Special cases the instanceId field.
 
-**Kind**: inner typedef of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
-**See**: User  
+**Kind**: global function  
+**Returns**: array of which fields are missing  
+
+| Param | Description |
+| --- | --- |
+| obj | obj containing fields |
+| fields | array of fields to require |
+
+<a name="basicCallback"></a>
+## basicCallback : <code>function</code>
+Basic Callback used thr
+
+**Kind**: global typedef  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| err | <code>object</code> | error , or null |
-| users | <code>Object.&lt;string, User&gt;</code> | user list |
-
-<a name="module_g11n-pipeline..basicCallback"></a>
-### g11n-pipeline~basicCallback : <code>function</code>
-Basic Callback
-
-**Kind**: inner typedef of <code>[g11n-pipeline](#module_g11n-pipeline)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| err | <code>object</code> | error , or null |
+| err | <code>Object</code> | error, or null |
 | data | <code>Object</code> | Returned data |
 
 
-
-
-
 *docs autogenerated via [jsdoc2md](https://github.com/jsdoc2md/jsdoc-to-markdown)*
-
 
 Support
 ===
