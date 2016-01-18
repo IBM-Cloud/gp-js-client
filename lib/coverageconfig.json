@@ -1,5 +1,5 @@
 {
 	"coverage": ["../coverage/lcov.info"],
-	"automaticallyShow": true,
+	"automaticallyShow": false,
 	"ignore": ["*.json"]
 }
