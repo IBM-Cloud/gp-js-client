@@ -24,13 +24,19 @@ function tryRead(fn) {
 	alreadyRead[fn]=true;
 
 	var fc;
+    try {
+        fs.accessSync(fn);
+    } catch(e) {
+		console.log('# Missing (ignored): ' + fn);
+        return;
+    }
 	try {
 		fc = fs.readFileSync(fn);
 	} catch(e) {
-		console.log('# Not able to read: ' + fn + ' ('+e+')');
+		console.error('# Error reading: ' + fn + ' ('+e+')');
 	}
 	if(fc) {
-		console.log('#'+fn);
+		console.log('# Using: '+fn);
 		fc.toString().split(/[\n\r]/).forEach(function(s) {
 			if(!s || s[0]===('#') || (s==='') ) return;
 			var e = s.split('=');

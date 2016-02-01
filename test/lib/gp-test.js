@@ -17,8 +17,25 @@ var url = require('url');
 var expect = require('chai').expect;
 var byscheme = require('./byscheme');
 var optional = require('optional');
+var fs = require('fs');
 
-var localCredentials = optional('./local-credentials.json');
+var localCredsFile = './local-credentials.json';
+var localCredentials;
+
+try {
+    fs.accessSync(localCredsFile);
+} catch (e) {
+    console.log('# Missing (ignored): ' + localCredsFile);
+    localCredsFile = null;
+}
+
+if(localCredsFile) {
+    localCredentials = optional(localCredsFile);
+    if(!localCredentials) {
+        throw Error('could not read (check for malformed JSON) ' + localCredsFile);
+    }
+}
+
 var VERBOSE=false;
 
 module.exports.getCredentials = function getCredentials() {
