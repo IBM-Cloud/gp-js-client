@@ -1,5 +1,5 @@
 /*	
- * Copyright IBM Corp. 2015
+ * Copyright IBM Corp. 2015-2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -302,6 +302,8 @@ describe('gaasClient.bundle()', function() {
     bundle.getInfo({}, function(err, bundle2) {
         if(err) return done(err); // not ok
         expect(bundle2).to.be.ok;
+        expect(bundle2.updatedBy).to.be.a('string');
+        expect(bundle2.updatedAt).to.be.a('date');
         expect(bundle2.sourceLanguage).to.equal('en');
         done();
     });
@@ -417,6 +419,8 @@ describe('gaasClient.bundle()', function() {
         expect(entry2).to.be.ok;
         expect(entry2.resourceKey).to.equal(entry.resourceKey);
         expect(entry2.languageId).to.equal(entry.languageId);
+        expect(entry2.updatedBy).to.be.a('string');
+        expect(entry2.updatedAt).to.be.a('date');
         expect(entry2.value).to.be.ok;
         expect(entry2.value).to.equal(qruData.key1);
         done();
@@ -879,6 +883,8 @@ describe('gaasClient.bundle()', function() {
           u.getInfo({}, function(err, user) {
                 if(err) return done(err);
                 expect(user).to.be.ok;
+                expect(user.updatedBy).to.be.a('string');
+                expect(user.updatedAt).to.be.a('date');
                 expect(user.id).to.equal(readerInfo.credentials.userId);
                 expect(user.bundles).to.have.members( [projectId3, projectId]);
                 done();

@@ -167,7 +167,7 @@ params.credentials is required unless params.appEnv is supplied.</p>
 
 <dl>
 <dt><a href="#basicCallback">basicCallback</a> : <code>function</code></dt>
-<dd><p>Basic Callback used thr</p>
+<dd><p>Basic Callback used throughout the SDK</p>
 </dd>
 </dl>
 
@@ -188,6 +188,8 @@ params.credentials is required unless params.appEnv is supplied.</p>
         * [.users(opts, cb)](#Client+users)
         * [.bundles(opts, cb)](#Client+bundles)
     * _inner_
+        * [~supportedTranslationsCallback](#Client..supportedTranslationsCallback) : <code>function</code>
+        * [~serviceInfoCallback](#Client..serviceInfoCallback) : <code>function</code>
         * [~listUsersCallback](#Client..listUsersCallback) : <code>function</code>
         * [~listBundlesCallback](#Client..listBundlesCallback) : <code>function</code>
 
@@ -202,37 +204,40 @@ Version number of the REST service used. Currently ‘V2’.
 **Kind**: instance property of <code>[Client](#Client)</code>  
 <a name="Client+ping"></a>
 ### client.ping
-Do we have access to the server?
+Verify that there is access to the server. An error result
+will be returned if there is a problem. On success, the data returned
+can be ignored. (Note: this is a synonym for getServiceInfo())
 
 **Kind**: instance property of <code>[Client](#Client)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | args | <code>object</code> | (ignored) |
-| cb | <code>callback</code> |  |
+| cb | <code>[basicCallback](#basicCallback)</code> |  |
 
 <a name="Client+supportedTranslations"></a>
 ### client.supportedTranslations(args, cb)
 This function returns a map from source language(s) to target language(s).
-Example: `{ en: ['de', 'ja']}` (English translates to German and Japanese.)
+Example: `{ en: ['de', 'ja']}` meaning English translates to German and Japanese.
 
 **Kind**: instance method of <code>[Client](#Client)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | args | <code>object</code> |  |
-| cb | <code>supportedTranslationsCallback</code> | (err, map-of-languages) |
+| cb | <code>[supportedTranslationsCallback](#Client..supportedTranslationsCallback)</code> | (err, map-of-languages) |
 
 <a name="Client+getServiceInfo"></a>
 ### client.getServiceInfo(args, cb)
-Get information about this service
+Get information about this service.
+At present, no information is returned beyond that expressed by supportedTranslations().
 
 **Kind**: instance method of <code>[Client](#Client)</code>  
 
 | Param | Type |
 | --- | --- |
 | args | <code>object</code> | 
-| cb | <code>[basicCallback](#basicCallback)</code> | 
+| cb | <code>[serviceInfoCallback](#Client..serviceInfoCallback)</code> | 
 
 <a name="Client+createUser"></a>
 ### client.createUser(args, cb)
@@ -244,12 +249,12 @@ Create a user
 | --- | --- | --- |
 | args | <code>object</code> |  |
 | args.type | <code>string</code> | User type (ADMINISTRATOR, TRANSLATOR, or READER) |
-| args.displayName | <code>string</code> | Optional display name for the user. This can be any string. |
+| args.displayName | <code>string</code> | Optional display name for the user.  This can be any string and is displayed in the service dashboard. |
 | args.comment | <code>string</code> | Optional comment |
-| args.bundles | <code>Array</code> | set of accessible bundle ids or ['*'] to mean “all bundles” |
-| args.metadata | <code>Object</code> | optional key/value pairs for user metadata |
+| args.bundles | <code>Array</code> | set of accessible bundle ids. Use `['*']` for “all bundles” |
+| args.metadata | <code>Object.&lt;string, string&gt;</code> | optional key/value pairs for user metadata |
 | args.externalId | <code>string</code> | optional external user ID for your application’s use |
-| cb | <code>[basicCallback](#basicCallback)</code> | passed a new User object |
+| cb | <code>[getUserCallback](#User..getUserCallback)</code> | passed a new User object |
 
 <a name="Client+bundle"></a>
 ### client.bundle(opts) ⇒ <code>[Bundle](#Bundle)</code>
@@ -300,6 +305,29 @@ bundle access objects.
 | opts | <code>Object</code> | ignored |
 | cb | <code>[listBundlesCallback](#Client..listBundlesCallback)</code> | given a map of Bundle objects |
 
+<a name="Client..supportedTranslationsCallback"></a>
+### Client~supportedTranslationsCallback : <code>function</code>
+Callback returned by supportedTranslations()
+
+**Kind**: inner typedef of <code>[Client](#Client)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| err | <code>object</code> | error, or null |
+| languages | <code>Object.&lt;string, Array.&lt;string&gt;&gt;</code> | map from source language to array of target languages Example: `{ en: ['de', 'ja']}` meaning English translates to German and Japanese. |
+
+<a name="Client..serviceInfoCallback"></a>
+### Client~serviceInfoCallback : <code>function</code>
+Callback used by getServiceInfo()
+
+**Kind**: inner typedef of <code>[Client](#Client)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| err | <code>object</code> | error, or null |
+| info | <code>Object</code> | detailed information about the service |
+| info.supportedTranslation | <code>Object.&lt;string, Array.&lt;string&gt;&gt;</code> | map from source language to array of target languages Example: `{ en: ['de', 'ja']}` meaning English translates to German and Japanese. |
+
 <a name="Client..listUsersCallback"></a>
 ### Client~listUsersCallback : <code>function</code>
 Called by users()
@@ -326,21 +354,37 @@ Bundle list callback
 <a name="Bundle"></a>
 ## Bundle
 **Kind**: global class  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| updatedBy | <code>string</code> | userid that updated this bundle |
+| updatedAt | <code>Date</code> | date when the bundle was last updated |
+| sourceLanguage | <code>string</code> | bcp47 id of the source language |
+| targetLanguages | <code>Array.&lt;string&gt;</code> | array of target langauge bcp47 ids |
+| readOnly | <code>boolean</code> | true if this bundle can only be read |
+| metadata | <code>Object.&lt;string, string&gt;</code> | array of user-editable metadata |
+
 
 * [Bundle](#Bundle)
     * [new Bundle(gp, props)](#new_Bundle_new)
-    * [.getInfoFields](#Bundle+getInfoFields)
-    * [.delete(opts, cb)](#Bundle+delete)
-    * [.create(body, cb)](#Bundle+create)
-    * [.getInfo(opts, cb)](#Bundle+getInfo)
-    * [.getStrings(opts, cb)](#Bundle+getStrings)
-    * [.entry(opts)](#Bundle+entry)
-    * [.uploadStrings(opts, cb)](#Bundle+uploadStrings)
-    * [.update(opts, cb)](#Bundle+update)
-    * [.updateStrings(opts, cb)](#Bundle+updateStrings)
+    * _instance_
+        * [.getInfoFields](#Bundle+getInfoFields)
+        * [.delete(opts, cb)](#Bundle+delete)
+        * [.create(body, cb)](#Bundle+create)
+        * [.getInfo(opts, cb)](#Bundle+getInfo)
+        * [.getStrings(opts, cb)](#Bundle+getStrings)
+        * [.entry(opts)](#Bundle+entry)
+        * [.uploadStrings(opts, cb)](#Bundle+uploadStrings)
+        * [.update(opts, cb)](#Bundle+update)
+        * [.updateStrings(opts, cb)](#Bundle+updateStrings)
+    * _inner_
+        * [~getInfoCallback](#Bundle..getInfoCallback) : <code>function</code>
 
 <a name="new_Bundle_new"></a>
 ### new Bundle(gp, props)
+Note: this constructor is not usually called directly, use Client.bundle(id)
+
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -393,7 +437,7 @@ Get bundle info
 | opts.translationStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
 | opts.reviewStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
 | opts.partnerStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
-| cb | <code>[basicCallback](#basicCallback)</code> | callback (err, { updatedBy, updatedAt, sourceLanguage, targetLanguages, readOnly, metadata, partner} ) |
+| cb | <code>[getInfoCallback](#Bundle..getInfoCallback)</code> | callback (err, { updatedBy, updatedAt, sourceLanguage, targetLanguages, readOnly, metadata, partner} ) |
 
 <a name="Bundle+getStrings"></a>
 ### bundle.getStrings(opts, cb)
@@ -456,8 +500,26 @@ Update some strings in a language.
 | --- | --- | --- |
 | opts | <code>Object</code> | options |
 | opts.strings | <code>Object.&lt;string, string&gt;</code> | strings to update. |
-| opts.resync | <code>Boolean</code> | optional: If true, resynchronize strings in the target language and resubmit previously-failing translation operations |
+| opts.resync | <code>Boolean</code> | optional: If true, resynchronize strings  in the target language and resubmit previously-failing translation operations |
 | cb | <code>[basicCallback](#basicCallback)</code> |  |
+
+<a name="Bundle..getInfoCallback"></a>
+### Bundle~getInfoCallback : <code>function</code>
+Callback returned by Bundle~getInfo(). 
+NOTE: this will be changed to be an actual Bundle object - see https://github.com/IBM-Bluemix/gp-js-client/issues/19
+
+**Kind**: inner typedef of <code>[Bundle](#Bundle)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| err | <code>object</code> | error, or null |
+| bundle | <code>Object</code> | bundle object with additional data |
+| bundle.updatedBy | <code>string</code> | userid that updated this bundle |
+| bundle.updatedAt | <code>Date</code> | date when the bundle was last updated |
+| bundle.sourceLanguage | <code>string</code> | bcp47 id of the source language |
+| bundle.targetLanguages | <code>Array.&lt;string&gt;</code> | array of target langauge bcp47 ids |
+| bundle.readOnly | <code>boolean</code> | true if this bundle can only be read |
+| bundle.metadata | <code>Object.&lt;string, string&gt;</code> | array of user-editable metadata |
 
 <a name="User"></a>
 ## User
@@ -481,32 +543,37 @@ Update some strings in a language.
 
 * [User](#User)
     * [new User(gp, props)](#new_User_new)
-    * [.update(opts, cb)](#User+update)
-    * [.delete(cb)](#User+delete)
-    * [.getInfo(opts, cb)](#User+getInfo)
+    * _instance_
+        * [.update(opts, cb)](#User+update)
+        * [.delete(cb)](#User+delete)
+        * [.getInfo(opts, cb)](#User+getInfo)
+    * _inner_
+        * [~getUserCallback](#User..getUserCallback) : <code>function</code>
 
 <a name="new_User_new"></a>
 ### new User(gp, props)
+Note: this constructor is not usually called directly, use Client.user(id)
+
 
 | Param | Type | Description |
 | --- | --- | --- |
-| gp | <code>[Client](#Client)</code> | parent g11n-pipeline client object |
+| gp | <code>[Client](#Client)</code> | parent Client object |
 | props | <code>Object</code> | properties to inherit |
 
 <a name="User+update"></a>
 ### user.update(opts, cb)
 Update this user. 
-All fields of opts are optional. For strings, falsy = no change, empty string '' = deletion.
+All fields of opts are optional. For strings, falsy = no change, empty string `''` = deletion.
 
 **Kind**: instance method of <code>[User](#User)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>object</code> | options |
-| opts.displayName | <code>string</code> | User's display name - falsy = no change, empty string '' = deletion. |
+| opts.displayName | <code>string</code> | User's display name - falsy = no change, empty string `''` = deletion. |
 | opts.comment | <code>string</code> | optional comment - falsy = no change, empty string '' = deletion. |
 | opts.bundles | <code>Array.&lt;string&gt;</code> | Accessible bundle IDs. |
-| opts.metadata | <code>object.&lt;string, string&gt;</code> | User defined user metadata containg key/value pairs.  Data will be merged in. Pass in "{}" to erase all metadata. |
+| opts.metadata | <code>object.&lt;string, string&gt;</code> | User defined user metadata containg key/value pairs.  Data will be merged in. Pass in `{}` to erase all metadata. |
 | opts.externalId | <code>string</code> | User ID used by another system associated with this user - falsy = no change, empty string '' = deletion. |
 | cb | <code>[basicCallback](#basicCallback)</code> | callback with success or failure |
 
@@ -534,7 +601,18 @@ all properties filled in.
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | optional, ignored |
-| cb | <code>getUserCallback</code> |  |
+| cb | <code>[getUserCallback](#User..getUserCallback)</code> | called with updated info |
+
+<a name="User..getUserCallback"></a>
+### User~getUserCallback : <code>function</code>
+Callback called by Client~createUser() and User~getInfo()
+
+**Kind**: inner typedef of <code>[User](#User)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| err | <code>object</code> | error, or null |
+| user | <code>[User](#User)</code> | On success, the new or updated User object. |
 
 <a name="ResourceEntry"></a>
 ## ResourceEntry
@@ -548,15 +626,28 @@ Creating this object does not modify any data.
 | Name | Type | Description |
 | --- | --- | --- |
 | resourceKey | <code>String</code> | key for the resource |
+| updatedBy | <code>string</code> | the user which last updated this entry |
+| updatedAt | <code>Date</code> | when this entry was updated |
+| value | <code>string</code> | the translated value of this entry |
+| sourceValue | <code>string</code> | the source value of this entry |
+| reviewed | <code>boolean</code> | indicator of whether this entry has been reviewed |
+| translationStatus | <code>string</code> | status of this translation:  `source_language`, `translated`, `in_progress`, or `failed` |
+| entry.metadata | <code>Object.&lt;string, string&gt;</code> | user metadata for this entry |
+| partnerStatus | <code>string</code> | status of partner integration |
 
 
 * [ResourceEntry](#ResourceEntry)
     * [new ResourceEntry(bundle, props)](#new_ResourceEntry_new)
-    * [.getInfo(opts, cb)](#ResourceEntry+getInfo)
-    * [.update()](#ResourceEntry+update)
+    * _instance_
+        * [.getInfo(opts, cb)](#ResourceEntry+getInfo)
+        * [.update()](#ResourceEntry+update)
+    * _inner_
+        * [~getInfoCallback](#ResourceEntry..getInfoCallback) : <code>function</code>
 
 <a name="new_ResourceEntry_new"></a>
 ### new ResourceEntry(bundle, props)
+Note: this constructor is not usually called directly, use Bundle.entry(...)
+
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -573,7 +664,7 @@ another ResourceEntry but one with all current data filled in.
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | options (currently ignored) |
-| cb | <code>[basicCallback](#basicCallback)</code> | callback (err, ResourceEntry) |
+| cb | <code>[getInfoCallback](#ResourceEntry..getInfoCallback)</code> | callback (err, ResourceEntry) |
 
 <a name="ResourceEntry+update"></a>
 ### resourceEntry.update()
@@ -587,6 +678,17 @@ Update this resource entry's fields.
 | opts.reviewed | <code>boolean</code> | optional boolean indicating if value was reviewed |
 | opts.metadata | <code>object</code> | optional metadata to update |
 | opts.partnerStatus | <code>string</code> | translation status maintained by partner |
+
+<a name="ResourceEntry..getInfoCallback"></a>
+### ResourceEntry~getInfoCallback : <code>function</code>
+Callback called by ResourceEntry~getInfo()
+
+**Kind**: inner typedef of <code>[ResourceEntry](#ResourceEntry)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| err | <code>object</code> | error, or null |
+| entry | <code>[ResourceEntry](#ResourceEntry)</code> | On success, the new or updated ResourceEntry object. |
 
 <a name="serviceRegex"></a>
 ## serviceRegex
@@ -644,7 +746,7 @@ Return a list of missing fields. Special cases the instanceId field.
 
 <a name="basicCallback"></a>
 ## basicCallback : <code>function</code>
-Basic Callback used thr
+Basic Callback used throughout the SDK
 
 **Kind**: global typedef  
 
