@@ -36,6 +36,31 @@ if(localCredsFile) {
     }
 }
 
+/**
+ * Acceptable source language.
+ */
+module.exports.SOURCES = [ 'en' ];
+
+/**
+ * Acceptable target languages.
+ */
+module.exports.TARGETS = [ 'it', 'ko' ];
+
+/**
+ * Pseudo language doing Cyrillic transliteration
+ */
+module.exports.CYRILLIC = 'qru';
+
+/**
+ * Language not covered by translation, yet
+ */
+module.exports.KLINGON = 'tlh';
+
+/**
+ * Language that always fails
+ */
+module.exports.NOLANG = 'zxx';
+
 var VERBOSE=false;
 
 module.exports.getCredentials = function getCredentials() {
