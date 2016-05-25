@@ -1,5 +1,5 @@
 /*	
- * Copyright IBM Corp. 2015-2016
+ * Copyright IBM Corp. 2015,2016
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -156,9 +156,9 @@ describe('gaasClient.supportedTranslations()', function() {
     gaasClient.supportedTranslations({}, function(err, translations) {
       if(err) { done(err); return; }
       if(VERBOSE) console.dir(translations);
-      expect(translations).to.include.keys('en');
-      expect(translations.en).to.include('de');
-      expect(translations.en).to.include('es');
+      expect(translations).to.include.keys(gaasTest.SOURCES);
+      expect(translations[gaasTest.SOURCES[0]]).to.include(gaasTest.TARGETS[0]);
+      expect(translations[gaasTest.SOURCES[0]]).to.include(gaasTest.TARGETS[1]);
       done();
     });
   });
@@ -283,7 +283,7 @@ describe('gaasClient.bundle()', function() {
   it('Should fail if resource does not exist', function(done) {
     var bundle = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
     expect(bundle.sourceLanguage).to.not.be.ok;
-    bundle.entry({languageId: 'tlh', resourceKey: 'key0'})
+    bundle.entry({languageId: gaasTest.KLINGON, resourceKey: 'key0'})
        .getInfo({}, function(err, entry2) {
         if(err) return done();
         done('Expected error.');
@@ -291,7 +291,7 @@ describe('gaasClient.bundle()', function() {
   });
   it('Should let us create', function(done) {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
-    Q.ninvoke(proj, "create", {sourceLanguage: 'en', targetLanguages: ['es','qru']})
+    Q.ninvoke(proj, "create", {sourceLanguage: gaasTest.SOURCES[0], targetLanguages: [gaasTest.TARGETS[0],gaasTest.CYRILLIC]})
     .then(function(resp) {
       done();
     }, done);
@@ -304,7 +304,7 @@ describe('gaasClient.bundle()', function() {
         expect(bundle2).to.be.ok;
         expect(bundle2.updatedBy).to.be.a('string');
         expect(bundle2.updatedAt).to.be.a('date');
-        expect(bundle2.sourceLanguage).to.equal('en');
+        expect(bundle2.sourceLanguage).to.equal(gaasTest.SOURCES[0]);
         done();
     });
   });
@@ -319,7 +319,7 @@ describe('gaasClient.bundle()', function() {
         list[projectId].getInfo({}, function(err, bundle2) {
             if(err) return done(err);
             expect(bundle2).to.be.ok;
-            expect(bundle2.sourceLanguage).to.equal('en');
+            expect(bundle2.sourceLanguage).to.equal(gaasTest.SOURCES[0]);
             return done();
         });
     });
@@ -327,17 +327,17 @@ describe('gaasClient.bundle()', function() {
   it('Should let us upload some strings', function(done) {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
     proj.uploadStrings({
-        languageId: 'en',
+        languageId: gaasTest.SOURCES[0],
         strings: sourceData
     }, done);
   });
   if(DELAY_AVAIL) it('should let us verify the target entry(qru).key1 is in progress', function(done) {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
-    proj.getEntryInfo({ languageId: 'qru', resourceKey: 'key1'},
+    proj.getEntryInfo({ languageId: gaasTest.CYRILLIC, resourceKey: 'key1'},
     function(err, data) {
       if(err) {done(err); return; }
     //   console.dir(data);
-    //   expect(data.language).to.equal('en');
+    //   expect(data.language).to.equal(gaasTest.SOURCES[0]);
       expect(data).to.have.a.property('resourceEntry');
       expect(data.resourceEntry).to.have.a.property('translationStatus');
       expect(data.resourceEntry.translationStatus).to.equal('IN_PROGRESS');
@@ -348,7 +348,7 @@ describe('gaasClient.bundle()', function() {
   // In any event, wait until key2 has SUCCEEDED. if @DELAY@ is used this may take some time, otherwise could already be done.
   it('Should let us wait until key2 has TRANSLATED', function(done) {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
-    var entry = proj.entry({ languageId: 'qru', resourceKey: 'key2'});
+    var entry = proj.entry({ languageId: gaasTest.CYRILLIC, resourceKey: 'key2'});
     var loopy = function() {
         minispin.step();
         entry.getInfo({},
@@ -369,11 +369,11 @@ describe('gaasClient.bundle()', function() {
   });
 //   it('should let us verify the target entry(qru) is in progress', function(done) {
 //     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
-//     proj.getEntryInfo({ languageId: 'qru', resourceKey: 'key1'},
+//     proj.getEntryInfo({ languageId: gaasTest.CYRILLIC, resourceKey: 'key1'},
 //     function(err, data) {
 //       if(err) {done(err); return; }
 //       console.dir(data);
-//     //   expect(data.language).to.equal('en');
+//     //   expect(data.language).to.equal(gaasTest.SOURCES[0]);
 //       expect(data).to.have.a.property('translationStatus');
 //       expect(data.resourceEntry.translationStatus).to.equal('IN_PROGRESS');
 //     //   expect(JSON.stringify(data.resourceStrings)).to.equal(JSON.stringify(qruData));
@@ -382,11 +382,11 @@ describe('gaasClient.bundle()', function() {
 //   });
   it('should let us verify the target data(qru)', function(done) {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
-    proj.getStrings({ languageId: 'qru'},
+    proj.getStrings({ languageId: gaasTest.CYRILLIC},
     function(err, data) {
       if(err) {done(err); return; }
     //   console.dir(data);
-    //   expect(data.language).to.equal('en');
+    //   expect(data.language).to.equal(gaasTest.SOURCES[0]);
       expect(data).to.have.a.property('resourceStrings');
       expect(JSON.stringify(data.resourceStrings)).to.equal(JSON.stringify(qruData));
       done();
@@ -394,15 +394,17 @@ describe('gaasClient.bundle()', function() {
   });
   it('should let us verify some source entries', function(done) {
     var bund = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
-    var entry = bund.entry({languageId:'en',resourceKey:'key1'});
+    var entry = bund.entry({languageId:gaasTest.SOURCES[0],resourceKey:'key1'});
     expect(entry.resourceKey).to.equal('key1');
-    expect(entry.languageId).to.equal('en');
+    expect(entry.languageId).to.equal(gaasTest.SOURCES[0]);
     expect(entry.value).to.not.be.ok;
     entry.getInfo({}, function(err, entry2) {
         if(err) return(done(err));
         expect(entry2).to.be.ok;
         expect(entry2.resourceKey).to.equal(entry.resourceKey);
         expect(entry2.languageId).to.equal(entry.languageId);
+        expect(entry2.sourceValue).to.be.ok;
+        expect(entry2.sourceValue).to.equal(sourceData.key1);
         expect(entry2.value).to.be.ok;
         expect(entry2.value).to.equal(sourceData.key1);
         done();
@@ -410,9 +412,9 @@ describe('gaasClient.bundle()', function() {
   });
   it('should let us verify some target entries', function(done) {
     var bund = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
-    var entry = bund.entry({languageId:'qru',resourceKey:'key1'});
+    var entry = bund.entry({languageId:gaasTest.CYRILLIC,resourceKey:'key1'});
     expect(entry.resourceKey).to.equal('key1');
-    expect(entry.languageId).to.equal('qru');
+    expect(entry.languageId).to.equal(gaasTest.CYRILLIC);
     expect(entry.value).to.not.be.ok;
     entry.getInfo({}, function(err, entry2) {
         if(err) return(done(err));
@@ -426,18 +428,27 @@ describe('gaasClient.bundle()', function() {
         done();
     });
   });
-  it('should NOT us update the wrong language(tlh)', function(done) {
+  it('should NOT us upload the invalid language(123)', function(done) {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
-    proj.uploadStrings({ languageId: 'tlh',
+    proj.uploadStrings({ languageId: '123',
                               strings: sourceData},
     function(err){if(err){done(); return;} done(Error('should have failed')); });
   });
+  it('should let us upload the language(tlh) not supported by MT', function(done) {
+    var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
+    proj.uploadStrings({ languageId: gaasTest.KLINGON,
+                              strings: sourceData},
+    function(err){
+      if(err) return (done(err));
+      done();
+    });
+  });
   it('should let us verify the source data(en)', function(done) {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
-    proj.getStrings({ languageId: 'en'},
+    proj.getStrings({ languageId: gaasTest.SOURCES[0]},
     function(err, data) {
       if(err) {done(err); return; }
-    //   expect(data.language).to.equal('en');
+    //   expect(data.language).to.equal(gaasTest.SOURCES[0]);
       expect(data).to.have.a.property('resourceStrings');
       expect(JSON.stringify(data.resourceStrings)).to.equal(JSON.stringify(sourceData));
       done();
@@ -453,7 +464,7 @@ describe('gaasClient.bundle()', function() {
   it('Should let me update the review status of a bundle', function(done) {
     var entry = gaasClient
                     .bundle({id:projectId, serviceInstance: instanceName})
-                    .entry({languageId:'qru',resourceKey:'key1'});
+                    .entry({languageId:gaasTest.CYRILLIC,resourceKey:'key1'});
     entry.update({
         reviewed: true
     }, function(err, data) {
@@ -591,7 +602,7 @@ describe('gaasClient.bundle()', function() {
             entry: function () { 
                 return gaasAdminClient
                     .bundle(projectId3)
-                    .entry({languageId:'en', resourceKey:'hello'}); 
+                    .entry({languageId:gaasTest.SOURCES[0], resourceKey:'hello'}); 
             }
         };
         Object.keys(kinds).forEach(function(k) {
@@ -708,7 +719,7 @@ describe('gaasClient.bundle()', function() {
   
  it('should verify the reader user can NOT read the source data(en)', function(done) {
     var proj = gaasReaderClient.bundle(projectId);
-    proj.getStrings({ languageId: 'en'},
+    proj.getStrings({ languageId: gaasTest.SOURCES[0]},
     function(err, data) {
         expect(err).to.be.ok;
         done();
@@ -716,7 +727,7 @@ describe('gaasClient.bundle()', function() {
   });
  it('should verify the reader user can NOT read the target data(qru)', function(done) {
     var proj = gaasReaderClient.bundle(projectId);
-    proj.getStrings({ languageId: 'qru'},
+    proj.getStrings({ languageId: gaasTest.CYRILLIC},
     function(err, data) {
         expect(err).to.be.ok;
         done();
@@ -727,7 +738,7 @@ describe('gaasClient.bundle()', function() {
     expect(gaasReaderClient).to.be.ok; // otherwise, user creation failed
     gaasReaderClient
         .bundle(projectId)
-        .entry({languageId: 'qru', resourceKey: 'key1'})
+        .entry({languageId: gaasTest.CYRILLIC, resourceKey: 'key1'})
         .getInfo({}, function(err, r) {
             expect(err).to.be.ok;
             done();
@@ -738,7 +749,7 @@ describe('gaasClient.bundle()', function() {
     expect(gaasReaderClient).to.be.ok; // otherwise, user creation failed
     gaasReaderClient
         .bundle(projectId)
-        .entry({languageId: 'en', resourceKey: 'key1'})
+        .entry({languageId: gaasTest.SOURCES[0], resourceKey: 'key1'})
         .getInfo({}, function(err, r) {
             expect(err).to.be.ok;
             done();
@@ -762,7 +773,7 @@ describe('gaasClient.bundle()', function() {
         .getInfo({}, function(err, bund) {
             if(err) return done(err);
             expect(bund).to.be.ok;
-            expect(bund.sourceLanguage).to.equal('en');
+            expect(bund.sourceLanguage).to.equal(gaasTest.SOURCES[0]);
             expect(bund.metadata).to.deep.equal({});
             done();
         });
@@ -782,7 +793,7 @@ describe('gaasClient.bundle()', function() {
     expect(gaasAdminClient).to.be.ok; // otherwise, user creation failed
     gaasAdminClient
         .bundle(projectId)
-        .entry({languageId: 'qru', resourceKey: 'key1'})
+        .entry({languageId: gaasTest.CYRILLIC, resourceKey: 'key1'})
         .getInfo({}, function(err, r) {
             if(err) return done(err);
             expect(r).to.be.ok;
@@ -793,7 +804,7 @@ describe('gaasClient.bundle()', function() {
 
   it('should let the admin user verify the target data(qru)', function(done) {
     var proj = gaasAdminClient.bundle(projectId);
-    proj.getStrings({ languageId: 'qru'},
+    proj.getStrings({ languageId: gaasTest.CYRILLIC},
     function(err, data) {
       if(err) {done(err); return; }
       expect(data).to.have.a.property('resourceStrings');
@@ -806,7 +817,7 @@ describe('gaasClient.bundle()', function() {
     expect(gaasReaderClient).to.be.ok; // otherwise, user creation failed
     gaasReaderClient
         .bundle(projectId)
-        .entry({languageId: 'qru', resourceKey: 'key1'})
+        .entry({languageId: gaasTest.CYRILLIC, resourceKey: 'key1'})
         .getInfo({}, function(err, r) {
             if(err) return done(err);
             expect(r).to.be.ok;
@@ -822,7 +833,7 @@ describe('gaasClient.bundle()', function() {
         .getInfo({}, function(err, b) {
             if(err) return done(err);
             expect(b).to.be.ok;
-            expect(b.sourceLanguage).to.equal('en');
+            expect(b.sourceLanguage).to.equal(gaasTest.SOURCES[0]);
             expect(b.metadata).to.not.be.ok;
             done();
         });
@@ -835,7 +846,7 @@ describe('gaasClient.bundle()', function() {
         .getInfo({}, function(err, b) {
             if(err) return done(err);
             expect(b).to.be.ok;
-            expect(b.sourceLanguage).to.equal('en');
+            expect(b.sourceLanguage).to.equal(gaasTest.SOURCES[0]);
             expect(b.metadata).to.deep.equal({key:'value'});
             done();
         });
@@ -843,7 +854,7 @@ describe('gaasClient.bundle()', function() {
     
   it('should let the reader user verify the target data(qru)', function(done) {
     var proj = gaasReaderClient.bundle(projectId);
-    proj.getStrings({ languageId: 'qru'},
+    proj.getStrings({ languageId: gaasTest.CYRILLIC},
     function(err, data) {
       if(err) {done(err); return; }
       expect(data).to.have.a.property('resourceStrings');
@@ -854,7 +865,7 @@ describe('gaasClient.bundle()', function() {
   
     it('should let the admin user verify the source data(en)', function(done) {
     var proj = gaasAdminClient.bundle(projectId);
-    proj.getStrings({ languageId: 'en'},
+    proj.getStrings({ languageId: gaasTest.SOURCES[0]},
     function(err, data) {
       if(err) {done(err); return; }
       expect(data).to.have.a.property('resourceStrings');
@@ -865,7 +876,7 @@ describe('gaasClient.bundle()', function() {
 
   it('should let the reader user verify the source data(en)', function(done) {
     var proj = gaasReaderClient.bundle(projectId);
-    proj.getStrings({ languageId: 'en'},
+    proj.getStrings({ languageId: gaasTest.SOURCES[0]},
     function(err, data) {
       if(err) {done(err); return; }
       expect(data).to.have.a.property('resourceStrings');
@@ -900,7 +911,7 @@ describe('gaasClient.bundle()', function() {
         .getInfo({}, function(err, bund) {
             if(err) return done(err);
             expect(bund).to.be.ok;
-            expect(bund.sourceLanguage).to.equal('en');
+            expect(bund.sourceLanguage).to.equal(gaasTest.SOURCES[0]);
             done();
         });
   });
@@ -933,9 +944,9 @@ describe('gaasClient.bundle()', function() {
     
     var proj = gaasAdminClient.bundle({id:projectId3});
     
-    Q.ninvoke(proj, "create", {sourceLanguage: 'en', targetLanguages: ['es','qru']})
+    Q.ninvoke(proj, "create", {sourceLanguage: gaasTest.SOURCES[0], targetLanguages: [gaasTest.SOURCES[0],gaasTest.CYRILLIC]})
     .then(function(resp) {
-      Q.ninvoke(proj, "uploadResourceStrings", {languageId: 'en', strings: {
+      Q.ninvoke(proj, "uploadResourceStrings", {languageId: gaasTest.SOURCES[0], strings: {
         hello: 'Hello, World!'
       }})
       .then(function(resp){ done(); }, done);
@@ -989,7 +1000,7 @@ describe('gaasClient.bundle()', function() {
             .getInfo({}, function(err, bund) {
                 if(err) return done(err);
                 expect(bund).to.be.ok;
-                expect(bund.sourceLanguage).to.equal('en');
+                expect(bund.sourceLanguage).to.equal(gaasTest.SOURCES[0]);
                 done();
             });
     });
@@ -1001,7 +1012,7 @@ describe('gaasClient.bundle()', function() {
             .getInfo({}, function(err, bund) {
                 if(err) return done(err);
                 expect(bund).to.be.ok;
-                expect(bund.sourceLanguage).to.equal('en');
+                expect(bund.sourceLanguage).to.equal(gaasTest.SOURCES[0]);
                 done();
             });
     });
