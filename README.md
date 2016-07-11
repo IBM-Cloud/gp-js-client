@@ -2,7 +2,7 @@ Globalization Pipeline Client for JavaScript
 ============================================
 
 This is the JavaScript SDK for the
-[Globalization Pipeline](https://www.ng.bluemix.net/docs/#services/GlobalizationPipeline/index.html#globalization)
+[Globalization Pipeline](https://github.com/IBM-Bluemix/gp-common#globalization-pipeline)
 Bluemix service. 
 The Globalization Pipeline service makes it easy for you to provide your global customers
 with Bluemix applications translated into the languages in which they work. 
@@ -172,6 +172,7 @@ params.credentials is required unless params.appEnv is supplied.</p>
 </dl>
 
 <a name="Client"></a>
+
 ## Client
 **Kind**: global class  
 
@@ -194,15 +195,18 @@ params.credentials is required unless params.appEnv is supplied.</p>
         * [~listBundlesCallback](#Client..listBundlesCallback) : <code>function</code>
 
 <a name="new_Client_new"></a>
+
 ### new Client()
 Client object for Globalization Pipeline
 
 <a name="Client+version"></a>
+
 ### client.version
 Version number of the REST service used. Currently ‘V2’.
 
 **Kind**: instance property of <code>[Client](#Client)</code>  
 <a name="Client+ping"></a>
+
 ### client.ping
 Verify that there is access to the server. An error result
 will be returned if there is a problem. On success, the data returned
@@ -216,6 +220,7 @@ can be ignored. (Note: this is a synonym for getServiceInfo())
 | cb | <code>[basicCallback](#basicCallback)</code> |  |
 
 <a name="Client+supportedTranslations"></a>
+
 ### client.supportedTranslations(args, cb)
 This function returns a map from source language(s) to target language(s).
 Example: `{ en: ['de', 'ja']}` meaning English translates to German and Japanese.
@@ -228,6 +233,7 @@ Example: `{ en: ['de', 'ja']}` meaning English translates to German and Japanese
 | cb | <code>[supportedTranslationsCallback](#Client..supportedTranslationsCallback)</code> | (err, map-of-languages) |
 
 <a name="Client+getServiceInfo"></a>
+
 ### client.getServiceInfo(args, cb)
 Get information about this service.
 At present, no information is returned beyond that expressed by supportedTranslations().
@@ -240,6 +246,7 @@ At present, no information is returned beyond that expressed by supportedTransla
 | cb | <code>[serviceInfoCallback](#Client..serviceInfoCallback)</code> | 
 
 <a name="Client+createUser"></a>
+
 ### client.createUser(args, cb)
 Create a user
 
@@ -257,6 +264,7 @@ Create a user
 | cb | <code>[getUserCallback](#User..getUserCallback)</code> | passed a new User object |
 
 <a name="Client+bundle"></a>
+
 ### client.bundle(opts) ⇒ <code>[Bundle](#Bundle)</code>
 Create a bundle access object.
 This doesn’t create the bundle itself, just a handle object.
@@ -269,6 +277,7 @@ Call create() on the bundle to create it.
 | opts | <code>Object</code> | String (id) or map {id: bundleId, serviceInstance: serviceInstanceId} |
 
 <a name="Client+user"></a>
+
 ### client.user(id) ⇒ <code>[User](#User)</code>
 Create a user access object.
 This doesn’t create the user itself,
@@ -282,6 +291,7 @@ Use createUser() to create a user.
 | id | <code>Object</code> | String (id) or map {id: bundleId, serviceInstance: serviceInstanceId} |
 
 <a name="Client+users"></a>
+
 ### client.users(opts, cb)
 List users. Callback is called with an array of 
 user access objects.
@@ -294,6 +304,7 @@ user access objects.
 | cb | <code>[listUsersCallback](#Client..listUsersCallback)</code> | callback |
 
 <a name="Client+bundles"></a>
+
 ### client.bundles(opts, cb)
 List bundles. Callback is called with an map of 
 bundle access objects.
@@ -306,6 +317,7 @@ bundle access objects.
 | cb | <code>[listBundlesCallback](#Client..listBundlesCallback)</code> | given a map of Bundle objects |
 
 <a name="Client..supportedTranslationsCallback"></a>
+
 ### Client~supportedTranslationsCallback : <code>function</code>
 Callback returned by supportedTranslations()
 
@@ -317,6 +329,7 @@ Callback returned by supportedTranslations()
 | languages | <code>Object.&lt;string, Array.&lt;string&gt;&gt;</code> | map from source language to array of target languages Example: `{ en: ['de', 'ja']}` meaning English translates to German and Japanese. |
 
 <a name="Client..serviceInfoCallback"></a>
+
 ### Client~serviceInfoCallback : <code>function</code>
 Callback used by getServiceInfo()
 
@@ -329,6 +342,7 @@ Callback used by getServiceInfo()
 | info.supportedTranslation | <code>Object.&lt;string, Array.&lt;string&gt;&gt;</code> | map from source language to array of target languages Example: `{ en: ['de', 'ja']}` meaning English translates to German and Japanese. |
 
 <a name="Client..listUsersCallback"></a>
+
 ### Client~listUsersCallback : <code>function</code>
 Called by users()
 
@@ -341,6 +355,7 @@ Called by users()
 | users | <code>Object.&lt;string, User&gt;</code> | map from user ID to User object |
 
 <a name="Client..listBundlesCallback"></a>
+
 ### Client~listBundlesCallback : <code>function</code>
 Bundle list callback
 
@@ -352,6 +367,7 @@ Bundle list callback
 | bundles | <code>Object.&lt;string, Bundle&gt;</code> | map from bundle ID to Bundle object |
 
 <a name="Bundle"></a>
+
 ## Bundle
 **Kind**: global class  
 **Properties**
@@ -382,6 +398,7 @@ Bundle list callback
         * [~getInfoCallback](#Bundle..getInfoCallback) : <code>function</code>
 
 <a name="new_Bundle_new"></a>
+
 ### new Bundle(gp, props)
 Note: this constructor is not usually called directly, use Client.bundle(id)
 
@@ -392,11 +409,13 @@ Note: this constructor is not usually called directly, use Client.bundle(id)
 | props | <code>Object</code> | properties to inherit |
 
 <a name="Bundle+getInfoFields"></a>
+
 ### bundle.getInfoFields
 List of fields usable with Bundle.getInfo()
 
 **Kind**: instance property of <code>[Bundle](#Bundle)</code>  
 <a name="Bundle+delete"></a>
+
 ### bundle.delete(opts, cb)
 Delete this bundle.
 
@@ -408,6 +427,7 @@ Delete this bundle.
 | cb | <code>[basicCallback](#basicCallback)</code> | 
 
 <a name="Bundle+create"></a>
+
 ### bundle.create(body, cb)
 Create this bundle with the specified params.
 Note that on failure, such as an illegal language being specified,
@@ -425,6 +445,7 @@ the bundle is not created.
 | cb | <code>[basicCallback](#basicCallback)</code> |  |
 
 <a name="Bundle+getInfo"></a>
+
 ### bundle.getInfo(opts, cb)
 Get bundle info
 
@@ -440,6 +461,7 @@ Get bundle info
 | cb | <code>[getInfoCallback](#Bundle..getInfoCallback)</code> | callback (err, { updatedBy, updatedAt, sourceLanguage, targetLanguages, readOnly, metadata, partner} ) |
 
 <a name="Bundle+getStrings"></a>
+
 ### bundle.getStrings(opts, cb)
 Fetch one language's strings
 
@@ -452,6 +474,7 @@ Fetch one language's strings
 | cb | <code>[basicCallback](#basicCallback)</code> | callback (err, { resourceStrings: { strings … } }) |
 
 <a name="Bundle+entry"></a>
+
 ### bundle.entry(opts)
 Create an entry object. Doesn't fetch data,
 
@@ -465,6 +488,7 @@ Create an entry object. Doesn't fetch data,
 | opts.resourceKey | <code>String</code> | resource key |
 
 <a name="Bundle+uploadStrings"></a>
+
 ### bundle.uploadStrings(opts, cb)
 Upload resource strings, replacing all current contents for the language
 
@@ -478,6 +502,7 @@ Upload resource strings, replacing all current contents for the language
 | cb | <code>[basicCallback](#basicCallback)</code> |  |
 
 <a name="Bundle+update"></a>
+
 ### bundle.update(opts, cb)
 **Kind**: instance method of <code>[Bundle](#Bundle)</code>  
 
@@ -491,6 +516,7 @@ Upload resource strings, replacing all current contents for the language
 | cb | <code>[basicCallback](#basicCallback)</code> | callback |
 
 <a name="Bundle+updateStrings"></a>
+
 ### bundle.updateStrings(opts, cb)
 Update some strings in a language.
 
@@ -504,6 +530,7 @@ Update some strings in a language.
 | cb | <code>[basicCallback](#basicCallback)</code> |  |
 
 <a name="Bundle..getInfoCallback"></a>
+
 ### Bundle~getInfoCallback : <code>function</code>
 Callback returned by Bundle~getInfo(). 
 NOTE: this will be changed to be an actual Bundle object - see https://github.com/IBM-Bluemix/gp-js-client/issues/19
@@ -522,6 +549,7 @@ NOTE: this will be changed to be an actual Bundle object - see https://github.co
 | bundle.metadata | <code>Object.&lt;string, string&gt;</code> | array of user-editable metadata |
 
 <a name="User"></a>
+
 ## User
 **Kind**: global class  
 **Properties**
@@ -551,6 +579,7 @@ NOTE: this will be changed to be an actual Bundle object - see https://github.co
         * [~getUserCallback](#User..getUserCallback) : <code>function</code>
 
 <a name="new_User_new"></a>
+
 ### new User(gp, props)
 Note: this constructor is not usually called directly, use Client.user(id)
 
@@ -561,6 +590,7 @@ Note: this constructor is not usually called directly, use Client.user(id)
 | props | <code>Object</code> | properties to inherit |
 
 <a name="User+update"></a>
+
 ### user.update(opts, cb)
 Update this user. 
 All fields of opts are optional. For strings, falsy = no change, empty string `''` = deletion.
@@ -578,6 +608,7 @@ All fields of opts are optional. For strings, falsy = no change, empty string `'
 | cb | <code>[basicCallback](#basicCallback)</code> | callback with success or failure |
 
 <a name="User+delete"></a>
+
 ### user.delete(cb)
 Delete this user. 
 Note that the service managed user
@@ -591,6 +622,7 @@ Note that the service managed user
 | cb | <code>[basicCallback](#basicCallback)</code> | callback with success or failure |
 
 <a name="User+getInfo"></a>
+
 ### user.getInfo(opts, cb)
 Fetch user info.
 The callback is given a new User instance, with
@@ -604,6 +636,7 @@ all properties filled in.
 | cb | <code>[getUserCallback](#User..getUserCallback)</code> | called with updated info |
 
 <a name="User..getUserCallback"></a>
+
 ### User~getUserCallback : <code>function</code>
 Callback called by Client~createUser() and User~getInfo()
 
@@ -615,6 +648,7 @@ Callback called by Client~createUser() and User~getInfo()
 | user | <code>[User](#User)</code> | On success, the new or updated User object. |
 
 <a name="ResourceEntry"></a>
+
 ## ResourceEntry
 ResourceEntry
 Creating this object does not modify any data.
@@ -645,6 +679,7 @@ Creating this object does not modify any data.
         * [~getInfoCallback](#ResourceEntry..getInfoCallback) : <code>function</code>
 
 <a name="new_ResourceEntry_new"></a>
+
 ### new ResourceEntry(bundle, props)
 Note: this constructor is not usually called directly, use Bundle.entry(...)
 
@@ -655,6 +690,7 @@ Note: this constructor is not usually called directly, use Bundle.entry(...)
 | props | <code>Object</code> | properties to inherit |
 
 <a name="ResourceEntry+getInfo"></a>
+
 ### resourceEntry.getInfo(opts, cb)
 Load this entry's information. Callback is given
 another ResourceEntry but one with all current data filled in.
@@ -667,6 +703,7 @@ another ResourceEntry but one with all current data filled in.
 | cb | <code>[getInfoCallback](#ResourceEntry..getInfoCallback)</code> | callback (err, ResourceEntry) |
 
 <a name="ResourceEntry+update"></a>
+
 ### resourceEntry.update()
 Update this resource entry's fields.
 
@@ -680,6 +717,7 @@ Update this resource entry's fields.
 | opts.partnerStatus | <code>string</code> | translation status maintained by partner |
 
 <a name="ResourceEntry..getInfoCallback"></a>
+
 ### ResourceEntry~getInfoCallback : <code>function</code>
 Callback called by ResourceEntry~getInfo()
 
@@ -691,6 +729,7 @@ Callback called by ResourceEntry~getInfo()
 | entry | <code>[ResourceEntry](#ResourceEntry)</code> | On success, the new or updated ResourceEntry object. |
 
 <a name="serviceRegex"></a>
+
 ## serviceRegex
 a Regex for matching the service.
 Usage: var credentials = require('cfEnv')
@@ -705,6 +744,7 @@ Usage: var credentials = require('cfEnv')
 | serviceRegex | 
 
 <a name="exampleCredentials"></a>
+
 ## exampleCredentials
 Example credentials
 
@@ -716,6 +756,7 @@ Example credentials
 | exampleCredentials | 
 
 <a name="getClient"></a>
+
 ## getClient(params) ⇒ <code>[Client](#Client)</code>
 Construct a g11n-pipeline client. 
 params.credentials is required unless params.appEnv is supplied.
@@ -733,6 +774,7 @@ params.credentials is required unless params.appEnv is supplied.
 | params.credentials.instanceId | <code>string</code> | instance ID |
 
 <a name="isMissingField"></a>
+
 ## isMissingField(obj, fields) ⇒
 Return a list of missing fields. Special cases the instanceId field.
 
@@ -745,6 +787,7 @@ Return a list of missing fields. Special cases the instanceId field.
 | fields | array of fields to require |
 
 <a name="basicCallback"></a>
+
 ## basicCallback : <code>function</code>
 Basic Callback used throughout the SDK
 
