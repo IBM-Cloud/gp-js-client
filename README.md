@@ -17,13 +17,11 @@ see [gp-nodejs-sample](https://github.com/IBM-Bluemix/gp-nodejs-sample).
 
 ## Quickstart - Bluemix
 
-Add `g11n-pipeline` to your project, as well as `cfenv` and `optional`.
+* Add `g11n-pipeline` to your project, as well as `cfenv` and `optional`.
 
     npm install --save g11n-pipeline cfenv optional
 
-Load the client object as follows (using [cfenv](https://www.npmjs.com/package/cfenv) ).
-You can store a copy of the credentials in `local-credentials.json` for local
-operation.
+* Load the client object as follows (using [cfenv](https://www.npmjs.com/package/cfenv) ).
 
 ```javascript
 var optional = require('optional');
@@ -33,6 +31,18 @@ var gpClient = require('g11n-pipeline').getClient(
     || {appEnv: appEnv}                  // otherwise, the appEnv
 );
 ```
+
+* For local testing, create a `local-credentials.json` file with the credentials
+as given in the bound service:
+
+      {
+        "credentials": {
+          "url": "https://…",
+          "userId": "…",
+          "password": "……",
+          "instanceId": "………"
+        }
+      }
 
 ## Using
 
