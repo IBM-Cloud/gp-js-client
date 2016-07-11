@@ -308,6 +308,18 @@ describe('gaasClient.bundle()', function() {
         done();
     });
   });
+  it('Should be able to use swagger function getBundleInfo', function(done) {
+    var bundle = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
+    expect(bundle.sourceLanguage).to.not.be.ok;
+    bundle.getBundleInfo({}, function(err, bundle2) {
+        if(err) return done(err); // not ok
+        expect(bundle2).to.be.ok;
+        expect(bundle2.updatedBy).to.be.a('string');
+        expect(bundle2.updatedAt).to.be.a('date');
+        expect(bundle2.sourceLanguage).to.equal(gaasTest.SOURCES[0]);
+        done();
+    });
+  });
   it('should now let me call bundles() and see our bundle', function(done) {
     gaasClient.bundles({serviceInstance: instanceName}, function(err, list) {
         if(err) return done(err);
