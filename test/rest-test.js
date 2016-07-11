@@ -204,9 +204,9 @@ describe('client.apis', function() {
       expect(gaasClient.apis()).to.include.keys('help');
       // Verify the APIs are as expected.
       if(isAdmin) {
-        expect(gaasClient.apis()).to.include.keys('admin','bundle','partner','service','user');
+        expect(gaasClient.apis()).to.include.keys('bundle','config','instance','service','user','admin');
       } else {
-        expect(gaasClient.apis()).to.include.keys('bundle','partner','service','user');
+        expect(gaasClient.apis()).to.include.keys('bundle','config','instance','service','user');
       }
       done();
     });
