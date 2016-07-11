@@ -25,7 +25,7 @@ Don't run this test against an account with valuable data.
 Running this test may incur service costs.
 
 * create a `local-credentials.json` file with the credentials
-as given in the bound service:
+as given in the bound service (but see below)
 
       {
         "credentials": {
@@ -36,6 +36,7 @@ as given in the bound service:
         }
       }
 
+
     
 * install [node](http://nodejs.org)
 * `npm install`
@@ -44,10 +45,13 @@ as given in the bound service:
 
 # OTHER CONFIG OPTIONS
 
-    # set this if AUTHENTICATION_SCHEME=BASIC is set on the server
-    # assumes that Admins can login with HTTP Basic
-    AUTHENTICATION_SCHEME=BASIC
-    
+    # in lieu of a local-credentials.json file, you can set the
+    # following keys:
+    GAAS_API_URL=https://…
+    GAAS_INSTANCE=12345
+    GAAS_USER=67890
+    GAAS_PASSWORD=hunter42
+
     # set this to skip the 'REST' test
     NO_REST_TEST=true
     
@@ -68,6 +72,24 @@ as given in the bound service:
     
     # is the @DELAY@ option available? (normally false)
     DELAY_AVAIL=false
+
+# Internal Development Use
+
+If you are developing the Globalization Pipeline service,
+you may want to use the following parameters also.
+
+    # Set these, and don't set any user credentials.
+    # The test will create/delete the service instances
+    GAAS_ADMIN_ID=mysuperuser
+    GAAS_ADMIN_PASSWORD=hunter42
+    
+    # set this if AUTHENTICATION_SCHEME=BASIC is set on the server
+    # assumes that Admins can login with HTTP Basic
+    AUTHENTICATION_SCHEME=BASIC
+
+    # specify the URL
+    GAAS_API_URL=http://localhost…
+
 
 LICENSE
 ===
