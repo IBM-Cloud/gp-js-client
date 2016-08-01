@@ -9,6 +9,7 @@ with Bluemix applications translated into the languages in which they work.
 This SDK currently supports [Node.js](http://nodejs.org).
 
 [![npm version](https://badge.fury.io/js/g11n-pipeline.svg)](https://badge.fury.io/js/g11n-pipeline)
+[![Build Status](https://travis-ci.org/IBM-Bluemix/gp-js-client.svg?branch=master)](https://travis-ci.org/IBM-Bluemix/gp-js-client)
 
 ## Sample
 
