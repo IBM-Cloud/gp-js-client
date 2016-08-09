@@ -959,7 +959,8 @@ describe('gaasClient.bundle()', function() {
     Q.ninvoke(proj, "create", {sourceLanguage: gaasTest.SOURCES[0], targetLanguages: [gaasTest.SOURCES[0],gaasTest.CYRILLIC]})
     .then(function(resp) {
       Q.ninvoke(proj, "uploadResourceStrings", {languageId: gaasTest.SOURCES[0], strings: {
-        hello: 'Hello, World!'
+        hello: 'Hello, World!',
+        "msgError": "—"
       }})
       .then(function(resp){ done(); }, done);
     }, done);
