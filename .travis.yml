@@ -1,9 +1,13 @@
 language: node_js
 node_js:
-  - "node"
-  - "6"
-  - "0.12"
+- '0.12'
+- '4'
+- '5'
+- '6'
 script:
-  - "npm install"
-  - "curl $GP_FAKE_BROKER > local-credentials.json"
-  - "npm run test"
+- "npm install"
+- "curl $GP_FAKE_BROKER > local-credentials.json"
+- if [[ $TRAVIS_NODE_VERSION == '4' ]];
+  then nyc npm test && nyc report --reporter=text-lcov | coveralls;
+  else npm test;
+  fi
