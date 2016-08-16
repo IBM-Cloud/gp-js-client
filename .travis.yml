@@ -3,3 +3,7 @@ node_js:
   - "node"
   - "6"
   - "0.12"
+script:
+  - "npm install"
+  - "curl $GP_FAKE_BROKER > local-credentials.json"
+  - "npm run test"
