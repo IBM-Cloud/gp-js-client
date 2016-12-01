@@ -485,7 +485,8 @@ describe('gaasClient.bundle()', function() {
                     .bundle({id:projectId, serviceInstance: instanceName})
                     .entry({languageId:gaasTest.CYRILLIC,resourceKey:'key1'});
     entry.update({
-        reviewed: true
+        reviewed: true,
+        sequenceNumber: 42
     }, function(err, data) {
         if(err) return done(err);
         
@@ -493,6 +494,7 @@ describe('gaasClient.bundle()', function() {
         function(err, entry2) {
             if(err) return done(err);
             expect(entry2.reviewed).to.be.true;
+            expect(entry2.sequenceNumber).to.not.be.ok; // seq # ignored here
             entry.update({
                 reviewed: false
             }, function(err, data) {
@@ -882,7 +884,8 @@ describe('gaasClient.bundle()', function() {
     });
   });
   
-    it('should let the admin user verify the source data(en)', function(done) {
+  it('should let the admin user verify the source data(en)', function(done) {
+    expect(gaasAdminClient).to.be.ok; // otherwise, user creation failed
     var proj = gaasAdminClient.bundle(projectId);
     proj.getStrings({ languageId: gaasTest.SOURCES[0]},
     function(err, data) {
@@ -891,6 +894,37 @@ describe('gaasClient.bundle()', function() {
       expect(JSON.stringify(data.resourceStrings)).to.equal(JSON.stringify(sourceData));
       done();
     });
+  });
+
+  it('should let the admin user modify the source metadata(en)', function(done) {
+    expect(gaasAdminClient).to.be.ok; // otherwise, user creation failed
+    const bundle =     gaasAdminClient
+      .bundle(projectId);
+    const entry = 
+    bundle.entry({languageId: gaasTest.SOURCES[0], resourceKey: 'key1'});
+    const entry_target = 
+    bundle.entry({languageId: gaasTest.CYRILLIC, resourceKey: 'key1'});
+
+    entry.getInfo({}, function(err, entry2) {
+        if(err) return done(err); // not ok
+        entry2.update({
+          metadata: { 'otherKey': 'otherValue' },
+          sequenceNumber: 43
+        }, function(err, data) {
+          if(err) return done(err); // not ok
+          entry.getInfo({}, function(err, entry3) {
+            if(err) return done(err); // not ok
+            expect(entry3.metadata).to.deep.equal({otherKey: 'otherValue'});
+            expect(entry3.sequenceNumber).to.not.be.ok; // seq # does not show up in source…
+
+            entry_target.getInfo({}, function(err, entry4) {
+              if(err) return done(err); // not ok
+              expect(entry4.sequenceNumber).to.equal(43); // seq # shows up in target
+              done();
+            });
+          });
+        });
+      });
   });
 
   it('should let the reader user verify the source data(en)', function(done) {
