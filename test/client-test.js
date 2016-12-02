@@ -45,6 +45,7 @@ if(VERBOSE) console.dir(module.filename);
 var projectId = process.env.GP_PROJECT  || 'MyHLProject'+Math.random();
 var projectId2 = process.env.GP_PROJECT2 || 'MyOtherHLProject'+Math.random();
 var projectId3 = process.env.GP_PROJECT3 || 'MyUserProject'+Math.random();
+var projectId4 = process.env.GP_PROJECT3 || 'MyUpdatedProject'+Math.random();
 
 var DELAY_AVAIL = process.env.DELAY_AVAIL || false;
 
@@ -57,6 +58,11 @@ var UNTIL_DELAY = 1024;
 var sourceData = {
     "key1": DELAY+"First string to translate",
     "key2": "Second string to\n\"\\\'\ttranslate"
+};
+var sourceDataUpd = {
+    "key1": DELAY+"First string to translate",
+    "key2": "Second document to\n\"\\\'\ttranslate",
+    "key3": "Thirdly"
 };
 var str3 = 'The main pump fixing screws with the correct strength class';
 var qruData = {
@@ -149,11 +155,38 @@ describe('Verifying again that we can reach the server', function() {
       done();
     });
   });
+  it('Should let us call gaasClient.ping with optional first argument', function(done) {
+      if(process.env.BAIL_ON_ERR && !gaasClient.hasOwnProperty('ping')) {
+        console.error('Could not reach server');
+        process.exit(1);
+      }
+    gaasClient.ping(function(err, data) {
+      
+      if(err && process.env.BAIL_ON_ERR) {
+        console.error('Could not reach server');
+        process.exit(1);
+      }
+      
+      if(err) { done(err); return; }
+      if(VERBOSE) console.dir(data);
+      done();
+    });
+  });
 });
 
 describe('gaasClient.supportedTranslations()', function() {
   it('Should let us list translations', function(done) {
     gaasClient.supportedTranslations({}, function(err, translations) {
+      if(err) { done(err); return; }
+      if(VERBOSE) console.dir(translations);
+      expect(translations).to.include.keys(gaasTest.SOURCES);
+      expect(translations[gaasTest.SOURCES[0]]).to.include(gaasTest.TARGETS[0]);
+      expect(translations[gaasTest.SOURCES[0]]).to.include(gaasTest.TARGETS[1]);
+      done();
+    });
+  });
+  it('Should let us list translations with no first arg', function(done) {
+    gaasClient.supportedTranslations(function(err, translations) {
       if(err) { done(err); return; }
       if(VERBOSE) console.dir(translations);
       expect(translations).to.include.keys(gaasTest.SOURCES);
@@ -285,7 +318,7 @@ describe('gaasClient.bundle()', function() {
     var bundle = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
     expect(bundle.sourceLanguage).to.not.be.ok;
     bundle.entry({languageId: gaasTest.KLINGON, resourceKey: 'key0'})
-       .getInfo({}, function(err, entry2) {
+       .getInfo(function(err, entry2) {
         if(err) return done();
         done('Expected error.');
     });
@@ -297,10 +330,28 @@ describe('gaasClient.bundle()', function() {
       done();
     }, done);
   });
+
+// Create some strings for later
+  it('Should let us create ' + projectId4, function(done) {
+    var proj = gaasClient.bundle({id:projectId4, serviceInstance: instanceName});
+    Q.ninvoke(proj, "create", {sourceLanguage: gaasTest.SOURCES[0], targetLanguages: []})
+    .then(function(resp) {
+      done();
+    }, done);
+  });
+  it('Should let us upload some strings ' + projectId4, function(done) {
+    var proj = gaasClient.bundle({id:projectId4, serviceInstance: instanceName});
+    proj.uploadStrings({
+        languageId: gaasTest.SOURCES[0],
+        strings: sourceData
+    }, done);
+  });
+
+
   it('Should now be able to get info', function(done) {
     var bundle = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
     expect(bundle.sourceLanguage).to.not.be.ok;
-    bundle.getInfo({}, function(err, bundle2) {
+    bundle.getInfo(function(err, bundle2) { // 1st param is optional
         if(err) return done(err); // not ok
         expect(bundle2).to.be.ok;
         expect(bundle2.updatedBy).to.be.a('string');
@@ -353,6 +404,18 @@ describe('gaasClient.bundle()', function() {
         strings: sourceData
     }, done);
   });
+
+  // Update this one so it is ready later
+  it('Should let me update some strings ' + projectId4, function(done) {
+    gaasClient
+        .bundle({id:projectId4, serviceInstance: instanceName})
+        .updateStrings({languageId: gaasTest.SOURCES[0], strings: sourceDataUpd}, function(err, b) {
+            if(err) return done(err);
+            return done();
+        });
+  });
+
+
   if(DELAY_AVAIL) it('should let us verify the target entry(qru).key1 is in progress', function(done) {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
     proj.getEntryInfo({ languageId: gaasTest.CYRILLIC, resourceKey: 'key1'},
@@ -514,6 +577,24 @@ describe('gaasClient.bundle()', function() {
     });
   });
 
+
+// Come back to the update test
+  it('Should let me re-read some updated strings ' + projectId4, function(done) {
+    gaasClient
+        .bundle({id:projectId4, serviceInstance: instanceName})
+        .getStrings({ languageId: gaasTest.SOURCES[0]}, function(err, data){
+            if(err) return done(err);
+            expect(data).to.be.ok;
+            expect(data.resourceStrings).to.be.ok;
+            expect(data.resourceStrings).to.deep.equal(sourceDataUpd);
+            return done();
+        });
+  });
+  it('Should let me delete ' + projectId4, function(done) {
+    gaasClient
+        .bundle({id:projectId4, serviceInstance: instanceName})
+        .delete(done);
+  });
   it('Should let us call client.users()', function (done) {
       gaasClient.users({ serviceInstance: instanceName }, function (err, users) {
           if (err) return done(err);
@@ -522,9 +603,11 @@ describe('gaasClient.bundle()', function() {
       });
   });
 
+// Below we work with separate users
   var myUserInfo = undefined;  
   var readerInfo = undefined;
   var adminInfo  = undefined;
+  var otherReaderInfo = undefined;
   var gaasReaderClient = undefined;
   var gaasAdminClient = undefined;
   it('should not let me create a bad user', function(done) {
@@ -588,15 +671,58 @@ describe('gaasClient.bundle()', function() {
       },{color:true});
       done();
     },done);
-    it('Should let us call client.users()', function (done) {
-        gaasClient.users({ serviceInstance: instanceName }, function (err, users) {
-            if (err) return done(err);
-            expect(users).to.be.ok('object');
-            expect(users).to.contain.keys([myUserInfo.userId, readerInfo.credentials.userId]);
-            done();
-        });
-    });
   });
+  it('should let me create another reader user', function(done) {
+    Q.ninvoke(gaasClient, "createUser", {serviceInstance: instanceName,
+                           type:'READER',
+                           bundles: [projectId3],
+                           displayName: 'AnotherReader'})
+    .then(function(data) {
+      expect(data).to.be.ok;
+      expect(data.user).to.be.ok;
+      expect(data.id).to.be.ok;
+      expect(data.user).to.be.ok;
+      expect(data.user.id).to.be.ok;
+      expect(data.user.password).to.be.ok;
+      expect(data.user.displayName).to.equal('AnotherReader');
+      // Dump sample config data.
+      otherReaderInfo = {
+          credentials: {
+            instanceId: instanceName,
+            userId: data.user.id,
+            password: data.user.password,
+            url: opts.credentials.url
+          },
+          bundleId: projectId3
+        };
+      if(VERBOSE || NO_DELETE) console.dir({
+        sampleconfig: readerInfo
+      },{color:true});
+      done();
+    },done);
+  });
+  it('Should let us call client.users() and delete the other reader', function (done) {
+      gaasClient.users({ serviceInstance: instanceName }, function (err, users) {
+          if (err) return done(err);
+          expect(users).to.be.an('object');
+          expect(users).to.contain.keys([myUserInfo.userId, readerInfo.credentials.userId, otherReaderInfo.credentials.userId]);
+          users[otherReaderInfo.credentials.userId].delete(function(err, res){
+            if(err) return done(err);
+            done();
+          });
+      });
+  });
+
+  it('Should let us call client.user again()', function (done) {
+      gaasClient.users({ serviceInstance: instanceName }, function (err, users) {
+          if (err) return done(err);
+          expect(users).to.be.an('object');
+          expect(users).to.contain.keys([myUserInfo.userId, readerInfo.credentials.userId]);
+          expect(users).to.not.contain.keys([otherReaderInfo.credentials.userId]);
+          done();
+      });
+  });
+
 
   // Let's test that reader user
     
@@ -946,7 +1072,7 @@ describe('gaasClient.bundle()', function() {
           expect(users).to.be.ok;
           expect(users).to.contain.keys([myUserInfo.userId, readerInfo.credentials.userId]);
           var u = users[readerInfo.credentials.userId];
-          u.getInfo({}, function(err, user) {
+          u.getInfo(function(err, user) {
                 if(err) return done(err);
                 expect(user).to.be.ok;
                 expect(user.updatedBy).to.be.a('string');
@@ -994,7 +1120,7 @@ describe('gaasClient.bundle()', function() {
         done();
     },done);
   });
-  it('test gaasClient(admin).bundle('+projectId3+').create(...)', function(done) {
+  it('test gaasAdminClient(admin).bundle('+projectId3+').create(...)', function(done) {
     expect(gaasAdminClient).to.be.ok; // from previous test
     
     var proj = gaasAdminClient.bundle({id:projectId3});
@@ -1008,7 +1134,24 @@ describe('gaasClient.bundle()', function() {
       .then(function(resp){ done(); }, done);
     }, done);
   });
-        
+  it('test gaasAdminClient.users() with no first argument', function(done) {
+    expect(gaasAdminClient).to.be.ok; // from previous test
+    gaasAdminClient.users(function (err, users) {
+        if (err) return done(err);
+        expect(users).to.be.ok;
+        expect(users).to.contain.keys([myUserInfo.userId, readerInfo.credentials.userId]);
+        done();
+    });
+  });
+  it('test gaasAdminClient.bundles() with no first argument', function(done) {
+    expect(gaasAdminClient).to.be.ok; // from previous test
+    gaasAdminClient.bundles(function (err, bundles) {
+        if (err) return done(err);
+        expect(bundles).to.be.ok;
+        expect(bundles).to.contain.keys([projectId3]);
+        done();
+    });
+  });
   // check READER
   var myAuth = function(opts){opts.auth = (readerInfo.credentials.userId+':'+readerInfo.credentials.password); };
 

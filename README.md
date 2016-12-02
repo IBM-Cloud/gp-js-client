@@ -117,12 +117,16 @@ API convention
 APIs take a callback and use this general pattern:
 
 ```javascript
-    gpClient.function( { /*params*/ } ,  function callback(err, ...))
+    gpClient.function( { /*opts*/ } ,  function callback(err, ...))
 ```
 
-* params: an object containing input parameters, if needed.
+* opts: an object containing input parameters, if needed.
 * `err`: if truthy, indicates an error has occured.
 * `...`: other parameters (optional)
+
+Sometimes the `opts` object is optional. If this is the case, the
+API doc will indicate it with this notation:  `[opts]`
+For example,  `bundle.getInfo(cb)` and `bundle.getInfo({}, cb)`  are equivalent.
 
 These APIs may be promisified easily using a library such as `Q`'s
 [nfcall](http://documentup.com/kriskowal/q/#adapting-node):
@@ -203,13 +207,13 @@ params.credentials is required unless params.appEnv is supplied.</p>
     * _instance_
         * [.version](#Client+version)
         * [.ping](#Client+ping)
-        * [.supportedTranslations(args, cb)](#Client+supportedTranslations)
-        * [.getServiceInfo(args, cb)](#Client+getServiceInfo)
+        * [.supportedTranslations([opts], cb)](#Client+supportedTranslations)
+        * [.getServiceInfo([opts], cb)](#Client+getServiceInfo)
         * [.createUser(args, cb)](#Client+createUser)
         * [.bundle(opts)](#Client+bundle) ⇒ <code>[Bundle](#Bundle)</code>
         * [.user(id)](#Client+user) ⇒ <code>[User](#User)</code>
-        * [.users(opts, cb)](#Client+users)
-        * [.bundles(opts, cb)](#Client+bundles)
+        * [.users([opts], cb)](#Client+users)
+        * [.bundles([opts], cb)](#Client+bundles)
     * _inner_
         * [~supportedTranslationsCallback](#Client..supportedTranslationsCallback) : <code>function</code>
         * [~serviceInfoCallback](#Client..serviceInfoCallback) : <code>function</code>
@@ -243,29 +247,29 @@ can be ignored. (Note: this is a synonym for getServiceInfo())
 
 <a name="Client+supportedTranslations"></a>
 
-### client.supportedTranslations(args, cb)
+### client.supportedTranslations([opts], cb)
 This function returns a map from source language(s) to target language(s).
 Example: `{ en: ['de', 'ja']}` meaning English translates to German and Japanese.
 
 **Kind**: instance method of <code>[Client](#Client)</code>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| args | <code>object</code> |  |
-| cb | <code>[supportedTranslationsCallback](#Client..supportedTranslationsCallback)</code> | (err, map-of-languages) |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [opts] | <code>object</code> | <code>{}</code> | ignored |
+| cb | <code>[supportedTranslationsCallback](#Client..supportedTranslationsCallback)</code> |  | (err, map-of-languages) |
 
 <a name="Client+getServiceInfo"></a>
 
-### client.getServiceInfo(args, cb)
+### client.getServiceInfo([opts], cb)
 Get information about this service.
 At present, no information is returned beyond that expressed by supportedTranslations().
 
 **Kind**: instance method of <code>[Client](#Client)</code>  
 
-| Param | Type |
-| --- | --- |
-| args | <code>object</code> | 
-| cb | <code>[serviceInfoCallback](#Client..serviceInfoCallback)</code> | 
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [opts] | <code>object</code> | <code>{}</code> | ignored argument |
+| cb | <code>[serviceInfoCallback](#Client..serviceInfoCallback)</code> |  |  |
 
 <a name="Client+createUser"></a>
 
@@ -314,29 +318,29 @@ Use createUser() to create a user.
 
 <a name="Client+users"></a>
 
-### client.users(opts, cb)
+### client.users([opts], cb)
 List users. Callback is called with an array of 
 user access objects.
 
 **Kind**: instance method of <code>[Client](#Client)</code>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| opts | <code>Object</code> | ignored |
-| cb | <code>[listUsersCallback](#Client..listUsersCallback)</code> | callback |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [opts] | <code>Object</code> | <code>{}</code> | options |
+| cb | <code>[listUsersCallback](#Client..listUsersCallback)</code> |  | callback |
 
 <a name="Client+bundles"></a>
 
-### client.bundles(opts, cb)
+### client.bundles([opts], cb)
 List bundles. Callback is called with an map of 
 bundle access objects.
 
 **Kind**: instance method of <code>[Client](#Client)</code>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| opts | <code>Object</code> | ignored |
-| cb | <code>[listBundlesCallback](#Client..listBundlesCallback)</code> | given a map of Bundle objects |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [opts] | <code>Object</code> | <code>{}</code> | options |
+| cb | <code>[listBundlesCallback](#Client..listBundlesCallback)</code> |  | given a map of Bundle objects |
 
 <a name="Client..supportedTranslationsCallback"></a>
 
@@ -409,9 +413,9 @@ Bundle list callback
     * [new Bundle(gp, props)](#new_Bundle_new)
     * _instance_
         * [.getInfoFields](#Bundle+getInfoFields)
-        * [.delete(opts, cb)](#Bundle+delete)
+        * [.delete([opts], cb)](#Bundle+delete)
         * [.create(body, cb)](#Bundle+create)
-        * [.getInfo(opts, cb)](#Bundle+getInfo)
+        * [.getInfo([opts], cb)](#Bundle+getInfo)
         * [.languages()](#Bundle+languages) ⇒ <code>Array.&lt;String&gt;</code>
         * [.getStrings(opts, cb)](#Bundle+getStrings)
         * [.entry(opts)](#Bundle+entry)
@@ -440,15 +444,15 @@ List of fields usable with Bundle.getInfo()
 **Kind**: instance property of <code>[Bundle](#Bundle)</code>  
 <a name="Bundle+delete"></a>
 
-### bundle.delete(opts, cb)
+### bundle.delete([opts], cb)
 Delete this bundle.
 
 **Kind**: instance method of <code>[Bundle](#Bundle)</code>  
 
-| Param | Type |
-| --- | --- |
-| opts | <code>Object</code> | 
-| cb | <code>[basicCallback](#basicCallback)</code> | 
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [opts] | <code>Object</code> | <code>{}</code> | options |
+| cb | <code>[basicCallback](#basicCallback)</code> |  |  |
 
 <a name="Bundle+create"></a>
 
@@ -470,19 +474,19 @@ the bundle is not created.
 
 <a name="Bundle+getInfo"></a>
 
-### bundle.getInfo(opts, cb)
+### bundle.getInfo([opts], cb)
 Get bundle info. Returns a new Bundle object with additional fields populated.
 
 **Kind**: instance method of <code>[Bundle](#Bundle)</code>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| opts | <code>Object</code> | Options object |
-| opts.fields | <code>String</code> | Comma separated list of fields |
-| opts.translationStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
-| opts.reviewStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
-| opts.partnerStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
-| cb | <code>[getInfoCallback](#Bundle..getInfoCallback)</code> | callback (err, Bundle ) |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [opts] | <code>Object</code> | <code>{}</code> | Options object |
+| opts.fields | <code>String</code> |  | Comma separated list of fields |
+| opts.translationStatusMetricsByLanguage | <code>Boolean</code> |  | Optional field (false by default) |
+| opts.reviewStatusMetricsByLanguage | <code>Boolean</code> |  | Optional field (false by default) |
+| opts.partnerStatusMetricsByLanguage | <code>Boolean</code> |  | Optional field (false by default) |
+| cb | <code>[getInfoCallback](#Bundle..getInfoCallback)</code> |  | callback (err, Bundle ) |
 
 <a name="Bundle+languages"></a>
 
@@ -558,6 +562,7 @@ Update some strings in a language.
 | --- | --- | --- |
 | opts | <code>Object</code> | options |
 | opts.strings | <code>Object.&lt;string, string&gt;</code> | strings to update. |
+| opts.languageId | <code>String</code> | language to update |
 | opts.resync | <code>Boolean</code> | optional: If true, resynchronize strings  in the target language and resubmit previously-failing translation operations |
 | cb | <code>[basicCallback](#basicCallback)</code> |  |
 
@@ -606,7 +611,7 @@ Callback returned by Bundle~getInfo().
     * [new User(gp, props)](#new_User_new)
     * _instance_
         * [.update(opts, cb)](#User+update)
-        * [.delete(cb)](#User+delete)
+        * [.delete([opts], cb)](#User+delete)
         * [.getInfo(opts, cb)](#User+getInfo)
     * _inner_
         * [~getUserCallback](#User..getUserCallback) : <code>function</code>
@@ -642,7 +647,7 @@ All fields of opts are optional. For strings, falsy = no change, empty string `'
 
 <a name="User+delete"></a>
 
-### user.delete(cb)
+### user.delete([opts], cb)
 Delete this user. 
 Note that the service managed user
 (the initial users created by the service) may not be
@@ -650,9 +655,10 @@ Note that the service managed user
 
 **Kind**: instance method of <code>[User](#User)</code>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| cb | <code>[basicCallback](#basicCallback)</code> | callback with success or failure |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [opts] | <code>Object</code> | <code>{}</code> | options |
+| cb | <code>[basicCallback](#basicCallback)</code> |  | callback with success or failure |
 
 <a name="User+getInfo"></a>
 
@@ -707,7 +713,7 @@ Creating this object does not modify any data.
 * [ResourceEntry](#ResourceEntry)
     * [new ResourceEntry(bundle, props)](#new_ResourceEntry_new)
     * _instance_
-        * [.getInfo(opts, cb)](#ResourceEntry+getInfo)
+        * [.getInfo([opts], cb)](#ResourceEntry+getInfo)
         * [.update()](#ResourceEntry+update)
     * _inner_
         * [~getInfoCallback](#ResourceEntry..getInfoCallback) : <code>function</code>
@@ -725,16 +731,16 @@ Note: this constructor is not usually called directly, use Bundle.entry(...)
 
 <a name="ResourceEntry+getInfo"></a>
 
-### resourceEntry.getInfo(opts, cb)
+### resourceEntry.getInfo([opts], cb)
 Load this entry's information. Callback is given
 another ResourceEntry but one with all current data filled in.
 
 **Kind**: instance method of <code>[ResourceEntry](#ResourceEntry)</code>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| opts | <code>Object</code> | options (currently ignored) |
-| cb | <code>[getInfoCallback](#ResourceEntry..getInfoCallback)</code> | callback (err, ResourceEntry) |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [opts] | <code>Object</code> | <code>{}</code> | options |
+| cb | <code>[getInfoCallback](#ResourceEntry..getInfoCallback)</code> |  | callback (err, ResourceEntry) |
 
 <a name="ResourceEntry+update"></a>
 

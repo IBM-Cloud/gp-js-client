@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "coverage": "nyc mocha",
+    "coverage": "nyc mocha && nyc report --reporter=lcov",
     "mocha": "mocha --reporter dot",
     "docs": "jsdoc2md lib/client.js --template template-README.md > README.md",
     "html": "npm run docs ; node gen-html.js",
