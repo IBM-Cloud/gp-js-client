@@ -466,7 +466,7 @@ the bundle is not created.
 <a name="Bundle+getInfo"></a>
 
 ### bundle.getInfo(opts, cb)
-Get bundle info
+Get bundle info. Returns a new Bundle object with additional fields populated.
 
 **Kind**: instance method of <code>[Bundle](#Bundle)</code>  
 
@@ -477,7 +477,7 @@ Get bundle info
 | opts.translationStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
 | opts.reviewStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
 | opts.partnerStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
-| cb | <code>[getInfoCallback](#Bundle..getInfoCallback)</code> | callback (err, { updatedBy, updatedAt, sourceLanguage, targetLanguages, readOnly, metadata, partner} ) |
+| cb | <code>[getInfoCallback](#Bundle..getInfoCallback)</code> | callback (err, Bundle ) |
 
 <a name="Bundle+getStrings"></a>
 
@@ -551,21 +551,22 @@ Update some strings in a language.
 <a name="Bundle..getInfoCallback"></a>
 
 ### Bundle~getInfoCallback : <code>function</code>
-Callback returned by Bundle~getInfo(). 
-NOTE: this will be changed to be an actual Bundle object - see https://github.com/IBM-Bluemix/gp-js-client/issues/19
+Callback returned by Bundle~getInfo().
 
 **Kind**: inner typedef of <code>[Bundle](#Bundle)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | err | <code>object</code> | error, or null |
-| bundle | <code>Object</code> | bundle object with additional data |
+| bundle | <code>[Bundle](#Bundle)</code> | bundle object with additional data |
 | bundle.updatedBy | <code>string</code> | userid that updated this bundle |
 | bundle.updatedAt | <code>Date</code> | date when the bundle was last updated |
 | bundle.sourceLanguage | <code>string</code> | bcp47 id of the source language |
 | bundle.targetLanguages | <code>Array.&lt;string&gt;</code> | array of target langauge bcp47 ids |
 | bundle.readOnly | <code>boolean</code> | true if this bundle can only be read |
 | bundle.metadata | <code>Object.&lt;string, string&gt;</code> | array of user-editable metadata |
+| bundle.translationStatusMetricsByLanguage | <code>Object</code> | additional metrics information |
+| bundle.reviewStatusMetricsByLanguage | <code>Object</code> | additional metrics information |
 
 <a name="User"></a>
 
