@@ -317,6 +317,13 @@ describe('gaasClient.bundle()', function() {
         expect(bundle2.updatedBy).to.be.a('string');
         expect(bundle2.updatedAt).to.be.a('date');
         expect(bundle2.sourceLanguage).to.equal(gaasTest.SOURCES[0]);
+        expect(bundle2.readOnly).to.be.a('boolean');
+        expect(bundle2.readOnly).to.equal(false);
+        expect(bundle2.metadata).to.be.an('object');
+        expect(bundle2.metadata).to.deep.equal({});
+        expect(bundle2.id).to.equal(projectId);
+        // bundle2 is itself a bundle object.
+        expect(bundle2.getBundleInfo).to.be.a('function');
         done();
     });
   });
