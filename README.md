@@ -412,6 +412,7 @@ Bundle list callback
         * [.delete(opts, cb)](#Bundle+delete)
         * [.create(body, cb)](#Bundle+create)
         * [.getInfo(opts, cb)](#Bundle+getInfo)
+        * [.languages()](#Bundle+languages) ⇒ <code>Array.&lt;String&gt;</code>
         * [.getStrings(opts, cb)](#Bundle+getStrings)
         * [.entry(opts)](#Bundle+entry)
         * [.uploadStrings(opts, cb)](#Bundle+uploadStrings)
@@ -483,6 +484,14 @@ Get bundle info. Returns a new Bundle object with additional fields populated.
 | opts.partnerStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
 | cb | <code>[getInfoCallback](#Bundle..getInfoCallback)</code> | callback (err, Bundle ) |
 
+<a name="Bundle+languages"></a>
+
+### bundle.languages() ⇒ <code>Array.&lt;String&gt;</code>
+Return all of the languages (source and target) for this bundle.
+The source language will be the first element.
+Will return undefined if this bundle was not returned by getInfo().
+
+**Kind**: instance method of <code>[Bundle](#Bundle)</code>  
 <a name="Bundle+getStrings"></a>
 
 ### bundle.getStrings(opts, cb)
