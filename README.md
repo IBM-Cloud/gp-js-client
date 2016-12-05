@@ -188,6 +188,9 @@ params.credentials is required unless params.appEnv is supplied.</p>
 <dt><a href="#basicCallback">basicCallback</a> : <code>function</code></dt>
 <dd><p>Basic Callback used throughout the SDK</p>
 </dd>
+<dt><a href="#ExternalService">ExternalService</a> : <code>Object</code></dt>
+<dd><p>info about external services available</p>
+</dd>
 </dl>
 
 <a name="Client"></a>
@@ -359,6 +362,7 @@ Callback used by getServiceInfo()
 | err | <code>object</code> | error, or null |
 | info | <code>Object</code> | detailed information about the service |
 | info.supportedTranslation | <code>Object.&lt;string, Array.&lt;string&gt;&gt;</code> | map from source language to array of target languages Example: `{ en: ['de', 'ja']}` meaning English translates to German and Japanese. |
+| info.externalServices | <code>[Array.&lt;ExternalService&gt;](#ExternalService)</code> | info about external services available |
 
 <a name="Client..listUsersCallback"></a>
 
@@ -466,7 +470,7 @@ the bundle is not created.
 <a name="Bundle+getInfo"></a>
 
 ### bundle.getInfo(opts, cb)
-Get bundle info
+Get bundle info. Returns a new Bundle object with additional fields populated.
 
 **Kind**: instance method of <code>[Bundle](#Bundle)</code>  
 
@@ -477,7 +481,7 @@ Get bundle info
 | opts.translationStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
 | opts.reviewStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
 | opts.partnerStatusMetricsByLanguage | <code>Boolean</code> | Optional field (false by default) |
-| cb | <code>[getInfoCallback](#Bundle..getInfoCallback)</code> | callback (err, { updatedBy, updatedAt, sourceLanguage, targetLanguages, readOnly, metadata, partner} ) |
+| cb | <code>[getInfoCallback](#Bundle..getInfoCallback)</code> | callback (err, Bundle ) |
 
 <a name="Bundle+getStrings"></a>
 
@@ -551,21 +555,22 @@ Update some strings in a language.
 <a name="Bundle..getInfoCallback"></a>
 
 ### Bundle~getInfoCallback : <code>function</code>
-Callback returned by Bundle~getInfo(). 
-NOTE: this will be changed to be an actual Bundle object - see https://github.com/IBM-Bluemix/gp-js-client/issues/19
+Callback returned by Bundle~getInfo().
 
 **Kind**: inner typedef of <code>[Bundle](#Bundle)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | err | <code>object</code> | error, or null |
-| bundle | <code>Object</code> | bundle object with additional data |
+| bundle | <code>[Bundle](#Bundle)</code> | bundle object with additional data |
 | bundle.updatedBy | <code>string</code> | userid that updated this bundle |
 | bundle.updatedAt | <code>Date</code> | date when the bundle was last updated |
 | bundle.sourceLanguage | <code>string</code> | bcp47 id of the source language |
 | bundle.targetLanguages | <code>Array.&lt;string&gt;</code> | array of target langauge bcp47 ids |
 | bundle.readOnly | <code>boolean</code> | true if this bundle can only be read |
 | bundle.metadata | <code>Object.&lt;string, string&gt;</code> | array of user-editable metadata |
+| bundle.translationStatusMetricsByLanguage | <code>Object</code> | additional metrics information |
+| bundle.reviewStatusMetricsByLanguage | <code>Object</code> | additional metrics information |
 
 <a name="User"></a>
 
@@ -687,6 +692,7 @@ Creating this object does not modify any data.
 | translationStatus | <code>string</code> | status of this translation:  `source_language`, `translated`, `in_progress`, or `failed` |
 | entry.metadata | <code>Object.&lt;string, string&gt;</code> | user metadata for this entry |
 | partnerStatus | <code>string</code> | status of partner integration |
+| sequenceNumber | <code>number</code> | relative sequence of this entry |
 
 
 * [ResourceEntry](#ResourceEntry)
@@ -734,6 +740,7 @@ Update this resource entry's fields.
 | opts.reviewed | <code>boolean</code> | optional boolean indicating if value was reviewed |
 | opts.metadata | <code>object</code> | optional metadata to update |
 | opts.partnerStatus | <code>string</code> | translation status maintained by partner |
+| opts.sequenceNumber | <code>string</code> | sequence number of the entry (only for the source language) |
 
 <a name="ResourceEntry..getInfoCallback"></a>
 
@@ -816,6 +823,21 @@ Basic Callback used throughout the SDK
 | --- | --- | --- |
 | err | <code>Object</code> | error, or null |
 | data | <code>Object</code> | Returned data |
+
+<a name="ExternalService"></a>
+
+## ExternalService : <code>Object</code>
+info about external services available
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| type | <code>string</code> | The type of the service, such as MT for Machine Translation |
+| name | <code>string</code> | The name of the service |
+| id | <code>string</code> | The id of the service |
+| supportedTranslation | <code>Object.&lt;string, Array.&lt;string&gt;&gt;</code> | map from source language to array of target languages Example: `{ en: ['de', 'ja']}` meaning English translates to German and Japanese. |
 
 
 *docs autogenerated via [jsdoc2md](https://github.com/jsdoc2md/jsdoc-to-markdown)*
