@@ -117,12 +117,16 @@ API convention
 APIs take a callback and use this general pattern:
 
 ```javascript
-    gpClient.function( { /*params*/ } ,  function callback(err, ...))
+    gpClient.function( { /*opts*/ } ,  function callback(err, ...))
 ```
 
-* params: an object containing input parameters, if needed.
+* opts: an object containing input parameters, if needed.
 * `err`: if truthy, indicates an error has occured.
 * `...`: other parameters (optional)
+
+Sometimes the `opts` object is optional. If this is the case, the
+API doc will indicate it with this notation:  `[opts]`
+For example,  `bundle.getInfo(cb)` and `bundle.getInfo({}, cb)`  are equivalent.
 
 These APIs may be promisified easily using a library such as `Q`'s
 [nfcall](http://documentup.com/kriskowal/q/#adapting-node):
