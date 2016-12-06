@@ -265,6 +265,7 @@ describe('gaasClient.bundle()', function() {
   it('Should let us create a bundle accessor', function(done) {
     var proj = gaasClient.bundle({id:'Something', serviceInstance: instanceName});
     expect(proj.id).to.equal('Something');
+    expect(proj.languages()).to.equal(undefined); // didn’t call getInfo() yet
     done();
   });
   it('Should let us create a bundle accessor again', function(done) {
@@ -305,6 +306,8 @@ describe('gaasClient.bundle()', function() {
         expect(bundle2.updatedBy).to.be.a('string');
         expect(bundle2.updatedAt).to.be.a('date');
         expect(bundle2.sourceLanguage).to.equal(gaasTest.SOURCES[0]);
+        expect(bundle2.languages()[0]).to.equal(bundle2.sourceLanguage);
+        expect(bundle2.languages()).to.have.members(gaasTest.SOURCES.concat([gaasTest.TARGETS[0],gaasTest.CYRILLIC]));
         done();
     });
   });
