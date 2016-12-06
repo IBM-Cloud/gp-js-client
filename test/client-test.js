@@ -397,6 +397,20 @@ describe('gaasClient.bundle()', function() {
         });
     });
   });
+  it('Should NOT let us upload some strings if params are missing', function(done) {
+    var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
+    try {
+      proj.uploadStrings({
+          languageId: gaasTest.SOURCES[0],
+          data: sourceData // should be 'strings'
+      }, function(err, list) {
+        if (err) return done(err); // did not expect REST failure
+        done(new Error('Expected failure'));
+      });
+    } catch (e) {
+      done(); // expected failure
+    }
+  });
   it('Should let us upload some strings', function(done) {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
     proj.uploadStrings({
