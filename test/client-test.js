@@ -613,7 +613,7 @@ describe('gaasClient.bundle()', function() {
   });
   
   // Metadata test here.
- (describe.skip || describe) ('Metadata Test [broken, server side bugs]', function() {
+ (/*describe.skip || */describe) ('Metadata Test', function() {
         var kinds = {
             bundle: function () { 
                 return gaasAdminClient
@@ -707,14 +707,14 @@ describe('gaasClient.bundle()', function() {
                     t.getInfo({}, function(err, t2) {
                         if(err) return done(err);
                         expect(t2).to.be.ok;
-                        expect(t2.metadata).to.deep.equal({k2:"v2x",k3:""});
+                        expect(t2.metadata).to.deep.equal({k2:"v2x"/*,k3:""*/});
                         done();
                     });
                 });
                 it('Should set null (clear metadata)', function(done) {
                     var t = kinds[k]();
                     expect(t).to.be.ok; // to avoid cascading failure
-                    t.update({metadata: null},done); // clear
+                    t.update({metadata: {}},done); // clear
                 });
                 it('Should verify that the test object has clear metadata again', function(done) {
                     var t = kinds[k]();
@@ -731,7 +731,6 @@ describe('gaasClient.bundle()', function() {
     });
         
   it('Should verify the reader user can NOT getInfo ' + projectId, function(done) {
-    //  console.dir(readerInfo);
     expect(gaasReaderClient).to.be.ok; // otherwise, user creation failed
     gaasReaderClient
         .bundle(projectId)
@@ -858,7 +857,7 @@ describe('gaasClient.bundle()', function() {
             if(err) return done(err);
             expect(b).to.be.ok;
             expect(b.sourceLanguage).to.equal(gaasTest.SOURCES[0]);
-            expect(b.metadata).to.not.be.ok;
+            expect(b.metadata).to.deep.equal({});
             done();
         });
   });
