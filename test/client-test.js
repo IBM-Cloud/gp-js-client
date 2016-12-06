@@ -334,7 +334,7 @@ describe('gaasClient.bundle()', function() {
 // Create some strings for later
   it('Should let us create ' + projectId4, function(done) {
     var proj = gaasClient.bundle({id:projectId4, serviceInstance: instanceName});
-    Q.ninvoke(proj, "create", {sourceLanguage: gaasTest.SOURCES[0], targetLanguages: []})
+    Q.ninvoke(proj, "create", {sourceLanguage: gaasTest.SOURCES[0], targetLanguages: [gaasTest.KLINGON]})
     .then(function(resp) {
       done();
     }, done);
@@ -604,6 +604,48 @@ describe('gaasClient.bundle()', function() {
             return done();
         });
   });
+  it('Should let me iterate with bundle.entries('+gaasTest.SOURCES[0]+') ' + projectId4, function(done) {
+    gaasClient
+        .bundle({id:projectId4, serviceInstance: instanceName})
+        .entries({languageId: gaasTest.SOURCES[0]}, function(err, entries){
+          if(err) return done(err);
+          expect(entries).to.be.ok;
+          expect(entries).to.be.an('object');
+          expect(entries).to.contain.keys(Object.keys(sourceDataUpd));  
+          expect(entries.key1.value).to.equal(sourceDataUpd.key1);
+          entries.key1.getInfo(function(err, entryKey1){
+            if(err) return done(err);
+            expect(entryKey1.value).to.equal(sourceDataUpd.key1);
+            expect(entryKey1.resourceKey).to.equal('key1');
+            expect(entryKey1.updatedAt).to.be.a('date');
+            return done();
+          });
+        });
+  });
+  it('Should let me iterate with bundle.entries('+gaasTest.KLINGON+') ' + projectId4, function(done) {
+    gaasClient
+        .bundle({id:projectId4, serviceInstance: instanceName})
+        .entries({languageId: gaasTest.KLINGON}, function(err, entries){
+          if(err) return done(err);
+          expect(entries).to.be.ok;
+          expect(entries).to.be.an('object');
+          expect(entries).to.deep.equal({});
+          done();       
+        });
+  });
+  it('Should let me iterate with bundle.entries('+gaasTest.KLINGON+', fallback=true) ' + projectId4, function(done) {
+    gaasClient
+        .bundle({id:projectId4, serviceInstance: instanceName})
+        .entries({languageId: gaasTest.KLINGON, fallback: true}, function(err, entries){
+          if(err) return done(err);
+          expect(entries).to.be.ok;
+          expect(entries).to.be.an('object');
+          expect(entries).to.contain.keys(Object.keys(sourceDataUpd));
+          expect(entries.key1.value).to.equal(sourceDataUpd.key1);
+          done();       
+        });
+  });
+
   it('Should let me delete ' + projectId4, function(done) {
     gaasClient
         .bundle({id:projectId4, serviceInstance: instanceName})
