@@ -419,11 +419,13 @@ Bundle list callback
         * [.languages()](#Bundle+languages) ⇒ <code>Array.&lt;String&gt;</code>
         * [.getStrings(opts, cb)](#Bundle+getStrings)
         * [.entry(opts)](#Bundle+entry)
+        * [.entries([opts], cb)](#Bundle+entries)
         * [.uploadStrings(opts, cb)](#Bundle+uploadStrings)
         * [.update(opts, cb)](#Bundle+update)
         * [.updateStrings(opts, cb)](#Bundle+updateStrings)
     * _inner_
         * [~getInfoCallback](#Bundle..getInfoCallback) : <code>function</code>
+        * [~listEntriesCallback](#Bundle..listEntriesCallback) : <code>function</code>
 
 <a name="new_Bundle_new"></a>
 
@@ -503,11 +505,13 @@ Fetch one language's strings
 
 **Kind**: instance method of <code>[Bundle](#Bundle)</code>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| opts | <code>Object</code> | options |
-| opts.languageId | <code>String</code> | language to fetch |
-| cb | <code>[basicCallback](#basicCallback)</code> | callback (err, { resourceStrings: { strings … } }) |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| opts | <code>Object</code> |  | options |
+| opts.languageId | <code>String</code> |  | language to fetch |
+| [opts.fallback] | <code>boolean</code> | <code>false</code> | Whether if source language value is used if translated value is not available |
+| [opts.fields] | <code>string</code> |  | Optional fields separated by comma |
+| cb | <code>[basicCallback](#basicCallback)</code> |  | callback (err, { resourceStrings: { strings … } }) |
 
 <a name="Bundle+entry"></a>
 
@@ -522,6 +526,19 @@ Create an entry object. Doesn't fetch data,
 | opts | <code>Object</code> | options |
 | opts.languageId | <code>String</code> | language |
 | opts.resourceKey | <code>String</code> | resource key |
+
+<a name="Bundle+entries"></a>
+
+### bundle.entries([opts], cb)
+List entries. Callback is called with a map of 
+resourceKey to ResourceEntry objects.
+
+**Kind**: instance method of <code>[Bundle](#Bundle)</code>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [opts] | <code>Object</code> | <code>{}</code> | ignored |
+| cb | <code>listEntriesCallback</code> |  | Callback with (err, map of resourceKey:ResourceEntry ) |
 
 <a name="Bundle+uploadStrings"></a>
 
@@ -585,6 +602,18 @@ Callback returned by Bundle~getInfo().
 | bundle.metadata | <code>Object.&lt;string, string&gt;</code> | array of user-editable metadata |
 | bundle.translationStatusMetricsByLanguage | <code>Object</code> | additional metrics information |
 | bundle.reviewStatusMetricsByLanguage | <code>Object</code> | additional metrics information |
+
+<a name="Bundle..listEntriesCallback"></a>
+
+### Bundle~listEntriesCallback : <code>function</code>
+Called by entries()
+
+**Kind**: inner typedef of <code>[Bundle](#Bundle)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| err | <code>object</code> | error, or null |
+| entries | <code>Object.&lt;string, ResourceEntry&gt;</code> | map from resource key to ResourceEntry object.  The .value field will be filled in with the string value. |
 
 <a name="User"></a>
 
