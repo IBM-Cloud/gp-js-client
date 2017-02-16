@@ -11,3 +11,40 @@ script:
   then nyc npm test && nyc report --reporter=text-lcov | coveralls;
   else npm test;
   fi
+env:
+  global:
+    # coverity
+    - secure: "fvzulZVjH3s1MjbmYL4qUvxI9NYq7AIt3ioPJC54fHgeHzINeDjvQFYtwVVSjTzeDsP/EcqdrTo8w9e8NRXJ/PUR17t6Q5Zlnvxj8VBPaqfZEK41RKf4CMnSTZwbPA/PHNGvmU5pu2646k+8ychnQ3jwkCDruVOBVCJwe3gRp0g="
+    # fakebroker
+    - secure: "ddHbHMp/jzKzj5x5nSYoc3A9P0fmeCpMFXoziicfP4K/VwkOw+nUln17+heEHM1Q3Flk5+2UWWmiD76fNgkYCFtLMtnD4Soxy8WHnL5xIEtUVeauHhn4nIJWZ7YqMfCDXfImvygE/HEDfjDMTLJm3r0IzCbGubRlHlnUp6oHZ8o="
+
+cache:
+  directories:
+    - node_modules # NPM packages
+    - .nvm # why not
+
+addons:
+  coverity_scan:
+
+    # GitHub project metadata
+    # ** specific to your project **
+    project:
+      name: IBM-Bluemix/gp-js-client
+      version: 1.0
+      description: Globalization Pipeline Javascript SDK
+
+    # Where email notification of build analysis results will be sent
+    notification_email: srl295@gmail.com
+
+    # Commands to prepare for build_command
+    # ** likely specific to your build **
+    build_command_prepend: npm install
+
+    # The command that will be added as an argument to "cov-build" to compile your project for analysis,
+    # ** likely specific to your build **
+    build_command: --no-command --fs-capture-search ./lib
+
+    # Pattern to match selecting branches that will run analysis. We recommend leaving this set to 'coverity_scan'.
+    # Take care in resource usage, and consider the build frequency allowances per
+    #   https://scan.coverity.com/faq#frequency
+    branch_pattern: coverity_scan
