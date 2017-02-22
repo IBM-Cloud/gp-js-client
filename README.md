@@ -524,7 +524,7 @@ Create an entry object. Doesn't fetch data,
 
 | Param | Type | Description |
 | --- | --- | --- |
-| opts | <code>Object</code> | options |
+| [opts] | <code>Object</code> | <code>{}</code> | Options object |
 | opts.languageId | <code>String</code> | language |
 | opts.resourceKey | <code>String</code> | resource key |
 
@@ -538,7 +538,8 @@ resourceKey to ResourceEntry objects.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| [opts] | <code>Object</code> | <code>{}</code> | ignored |
+| opts | <code>Object</code> |  | options |
+| opts.languageId | <code>String</code> |  | language to fetch |
 | cb | <code>listEntriesCallback</code> |  | Callback with (err, map of resourceKey:ResourceEntry ) |
 
 <a name="Bundle+uploadStrings"></a>
