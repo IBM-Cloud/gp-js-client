@@ -524,7 +524,7 @@ Create an entry object. Doesn't fetch data,
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [opts] | <code>Object</code> | <code>{}</code> | Options object |
+| opts | <code>Object</code> | options |
 | opts.languageId | <code>String</code> | language |
 | opts.resourceKey | <code>String</code> | resource key |
 
