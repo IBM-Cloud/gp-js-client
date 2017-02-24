@@ -11,7 +11,6 @@ This SDK currently supports [Node.js](http://nodejs.org).
 [![npm version](https://badge.fury.io/js/g11n-pipeline.svg)](https://badge.fury.io/js/g11n-pipeline)
 [![Build Status](https://travis-ci.org/IBM-Bluemix/gp-js-client.svg?branch=master)](https://travis-ci.org/IBM-Bluemix/gp-js-client)
 [![Coverage Status](https://coveralls.io/repos/github/IBM-Bluemix/gp-js-client/badge.svg)](https://coveralls.io/github/IBM-Bluemix/gp-js-client)
-[![Coverity Status](https://img.shields.io/coverity/scan/9399.svg)](https://scan.coverity.com/projects/ibm-bluemix-gp-js-client)
 
 ## Sample
 
@@ -420,7 +419,7 @@ Bundle list callback
         * [.languages()](#Bundle+languages) ⇒ <code>Array.&lt;String&gt;</code>
         * [.getStrings(opts, cb)](#Bundle+getStrings)
         * [.entry(opts)](#Bundle+entry)
-        * [.entries([opts], cb)](#Bundle+entries)
+        * [.entries(opts, cb)](#Bundle+entries)
         * [.uploadStrings(opts, cb)](#Bundle+uploadStrings)
         * [.update(opts, cb)](#Bundle+update)
         * [.updateStrings(opts, cb)](#Bundle+updateStrings)
@@ -530,17 +529,17 @@ Create an entry object. Doesn't fetch data,
 
 <a name="Bundle+entries"></a>
 
-### bundle.entries([opts], cb)
+### bundle.entries(opts, cb)
 List entries. Callback is called with a map of 
 resourceKey to ResourceEntry objects.
 
 **Kind**: instance method of <code>[Bundle](#Bundle)</code>  
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| opts | <code>Object</code> |  | options |
-| opts.languageId | <code>String</code> |  | language to fetch |
-| cb | <code>listEntriesCallback</code> |  | Callback with (err, map of resourceKey:ResourceEntry ) |
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | options |
+| opts.languageId | <code>String</code> | language to fetch |
+| cb | <code>listEntriesCallback</code> | Callback with (err, map of resourceKey:ResourceEntry ) |
 
 <a name="Bundle+uploadStrings"></a>
 
