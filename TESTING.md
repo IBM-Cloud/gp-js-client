@@ -47,9 +47,9 @@ as given in the bound service (but see below)
 
     # in lieu of a local-credentials.json file, you can set the
     # following keys:
-    GAAS_API_URL=https://…
-    GAAS_INSTANCE=12345
-    GAAS_USER=67890
+    GP_URL=https://…
+    GP_INSTANCE_ID=12345
+    GAAS_USER_ID=67890
     GAAS_PASSWORD=hunter42
 
     # set this to skip the 'REST' test
@@ -80,15 +80,15 @@ you may want to use the following parameters also.
 
     # Set these, and don't set any user credentials.
     # The test will create/delete the service instances
-    GAAS_ADMIN_ID=mysuperuser
-    GAAS_ADMIN_PASSWORD=hunter42
+    GP_ADMIN_ID=mysuperuser
+    GP_ADMIN_PASSWORD=hunter42
     
     # set this if AUTHENTICATION_SCHEME=BASIC is set on the server
     # assumes that Admins can login with HTTP Basic
     AUTHENTICATION_SCHEME=BASIC
 
     # specify the URL
-    GAAS_API_URL=http://localhost…
+    GP_URL=http://localhost…
 
 
 LICENSE
