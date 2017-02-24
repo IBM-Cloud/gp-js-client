@@ -1099,7 +1099,7 @@ describe('gaasClient.bundle()', function() {
           entry.getInfo({}, function(err, entry3) {
             if(err) return done(err); // not ok
             expect(entry3.metadata).to.deep.equal({otherKey: 'otherValue'});
-            expect(entry3.sequenceNumber).to.not.be.ok; // seq # does not show up in source…
+            expect(entry3.sequenceNumber).to.equal(43);
 
             entry_target.getInfo({}, function(err, entry4) {
               if(err) return done(err); // not ok
