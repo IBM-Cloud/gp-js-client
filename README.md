@@ -473,6 +473,7 @@ the bundle is not created.
 | body.targetLanguages | <code>Array</code> | optional array of target languages |
 | body.metadata | <code>Object</code> | optional metadata for the bundle |
 | body.partner | <code>string</code> | optional ID of partner assigned to translate this bundle |
+| body.notes | <code>Array.&lt;string&gt;</code> | optional note to translators |
 | cb | <code>[basicCallback](#basicCallback)</code> |  |
 
 <a name="Bundle+getInfo"></a>
@@ -568,6 +569,7 @@ Upload resource strings, replacing all current contents for the language
 | opts.readOnly | <code>boolean</code> | optional: set this bundle to be readonly or not |
 | opts.metadata | <code>object</code> | optional: metadata to update |
 | opts.partner | <code>string</code> | optional: partner id to update |
+| opts.notes | <code>Array.&lt;string&gt;</code> | optional notes to translator |
 | cb | <code>[basicCallback](#basicCallback)</code> | callback |
 
 <a name="Bundle+updateStrings"></a>
@@ -739,6 +741,7 @@ Creating this object does not modify any data.
 | entry.metadata | <code>Object.&lt;string, string&gt;</code> | user metadata for this entry |
 | partnerStatus | <code>string</code> | status of partner integration |
 | sequenceNumber | <code>number</code> | relative sequence of this entry |
+| notes | <code>Array.&lt;string&gt;</code> | optional notes to translator |
 
 
 * [ResourceEntry](#ResourceEntry)
@@ -785,6 +788,7 @@ Update this resource entry's fields.
 | opts.value | <code>string</code> | string value to update |
 | opts.reviewed | <code>boolean</code> | optional boolean indicating if value was reviewed |
 | opts.metadata | <code>object</code> | optional metadata to update |
+| opts.notes | <code>Array.&lt;string&gt;</code> | optional notes to translator |
 | opts.partnerStatus | <code>string</code> | translation status maintained by partner |
 | opts.sequenceNumber | <code>string</code> | sequence number of the entry (only for the source language) |
 
