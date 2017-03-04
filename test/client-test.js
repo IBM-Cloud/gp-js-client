@@ -1,5 +1,5 @@
 /*	
- * Copyright IBM Corp. 2015,2016
+ * Copyright IBM Corp. 2015,2017
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +88,7 @@ var urlEnv = gaas._normalizeUrl(opts.credentials.url); // use GaaS normalize
   
 describe('Setting up GaaS test', function() {
   if ( urlEnv ) {
-    var urlToPing = urlEnv+'/';
+    var urlToPing = urlEnv.replace(/\/rest.*$/,'/');
     if(VERBOSE) console.dir(urlToPing);
     it('should let us directly ping ' + urlToPing, function(done) {
       var timeout;
@@ -1214,14 +1214,14 @@ describe('gaasClient.bundle()', function() {
   // if(opts.credentials.isAdmin) {
  
     
-    gaasTest.expectCORSURL(urlEnv + '/rest/swagger.json',
+    gaasTest.expectCORSURL(urlEnv + '/swagger.json',
                         null, ' noauth');
                         
-    gaasTest.expectCORSURL(urlEnv + '/rest/swagger.json',
+    gaasTest.expectCORSURL(urlEnv + '/swagger.json',
                         myAuth, ' reader');
   
     // hardcoded URL here..
-    gaasTest.expectCORSURL(urlEnv + '/rest/' + instanceName + '/v2/bundles/'+projectId3+'/qru',
+    gaasTest.expectCORSURL(urlEnv + '/' + instanceName + '/v2/bundles/'+projectId3+'/qru',
                         myAuth, ' reader');
   
     // // this should authenticate but NOT be CORS
@@ -1236,14 +1236,14 @@ describe('gaasClient.bundle()', function() {
       myHmac.apply(opts);
     };
   
-    gaasTest.expectCORSURL(urlEnv + '/rest/swagger.json',
+    gaasTest.expectCORSURL(urlEnv + '/swagger.json',
                         myAdminAuth, ' admin');
   
     // hardcoded URL here..
-    gaasTest.expectCORSURL(urlEnv + '/rest/' + instanceName + '/v2/bundles/'+projectId3+'/qru',
+    gaasTest.expectCORSURL(urlEnv + '/' + instanceName + '/v2/bundles/'+projectId3+'/qru',
                         myAdminAuth, ' admin');
     // if(isAdmin) {
-    //   gaasTest.expectNonCORSURL(urlEnv + '/rest/' + instanceName + '/v2/bundles',
+    //   gaasTest.expectNonCORSURL(urlEnv + '/' + instanceName + '/v2/bundles',
     //                       myAdminAuth, ' admin');    
     // }
 

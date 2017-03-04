@@ -1,5 +1,5 @@
 /*	
- * Copyright IBM Corp. 2015
+ * Copyright IBM Corp. 2015,2017
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,6 +55,9 @@ var sourceData = {
 if ( ! url ) {
   url = gaasClient._getUrl(); // fetch the URL
 }
+
+// Trim off /rest here, so that we are working with the top level url
+url = url.replace(/\/rest.*$/,'');
 
 var http_or_https = require('./lib/byscheme')(url);
 
