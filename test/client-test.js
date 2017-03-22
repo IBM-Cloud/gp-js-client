@@ -325,7 +325,9 @@ describe('gaasClient.bundle()', function() {
   });
   it('Should let us create', function(done) {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
-    Q.ninvoke(proj, "create", {sourceLanguage: gaasTest.SOURCES[0], targetLanguages: [gaasTest.TARGETS[0],gaasTest.CYRILLIC]})
+    Q.ninvoke(proj, "create", {sourceLanguage: gaasTest.SOURCES[0], 
+                            targetLanguages: [gaasTest.TARGETS[0],gaasTest.CYRILLIC],
+                            notes: ['Note to self'] })
     .then(function(resp) {
       done();
     }, done);
@@ -334,7 +336,8 @@ describe('gaasClient.bundle()', function() {
 // Create some strings for later
   it('Should let us create ' + projectId4, function(done) {
     var proj = gaasClient.bundle({id:projectId4, serviceInstance: instanceName});
-    Q.ninvoke(proj, "create", {sourceLanguage: gaasTest.SOURCES[0], targetLanguages: [gaasTest.KLINGON]})
+    Q.ninvoke(proj, "create", {sourceLanguage: gaasTest.SOURCES[0],
+                              targetLanguages: [gaasTest.KLINGON]})
     .then(function(resp) {
       done();
     }, done);
@@ -359,6 +362,7 @@ describe('gaasClient.bundle()', function() {
         expect(bundle2.sourceLanguage).to.equal(gaasTest.SOURCES[0]);
         expect(bundle2.languages()[0]).to.equal(bundle2.sourceLanguage);
         expect(bundle2.languages()).to.have.members(gaasTest.SOURCES.concat([gaasTest.TARGETS[0],gaasTest.CYRILLIC]));
+        expect(bundle2.notes).to.deep.equal(['Note to self']);
         done();
     });
   });
@@ -566,7 +570,8 @@ describe('gaasClient.bundle()', function() {
                     .entry({languageId:gaasTest.CYRILLIC,resourceKey:'key1'});
     entry.update({
         reviewed: true,
-        sequenceNumber: 42
+        sequenceNumber: 42,
+        notes: [ 'Take note.', 'note: Take.' ]
     }, function(err, data) {
         if(err) return done(err);
         
@@ -584,6 +589,7 @@ describe('gaasClient.bundle()', function() {
                 function(err, entry3){ 
                     if(err) return done(err);
                     expect(entry3.reviewed).to.be.false;
+                    expect(entry3.notes).to.deep.equal([ 'Take note.', 'note: Take.' ])
                     done();
                 });
             })
@@ -1093,6 +1099,7 @@ describe('gaasClient.bundle()', function() {
         if(err) return done(err); // not ok
         entry2.update({
           metadata: { 'otherKey': 'otherValue' },
+          notes: [ 'Some great note to translators' ],
           sequenceNumber: 43
         }, function(err, data) {
           if(err) return done(err); // not ok
@@ -1100,6 +1107,7 @@ describe('gaasClient.bundle()', function() {
             if(err) return done(err); // not ok
             expect(entry3.metadata).to.deep.equal({otherKey: 'otherValue'});
             expect(entry3.sequenceNumber).to.equal(43);
+            expect(entry3.notes).to.deep.equal(['Some great note to translators']);
 
             entry_target.getInfo({}, function(err, entry4) {
               if(err) return done(err); // not ok
