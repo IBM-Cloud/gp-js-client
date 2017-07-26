@@ -159,6 +159,8 @@ API reference
 <dd><p>ResourceEntry
 Creating this object does not modify any data.</p>
 </dd>
+<dt><a href="#TranslationRequest">TranslationRequest</a></dt>
+<dd></dd>
 </dl>
 
 ## Members
@@ -803,6 +805,15 @@ Callback called by ResourceEntry~getInfo()
 | --- | --- | --- |
 | err | <code>object</code> | error, or null |
 | entry | [<code>ResourceEntry</code>](#ResourceEntry) | On success, the new or updated ResourceEntry object. |
+
+<a name="TranslationRequest"></a>
+
+## TranslationRequest
+**Kind**: global class  
+<a name="new_TranslationRequest_new"></a>
+
+### new TranslationRequest()
+This class represents a request for professional editing of machine-translated content.
 
 <a name="serviceRegex"></a>
 
