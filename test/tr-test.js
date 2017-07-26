@@ -169,6 +169,32 @@ var urlEnv = gaas._normalizeUrl(opts.credentials.url); // use GaaS normalize
     });
   });
 
+  describe('GP-HPE tr() and trs() api test', function () {
+    it('Should be able to let us construct a default tr', function () {
+      const tr = gaasClient.tr();
+      expect(tr).to.be.ok;
+    });
+    it('Should be able to let us construct a tr with some ID', function () {
+      const tr = gaasClient.tr('someId');
+      expect(tr).to.be.ok;
+      expect(tr.id).to.equal('someId');
+    });
+    it('Should be able to let us construct a tr with some fields', function () {
+      const tr = gaasClient.tr({a: 'one', b: 'two'});
+      expect(tr).to.be.ok;
+      expect(tr.a).to.equal('one');
+      expect(tr.b).to.equal('two');
+    });
+    it('Should let us call trs() and have an empty list', function(done) {
+      gaasClient.trs(function(err, trs) {
+        if(err) return done(err);
+        expect(trs).to.be.ok;
+        expect(trs).to.deep.equal({});
+        return done();
+      });
+    });
+  });
+
   describe('GP-HPE.bundle()', function () {
     it('Should let us create', function (done) {
       var proj = gaasClient.bundle({ id: projectId, serviceInstance: instanceName });
