@@ -27,3 +27,4 @@ addons:
     build_command_prepend: npm install
     build_command: "--no-command --fs-capture-search ./lib"
     branch_pattern: coverity_scan
+# this is a comment
