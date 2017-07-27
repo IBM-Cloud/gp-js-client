@@ -297,3 +297,11 @@ module.exports.verifySecurityHeadersSwagger = function verifySecurityHeadersSwag
   });
 }
 
+/**
+ * Return a JSON object with the given path.
+ * Example:  testData('a','b','c') -> require('…/data/a_b_c.json');
+ */
+module.exports.testData = function testData() {
+  const newPath = [].slice.call(arguments).join('_');
+  return require('../data/'+newPath);
+};
