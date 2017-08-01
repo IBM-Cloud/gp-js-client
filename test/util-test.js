@@ -65,6 +65,17 @@ describe('test/lib/randhex', function() {
 describe('lib/utils', function() {
 	var utils = require('../lib/utils.js');
 	
+	describe('datify()', function() {
+		it('should let us test datify()', function() {
+			expect(utils.datify()).to.not.be.ok;
+			expect(utils.datify(null)).to.not.be.ok;
+			const d0 = new Date();
+			expect(utils.datify(d0)).to.equal(d0);
+			const d1 = new Date('2017-08-01T16:56:12.593Z');
+			expect(utils.datify('2017-08-01T16:56:12.593Z')).to.deep.equal(d1);
+		});
+	});
+
 	describe('Fields', function() {
 		var f;
 		it('Should let us create a Fields object', function() {

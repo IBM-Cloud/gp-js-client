@@ -159,6 +159,8 @@ API reference
 <dd><p>ResourceEntry
 Creating this object does not modify any data.</p>
 </dd>
+<dt><a href="#TranslationRequest">TranslationRequest</a></dt>
+<dd></dd>
 </dl>
 
 ## Members
@@ -215,6 +217,8 @@ params.credentials is required unless params.appEnv is supplied.</p>
         * [.user(id)](#Client+user) ⇒ [<code>User</code>](#User)
         * [.users([opts], cb)](#Client+users)
         * [.bundles([opts], cb)](#Client+bundles)
+        * [.tr(opts)](#Client+tr) ⇒ [<code>TranslationRequest</code>](#TranslationRequest)
+        * [.trs([opts], cb)](#Client+trs)
     * _inner_
         * [~supportedTranslationsCallback](#Client..supportedTranslationsCallback) : <code>function</code>
         * [~serviceInfoCallback](#Client..serviceInfoCallback) : <code>function</code>
@@ -342,6 +346,32 @@ bundle access objects.
 | --- | --- | --- | --- |
 | [opts] | <code>Object</code> | <code>{}</code> | options |
 | cb | [<code>listBundlesCallback</code>](#Client..listBundlesCallback) |  | given a map of Bundle objects |
+
+<a name="Client+tr"></a>
+
+### client.tr(opts) ⇒ [<code>TranslationRequest</code>](#TranslationRequest)
+Create a Translation Request access object.
+This doesn’t create the TR itself, just a handle object.
+Call create() on the translation request to create it.
+
+**Kind**: instance method of [<code>Client</code>](#Client)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | String (id) or map with options (for a new TR) |
+
+<a name="Client+trs"></a>
+
+### client.trs([opts], cb)
+List Translation Requests. Callback is called with an map of 
+TR access objects.
+
+**Kind**: instance method of [<code>Client</code>](#Client)  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [opts] | <code>Object</code> | <code>{}</code> | options |
+| cb | <code>Client~listTranslationRequestsCallback</code> |  | given a map of Bundle objects |
 
 <a name="Client..supportedTranslationsCallback"></a>
 
@@ -803,6 +833,51 @@ Callback called by ResourceEntry~getInfo()
 | --- | --- | --- |
 | err | <code>object</code> | error, or null |
 | entry | [<code>ResourceEntry</code>](#ResourceEntry) | On success, the new or updated ResourceEntry object. |
+
+<a name="TranslationRequest"></a>
+
+## TranslationRequest
+**Kind**: global class  
+
+* [TranslationRequest](#TranslationRequest)
+    * [new TranslationRequest()](#new_TranslationRequest_new)
+    * [.getInfo()](#TranslationRequest+getInfo)
+    * [.delete([opts], cb)](#TranslationRequest+delete)
+    * [.create([opts])](#TranslationRequest+create)
+
+<a name="new_TranslationRequest_new"></a>
+
+### new TranslationRequest()
+This class represents a request for professional editing of machine-translated content.
+
+<a name="TranslationRequest+getInfo"></a>
+
+### translationRequest.getInfo()
+Fetch the full record for this translation request.
+
+**Kind**: instance method of [<code>TranslationRequest</code>](#TranslationRequest)  
+<a name="TranslationRequest+delete"></a>
+
+### translationRequest.delete([opts], cb)
+Delete this translation request.
+
+**Kind**: instance method of [<code>TranslationRequest</code>](#TranslationRequest)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| [opts] | <code>Object</code> | <code>{}</code> | 
+| cb | <code>BasicCallBack</code> |  | 
+
+<a name="TranslationRequest+create"></a>
+
+### translationRequest.create([opts])
+Create a translation request with the specified options
+
+**Kind**: instance method of [<code>TranslationRequest</code>](#TranslationRequest)  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [opts] | <code>Object</code> | <code>{}</code> | Options object - if present, overrides values in this |
 
 <a name="serviceRegex"></a>
 
