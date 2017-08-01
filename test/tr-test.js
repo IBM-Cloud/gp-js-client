@@ -198,7 +198,7 @@ describe('GP-HPE.bundle()', function () {
   });
 
   it('GP-HPE Should let us upload some ' + srcLang + ' strings ' + projectId, function (done) {
-    console.dir(testData('t1', '0', srcLang));
+    if(VERBOSE) console.dir(testData('t1', '0', srcLang));
     var proj = gaasClient.bundle({ id: projectId, serviceInstance: instanceName });
     proj.uploadStrings({
       languageId: srcLang,
@@ -206,7 +206,7 @@ describe('GP-HPE.bundle()', function () {
     }, done);
   });
   it('GP-HPE Should let us upload some ' + targLang0 + ' strings ' + projectId, function (done) {
-    console.dir(testData('t1', '0', targLang0));
+    if(VERBOSE) console.dir(testData('t1', '0', targLang0));
     var proj = gaasClient.bundle({ id: projectId, serviceInstance: instanceName });
     proj.uploadStrings({
       languageId: targLang0,
@@ -272,11 +272,103 @@ describe('GP-HPE: Requesting our first TR', function () {
 
         expect(tr.status).to.equal('SUBMITTED');
         expect(tr.wordCountsByBundle).to.be.ok;
-
-        console.dir(tr); //TODO: DEBUGGING DEBUGGING DEBUGGING DEBUGGING DEBUGGING
+        expect(tr.createdAt).to.be.ok;
 
         return done();
       });
+  });
+      var t = 8192;
+
+  // It's possible that the TR is merged by the time we get to it.
+  it('should eventually show the TR as STARTED (or MERGED or TRANSLATED)', function (done) {
+      var timeout;
+      var c = 100;
+      var loopy = function(c) {
+        minispin.step();
+        c--;
+        if(c === 0) {
+          return done(Error('Patience exceeded!'));
+        } else if(timeout) {
+          clearTimeout(timeout);
+          timeout = undefined;
+        }
+        if(VERBOSE) console.log('Will try',c,'more times for',trId1);
+        gaasClient.tr(trId1)
+          .getInfo(function cb(err, tr) {
+            if(err) {
+              return done(err);
+            } else if(tr.status !== 'STARTED' && tr.status !== 'MERGED' && tr.status !== 'TRANSLATED') {
+              if(VERBOSE) console.log(tr.id,'=',tr.status);
+              timeout = setTimeout(loopy, t, c);
+            } else {
+              expect(tr.id).to.equal(trId1);
+              // TODO: more here.
+              expect(tr.startedAt).to.be.ok;
+              expect(tr.startedAt).to.be.at.least(tr.createdAt);
+              if(VERBOSE) console.dir(tr);
+              return done();
+            }
+          });
+      };
+      process.nextTick(loopy, t, c); // first run
+  });
+  it('should eventually show the TR as MERGED', function (done) {
+      var timeout;
+      var c = 100;
+      var loopy = function(c) {
+        if(VERBOSE) console.log('Will try',c,'more times for',trId1);
+        minispin.step();
+        c--;
+        if(c === 0) {
+          return done(Error('Patience exceeded!'));
+        }else if(timeout) {
+          clearTimeout(timeout);
+          timeout = undefined;
+        }
+        gaasClient.tr(trId1)
+          .getInfo(function cb(err, tr) {
+            if(err) {
+              return done(err);
+            } else if(tr.status !== 'MERGED') {
+              if(VERBOSE) console.log(tr.id,'=',tr.status);
+              timeout = setTimeout(loopy, t, c);
+            } else {
+              expect(tr.id).to.equal(trId1);
+              expect(tr.translatedAt).to.be.ok;
+              expect(tr.translatedAt).to.be.at.least(tr.startedAt);
+              expect(tr.mergedAt).to.be.ok;
+              expect(tr.mergedAt).to.be.at.least(tr.translatedAt);
+
+
+              // TODO: more here.
+              if(VERBOSE) console.dir(tr);
+              return done();
+            }
+          });
+      };
+      process.nextTick(loopy, t, c); // first run
+  });
+  it('Should now have a reviewed field and translated content thanks to the TR', function (done) {
+    var entry = gaasClient
+      .bundle({ id: projectId, serviceInstance: instanceName })
+      .entry({ languageId: targLang0, resourceKey: 'hi' });
+    entry.getInfo({},
+      function (err, entry2) {
+        if (err) return done(err);
+        expect(entry2.reviewed).to.be.true;
+        expect(entry2.updatedBy).to.equal('$IBM.AUTOTEST');
+        expect(entry2.value).to.equal(testData('t1', '1', targLang0)[entry2.resourceKey]);
+        expect(entry2.translationStatus).to.equal('TRANSLATED');
+        if(VERBOSE) console.dir(entry2);
+        return done();
+      });
+  });
+  it('Should be able to delete the TR', function(done) {
+    gaasClient.tr(trId1).delete(function(err, data) {
+      if(err) return done(err);
+      if(VERBOSE) console.dir(data);
+      return done();
+    });
   });
 });
 
