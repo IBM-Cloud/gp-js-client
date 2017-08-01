@@ -233,7 +233,7 @@ describe('GP-HPE.bundle()', function () {
     entry.update({
       reviewed: false,
       sequenceNumber: 42,
-      notes: ['Take note.', 'note: Take.']
+      notes: [ '{{10,10,IBM}}' ]
     }, function (err, data) {
       if (err) return done(err);
 
@@ -255,8 +255,8 @@ var trId1;
 describe('GP-HPE: Requesting our first TR', function () {
   it('Should request the first TR', function (done) {
     const requestData = {
-      name: 'FirstTR', // TODO: docs say this is optional?
-      emails: ['noname@example.com'], // TODO: docs say this is optional?
+      name: 'FirstTR',
+      emails: ['noname@example.com'],
       partner: 'IBM',
       targetLanguagesByBundle: {}, // to fill in
       status: 'SUBMITTED' // request to submit it right away.
@@ -310,7 +310,7 @@ describe('GP-HPE: Requesting our first TR', function () {
             }
           });
       };
-      process.nextTick(loopy, t, c); // first run
+      process.nextTick(loopy, c); // first run
   });
   it('should eventually show the TR as MERGED', function (done) {
       var timeout;
@@ -341,12 +341,13 @@ describe('GP-HPE: Requesting our first TR', function () {
 
 
               // TODO: more here.
-              if(VERBOSE) console.dir(tr);
+              delete tr.gp; // for console.dir
+              if(VERBOSE) console.dir(tr, {depth: null, color: true});
               return done();
             }
           });
       };
-      process.nextTick(loopy, t, c); // first run
+      process.nextTick(loopy, c); // first run
   });
   it('Should now have a reviewed field and translated content thanks to the TR', function (done) {
     var entry = gaasClient
