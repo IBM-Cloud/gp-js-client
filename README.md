@@ -841,12 +841,32 @@ Callback called by ResourceEntry~getInfo()
 
 * [TranslationRequest](#TranslationRequest)
     * [new TranslationRequest()](#new_TranslationRequest_new)
+    * [.getInfo()](#TranslationRequest+getInfo)
+    * [.delete([opts], cb)](#TranslationRequest+delete)
     * [.create([opts])](#TranslationRequest+create)
 
 <a name="new_TranslationRequest_new"></a>
 
 ### new TranslationRequest()
 This class represents a request for professional editing of machine-translated content.
+
+<a name="TranslationRequest+getInfo"></a>
+
+### translationRequest.getInfo()
+Fetch the full record for this translation request.
+
+**Kind**: instance method of [<code>TranslationRequest</code>](#TranslationRequest)  
+<a name="TranslationRequest+delete"></a>
+
+### translationRequest.delete([opts], cb)
+Delete this translation request.
+
+**Kind**: instance method of [<code>TranslationRequest</code>](#TranslationRequest)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| [opts] | <code>Object</code> | <code>{}</code> | 
+| cb | <code>BasicCallBack</code> |  | 
 
 <a name="TranslationRequest+create"></a>
 
