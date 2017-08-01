@@ -86,6 +86,44 @@ This code snippet will output the translated strings such as the following:
     }
 ```
 
+### Translation Requests
+
+To create a Translation request:
+
+```javascript
+    gpClient.tr({
+      name: 'My first TR',
+      domains: [ 'HEALTHC' ],
+
+      emails: ['my_real_email@me.example.com'],
+      partner: 'IBM',
+      targetLanguagesByBundle: {
+          bundle1: [ 'es', 'fr', 'de' ], // review bundle1’s Spanish, etc… 
+          bundle2: [ 'zh-Hans' ]   // review bundle2’s Simplified Chinese…
+      },
+      notes: [ 'This is a mobile health advice application.' ],
+      status: 'SUBMITTED' // request to submit it right away.
+    })
+    .create((err, tr) => {
+        if(err) { … handle err … }
+
+        console.log('TR submitted with ID:', tr.id);
+        console.log('Estimated completion:', 
+            tr.estimatedCompletion.toLocaleString());
+    });
+```
+
+To then check on the status of that request:
+
+```javascript
+    gpClient.tr('333cfaecabdedbd8fa16a24b626848d6')
+    .getInfo((err, tr) => {
+        if(err) { … handle err … }
+
+        console.log('Current status:', tr.status);
+    });
+```
+
 ### Async
 
 Note that all calls that take a callback are asynchronous.
