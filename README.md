@@ -909,6 +909,7 @@ Callback called by ResourceEntry~getInfo()
         * [.getInfo([opts], cb)](#TranslationRequest+getInfo)
         * [.delete([opts], cb)](#TranslationRequest+delete)
         * [.create([opts], cb)](#TranslationRequest+create)
+        * [.update(opts, cb)](#TranslationRequest+update)
     * _inner_
         * [~getTranslationRequestsCallback](#TranslationRequest..getTranslationRequestsCallback) : <code>function</code>
         * [~getTranslationRequestCallback](#TranslationRequest..getTranslationRequestCallback) : <code>function</code>
@@ -963,6 +964,26 @@ Example:  `client.tr({ status: 'SUBMITTED', … }).create((err, tr) => { consol
 | --- | --- | --- | --- |
 | [opts] | <code>Object</code> | <code>{}</code> | Options object - if present, overrides values in `this` |
 | cb | [<code>getTranslationRequestCallback</code>](#TranslationRequest..getTranslationRequestCallback) |  |  |
+
+<a name="TranslationRequest+update"></a>
+
+### translationRequest.update(opts, cb)
+Update a translation request with the specified values.
+If any property of `opts` is missing, that value will not be updated.
+
+**Kind**: instance method of [<code>TranslationRequest</code>](#TranslationRequest)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Options object - contains fields to update |
+| [opts.partner] | <code>String</code> | optional: update partner. |
+| [opts.name] | <code>String</code> | optional: update name |
+| [opts.targetLanguagesByBundle] | <code>Object.&lt;String, Array.&lt;String&gt;&gt;</code> | optional: update target bundle/language list |
+| [opts.emails] | <code>Array.&lt;String&gt;</code> | optional: update email list |
+| [opts.domains] | [<code>Array.&lt;TranslationDomain&gt;</code>](#TranslationDomain) | optional: update domain list |
+| [opts.status] | [<code>TranslationRequestStatus</code>](#TranslationRequestStatus) | optional: update TR status. May only change from `DRAFT` to `SUBMITTED` here. |
+| [opts.metadata] | <code>Object.&lt;String, String&gt;</code> | optional: update metadata |
+| cb | [<code>basicCallback</code>](#basicCallback) | callback with update status |
 
 <a name="TranslationRequest..getTranslationRequestsCallback"></a>
 
