@@ -3,6 +3,9 @@
   "version": "1.5.0-1",
   "description": "JavaScript (Node.js, etc) client for Bluemix Globalization Pipeline",
   "main": "index.js",
+  "engines": {
+    "node": ">=0.12"
+  },
   "scripts": {
     "test": "mocha",
     "coverage": "nyc mocha && nyc report --reporter=lcov",
