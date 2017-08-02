@@ -215,7 +215,7 @@ describe('GP-HPE.bundle()', function () {
   });
 
 
-  it('GP-HPE should let us verify the target data(qru)', function (done) {
+  it('GP-HPE should let us verify the target data(es)', function (done) {
     var proj = gaasClient.bundle({ id: projectId, serviceInstance: instanceName });
     proj.getStrings({ languageId: targLang0 },
       function (err, data) {
@@ -252,7 +252,7 @@ describe('GP-HPE.bundle()', function () {
 
 var trId1;
 
-describe('GP-HPE: Requesting our first TR', function () {
+describe.skip('GP-HPE: Requesting our first TR', function () {
   it('Should request the first TR', function (done) {
     const requestData = {
       name: 'FirstTR', // TODO: docs say this is optional?
@@ -371,6 +371,91 @@ describe('GP-HPE: Requesting our first TR', function () {
     });
   });
 });
+
+var trId2;
+
+describe('GP-HPE now try using tr.update', function() {
+  it('GP-HPE Should let me update the review status of a bundle', function (done) {
+    var entry = gaasClient
+      .bundle({ id: projectId, serviceInstance: instanceName })
+      .entry({ languageId: targLang0, resourceKey: 'hi' });
+    entry.update({
+      reviewed: false, // reset reviewd status
+      value: testData('t1', '0', targLang0)[entry.resourceKey], // reset the value
+      notes: ['Take note.', 'note: Take.']
+    }, function (err, data) {
+      if (err) return done(err);
+
+      entry.getInfo({},
+        function (err, entry2) {
+          if (err) return done(err);
+          expect(entry2.reviewed).to.be.false;
+          expect(entry2.value).to.equal(testData('t1', '0', targLang0)[entry.resourceKey])
+          return done();
+        });
+    });
+  });
+
+  it('Should create the second TR', function (done) {
+    const requestData = {
+      name: 'Second TR draft', // TODO: docs say this is optional?
+      emails: ['my_real_name_not_really@example.com'], // TODO: docs say this is optional?
+      partner: 'IBM', // TODO: try changing partner name in update
+      targetLanguagesByBundle: {}, // to fill in
+      status: 'DRAFT', // do not submit yet
+      domains: [ 'FINSVCS', 'CNSTRCT' ],
+      notes: [ 'a', 'b', 'c' ]
+    };
+    requestData.targetLanguagesByBundle[projectId] = [targLang0];
+    if(VERBOSE) console.dir(requestData);
+    gaasClient.tr(requestData)
+      .create(function cb(err, tr) {
+        if (err) return done(err);
+        expect(tr.id).to.be.ok;
+        trId2 = tr.id;
+
+        expect(tr.gp).to.be.ok; // Internal prop: it's an object
+
+        expect(tr.status).to.equal('DRAFT');
+        expect(tr.wordCountsByBundle).to.be.ok;
+        expect(tr.createdAt).to.be.ok;
+        if(VERBOSE) { delete tr.gp; console.dir(tr); }
+        expect(tr.domains).to.contain('CNSTRCT');
+        expect(tr.domains).to.contain('FINSVCS');
+        expect(tr.notes).to.deep.equal(['a','b','c']);
+        expect(tr.wordCountsByBundle[projectId]).to.deep.equal({sourceLanguage: srcLang, counts: { es: 1 } });
+        return done();
+      });
+  });
+
+    const updateData = { 
+      notes: [ 'b', 'c', 'a' ]
+    };
+  it('Should be able to update the TR', function(done) {
+    gaasClient.tr(trId2)
+    .update(updateData, function(err, data) {
+      if(err) return done(err);
+
+      if(VERBOSE) console.dir(data);
+      return done();
+    });
+  });
+
+  it('Should be able to verify the updated TR values', function(done) {
+    gaasClient.tr(trId2)
+    .getInfo(function(err, tr) {
+      if(err) return done(err);
+
+      if(VERBOSE) console.dir(tr);
+
+      expect(tr.notes).to.deep.equal(updateData.notes);
+
+      return done();
+    });
+  });
+
+});
+
 
 if (!NO_DELETE && !opts.credentials.isAdmin) {
   describe('GP-HPE Clean-up time for ' + instanceName, function () {
