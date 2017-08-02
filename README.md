@@ -86,6 +86,44 @@ This code snippet will output the translated strings such as the following:
     }
 ```
 
+### Translation Requests
+
+To create a Translation request:
+
+```javascript
+    gpClient.tr({
+      name: 'My first TR',
+      domains: [ 'HEALTHC' ],
+
+      emails: ['my_real_email@me.example.com'],
+      partner: 'IBM',
+      targetLanguagesByBundle: {
+          bundle1: [ 'es', 'fr', 'de' ], // review bundle1’s Spanish, etc… 
+          bundle2: [ 'zh-Hans' ]   // review bundle2’s Simplified Chinese…
+      },
+      notes: [ 'This is a mobile health advice application.' ],
+      status: 'SUBMITTED' // request to submit it right away.
+    })
+    .create((err, tr) => {
+        if(err) { … handle err … }
+
+        console.log('TR submitted with ID:', tr.id);
+        console.log('Estimated completion:', 
+            tr.estimatedCompletion.toLocaleString());
+    });
+```
+
+To then check on the status of that request:
+
+```javascript
+    gpClient.tr('333cfaecabdedbd8fa16a24b626848d6')
+    .getInfo((err, tr) => {
+        if(err) { … handle err … }
+
+        console.log('Current status:', tr.status);
+    });
+```
+
 ### Async
 
 Note that all calls that take a callback are asynchronous.
@@ -168,12 +206,12 @@ Creating this object does not modify any data.</p>
 <dl>
 <dt><a href="#serviceRegex">serviceRegex</a></dt>
 <dd><p>a Regex for matching the service.
-Usage: var credentials = require(&#39;cfEnv&#39;)
-     .getAppEnv().getServiceCreds(gp.serviceRegex);
+Usage: <code>var credentials = require(&#39;cfEnv&#39;)
+     .getAppEnv().getServiceCreds(gp.serviceRegex);</code>
 (except that it needs to match by label)</p>
 </dd>
 <dt><a href="#exampleCredentials">exampleCredentials</a></dt>
-<dd><p>Example credentials</p>
+<dd><p>Example credentials such as for documentation.</p>
 </dd>
 </dl>
 
@@ -183,9 +221,6 @@ Usage: var credentials = require(&#39;cfEnv&#39;)
 <dt><a href="#getClient">getClient(params)</a> ⇒ <code><a href="#Client">Client</a></code></dt>
 <dd><p>Construct a g11n-pipeline client. 
 params.credentials is required unless params.appEnv is supplied.</p>
-</dd>
-<dt><a href="#isMissingField">isMissingField(obj, fields)</a> ⇒</dt>
-<dd><p>Return a list of missing fields. Special cases the instanceId field.</p>
 </dd>
 </dl>
 
@@ -198,6 +233,8 @@ params.credentials is required unless params.appEnv is supplied.</p>
 <dt><a href="#ExternalService">ExternalService</a> : <code>Object</code></dt>
 <dd><p>info about external services available</p>
 </dd>
+<dt><a href="#WordCountsInfo">WordCountsInfo</a> : <code>object</code></dt>
+<dd></dd>
 </dl>
 
 <a name="Client"></a>
@@ -358,7 +395,7 @@ Call create() on the translation request to create it.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| opts | <code>Object</code> | String (id) or map with options (for a new TR) |
+| opts | <code>string</code> \| <code>Object.&lt;string, Object&gt;</code> | Can be a string (id) or map with values (for a new TR). See TranslationRequest. |
 
 <a name="Client+trs"></a>
 
@@ -370,8 +407,8 @@ TR access objects.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| [opts] | <code>Object</code> | <code>{}</code> | options |
-| cb | <code>Client~listTranslationRequestsCallback</code> |  | given a map of Bundle objects |
+| [opts] | <code>Object</code> | <code>{}</code> | optional map of options |
+| cb | [<code>getTranslationRequestsCallback</code>](#TranslationRequest..getTranslationRequestsCallback) |  | callback yielding a map of Translation Requests |
 
 <a name="Client..supportedTranslationsCallback"></a>
 
@@ -838,24 +875,65 @@ Callback called by ResourceEntry~getInfo()
 
 ## TranslationRequest
 **Kind**: global class  
+**Properties**
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| id | <code>string</code> |  | Translation Request ID |
+| serviceInstance | <code>string</code> |  | the Service Instance that this Translation Request belongs to |
+| partner | <code>string</code> |  | the three letter Partner ID to be used. Use 'IBM' for the Professional Plan |
+| name | <code>string</code> |  | descriptive title for this translation request |
+| targetLanguagesByBundle | <code>Object.&lt;String, Array.&lt;String&gt;&gt;</code> |  | map from Bundle ID to array of target languages |
+| emails | <code>Array.&lt;String&gt;</code> |  | array of email addresses for the requester |
+| domains | [<code>Array.&lt;TranslationDomain&gt;</code>](#TranslationDomain) |  | A list of applicable translation domains. |
+| status | [<code>TranslationRequestStatus</code>](#TranslationRequestStatus) |  | Status of this TR. |
+| wordCountsByBundle | <code>Object.&lt;String, WordCountsInfo&gt;</code> |  | map of bundle IDs to word count data |
+| updatedBy | <code>string</code> |  | last updated user ID |
+| updatedAt | <code>Date</code> |  | date when the TR was updated |
+| createdAt | <code>Date</code> |  | date when the TR was first submitted |
+| estimatedCompletion | <code>Date</code> |  | date when the TR is expected to be complete |
+| startedAt | <code>Date</code> |  | date when the TR was accepted for processing |
+| translatedAt | <code>Date</code> |  | date when the TR had completed translation review |
+| mergedAt | <code>Date</code> |  | date when the TR was merged back into the target bundles |
+| notes | <code>Array.&lt;String&gt;</code> | <code>[]</code> | optional array of notes to the translators |
+| metadata | <code>Object.&lt;string, string&gt;</code> |  | array of user-defined metadata |
+
 
 * [TranslationRequest](#TranslationRequest)
-    * [new TranslationRequest()](#new_TranslationRequest_new)
-    * [.getInfo()](#TranslationRequest+getInfo)
-    * [.delete([opts], cb)](#TranslationRequest+delete)
-    * [.create([opts])](#TranslationRequest+create)
+    * [new TranslationRequest(gp, props)](#new_TranslationRequest_new)
+    * _instance_
+        * [.getInfo([opts], cb)](#TranslationRequest+getInfo)
+        * [.delete([opts], cb)](#TranslationRequest+delete)
+        * [.create([opts], cb)](#TranslationRequest+create)
+    * _inner_
+        * [~getTranslationRequestsCallback](#TranslationRequest..getTranslationRequestsCallback) : <code>function</code>
+        * [~getTranslationRequestCallback](#TranslationRequest..getTranslationRequestCallback) : <code>function</code>
 
 <a name="new_TranslationRequest_new"></a>
 
-### new TranslationRequest()
+### new TranslationRequest(gp, props)
 This class represents a request for professional editing of machine-translated content.
+Note: this constructor is not usually called directly, use Client.tr(id) or Client.tr({fields…})
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| gp | [<code>Client</code>](#Client) | parent g11n-pipeline client object |
+| props | <code>Object</code> | properties to inherit |
 
 <a name="TranslationRequest+getInfo"></a>
 
-### translationRequest.getInfo()
+### translationRequest.getInfo([opts], cb)
 Fetch the full record for this translation request.
+Example:  `client.tr('1dec633b').getInfo((err, tr) => { console.log(tr.status); });`
 
 **Kind**: instance method of [<code>TranslationRequest</code>](#TranslationRequest)  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [opts] | <code>Object</code> | <code>{}</code> | Options object - if present, overrides values in `this` |
+| cb | [<code>getTranslationRequestCallback</code>](#TranslationRequest..getTranslationRequestCallback) |  |  |
+
 <a name="TranslationRequest+delete"></a>
 
 ### translationRequest.delete([opts], cb)
@@ -863,28 +941,55 @@ Delete this translation request.
 
 **Kind**: instance method of [<code>TranslationRequest</code>](#TranslationRequest)  
 
-| Param | Type | Default |
-| --- | --- | --- |
-| [opts] | <code>Object</code> | <code>{}</code> | 
-| cb | <code>BasicCallBack</code> |  | 
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [opts] | <code>Object</code> | <code>{}</code> | Options object - if present, overrides values in `this` |
+| cb | <code>BasicCallBack</code> |  |  |
 
 <a name="TranslationRequest+create"></a>
 
-### translationRequest.create([opts])
-Create a translation request with the specified options
+### translationRequest.create([opts], cb)
+Create a translation request with the specified options. The callback returns a new TranslationRequest object
+with the `id` and other fields populated.
+Example:  `client.tr({ status: 'SUBMITTED', … }).create((err, tr) => { console.log(tr.id); });`
 
 **Kind**: instance method of [<code>TranslationRequest</code>](#TranslationRequest)  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| [opts] | <code>Object</code> | <code>{}</code> | Options object - if present, overrides values in this |
+| [opts] | <code>Object</code> | <code>{}</code> | Options object - if present, overrides values in `this` |
+| cb | [<code>getTranslationRequestCallback</code>](#TranslationRequest..getTranslationRequestCallback) |  |  |
+
+<a name="TranslationRequest..getTranslationRequestsCallback"></a>
+
+### TranslationRequest~getTranslationRequestsCallback : <code>function</code>
+Callback returned by trs()
+
+**Kind**: inner typedef of [<code>TranslationRequest</code>](#TranslationRequest)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| err | <code>Object</code> | error, or null |
+| trs | <code>Object.&lt;string, TranslationRequest&gt;</code> | map from translation request ID to TranslationRequest Example: `{ 1dec633b: {…}}` if there was just one TR, id `1dec633b` |
+
+<a name="TranslationRequest..getTranslationRequestCallback"></a>
+
+### TranslationRequest~getTranslationRequestCallback : <code>function</code>
+Callback returned by getInfo and create
+
+**Kind**: inner typedef of [<code>TranslationRequest</code>](#TranslationRequest)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| err | <code>Object</code> | error, or null |
+| tr | [<code>TranslationRequest</code>](#TranslationRequest) | the returned TranslationRequest |
 
 <a name="serviceRegex"></a>
 
 ## serviceRegex
 a Regex for matching the service.
-Usage: var credentials = require('cfEnv')
-     .getAppEnv().getServiceCreds(gp.serviceRegex);
+Usage: `var credentials = require('cfEnv')
+     .getAppEnv().getServiceCreds(gp.serviceRegex);`
 (except that it needs to match by label)
 
 **Kind**: global variable  
@@ -897,7 +1002,7 @@ Usage: var credentials = require('cfEnv')
 <a name="exampleCredentials"></a>
 
 ## exampleCredentials
-Example credentials
+Example credentials such as for documentation.
 
 **Kind**: global variable  
 **Properties**
@@ -905,6 +1010,48 @@ Example credentials
 | Name |
 | --- |
 | exampleCredentials | 
+
+<a name="TranslationRequestStatus"></a>
+
+## TranslationRequestStatus : <code>enum</code>
+Possible status values for Translation Requests
+
+**Kind**: global enum  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| DRAFT | <code>string</code> | The translation request has not been submitted for processing. It may modified or cancelled. |
+| SUBMITTED | <code>string</code> | The translation request has been submitted for processing, but has not been accepted by the partner yet. |
+| STARTED | <code>string</code> | Work has started on the translation request. |
+| TRANSLATED | <code>string</code> | All work has been completed on the translation request. It has not been merged into the target resource data yet. |
+| MERGED | <code>string</code> | The translation results have been merged into the original resource bundles. |
+
+<a name="TranslationDomain"></a>
+
+## TranslationDomain : <code>enum</code>
+Possible translation domains. These provide hints as to the type of translation expected.
+
+**Kind**: global enum  
+**Properties**
+
+| Name | Type | Default |
+| --- | --- | --- |
+| AEROMIL | <code>string</code> | <code>&quot;Aerospace and the military-industrial complex&quot;</code> | 
+| CNSTRCT | <code>string</code> | <code>&quot;Construction&quot;</code> | 
+| GDSSVCS | <code>string</code> | <code>&quot;Goods and service&quot;</code> | 
+| EDUCATN | <code>string</code> | <code>&quot;Education&quot;</code> | 
+| FINSVCS | <code>string</code> | <code>&quot;Financial Services&quot;</code> | 
+| GOVPUBL | <code>string</code> | <code>&quot;Government and public sector&quot;</code> | 
+| HEALTHC | <code>string</code> | <code>&quot;Healthcare and social services&quot;</code> | 
+| INDSTMF | <code>string</code> | <code>&quot;Industrial manufacturing&quot;</code> | 
+| TELECOM | <code>string</code> | <code>&quot;Telecommunication&quot;</code> | 
+| DMEDENT | <code>string</code> | <code>&quot;Digital media and entertainment&quot;</code> | 
+| INFTECH | <code>string</code> | <code>&quot;Information technology&quot;</code> | 
+| TRVLTRS | <code>string</code> | <code>&quot;Travel and transportation&quot;</code> | 
+| INSURNC | <code>string</code> | <code>&quot;Insurance&quot;</code> | 
+| ENGYUTL | <code>string</code> | <code>&quot;Energy and utilities&quot;</code> | 
+| AGRICLT | <code>string</code> | <code>&quot;Agriculture&quot;</code> | 
 
 <a name="getClient"></a>
 
@@ -923,19 +1070,6 @@ params.credentials is required unless params.appEnv is supplied.
 | params.credentials.userId | <code>string</code> | service API key. |
 | params.credentials.password | <code>string</code> | service API key. |
 | params.credentials.instanceId | <code>string</code> | instance ID |
-
-<a name="isMissingField"></a>
-
-## isMissingField(obj, fields) ⇒
-Return a list of missing fields. Special cases the instanceId field.
-
-**Kind**: global function  
-**Returns**: array of which fields are missing  
-
-| Param | Description |
-| --- | --- |
-| obj | obj containing fields |
-| fields | array of fields to require |
 
 <a name="basicCallback"></a>
 
@@ -963,6 +1097,17 @@ info about external services available
 | name | <code>string</code> | The name of the service |
 | id | <code>string</code> | The id of the service |
 | supportedTranslation | <code>Object.&lt;string, Array.&lt;string&gt;&gt;</code> | map from source language to array of target languages Example: `{ en: ['de', 'ja']}` meaning English translates to German and Japanese. |
+
+<a name="WordCountsInfo"></a>
+
+## WordCountsInfo : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| sourceLanguage | <code>string</code> | bcp47 id of the source language, such as 'en' |
+| counts | <code>object.&lt;string, number&gt;</code> | map from target language to word count |
 
 
 *docs autogenerated via [jsdoc2md](https://github.com/jsdoc2md/jsdoc-to-markdown)*
