@@ -13,6 +13,10 @@ This SDK currently supports [Node.js](http://nodejs.org).
 [![Coverage Status](https://coveralls.io/repos/github/IBM-Bluemix/gp-js-client/badge.svg)](https://coveralls.io/github/IBM-Bluemix/gp-js-client)
 [![Coverity Status](https://img.shields.io/coverity/scan/9399.svg)](https://scan.coverity.com/projects/ibm-bluemix-gp-js-client)
 
+### Upcoming News
+
+* ⚠ Please note that support for Node v0.12 [will be removed by version 2.0 of this SDK](https://github.com/IBM-Bluemix/gp-js-client/issues/55). See the [Node.js LTS schedule](https://github.com/nodejs/LTS).
+
 ## Sample
 
 For a working Bluemix application sample,
