@@ -253,6 +253,7 @@ params.credentials is required unless params.appEnv is supplied.</p>
         * [.ping](#Client+ping)
         * [.supportedTranslations([opts], cb)](#Client+supportedTranslations)
         * [.getServiceInfo([opts], cb)](#Client+getServiceInfo)
+        * [.getServiceInstanceInfo([opts], cb)](#Client+getServiceInstanceInfo)
         * [.createUser(args, cb)](#Client+createUser)
         * [.bundle(opts)](#Client+bundle) ⇒ [<code>Bundle</code>](#Bundle)
         * [.user(id)](#Client+user) ⇒ [<code>User</code>](#User)
@@ -263,6 +264,7 @@ params.credentials is required unless params.appEnv is supplied.</p>
     * _inner_
         * [~supportedTranslationsCallback](#Client..supportedTranslationsCallback) : <code>function</code>
         * [~serviceInfoCallback](#Client..serviceInfoCallback) : <code>function</code>
+        * [~serviceInstanceInfoCallback](#Client..serviceInstanceInfoCallback) : <code>function</code>
         * [~listUsersCallback](#Client..listUsersCallback) : <code>function</code>
         * [~listBundlesCallback](#Client..listBundlesCallback) : <code>function</code>
 
@@ -307,8 +309,7 @@ Example: `{ en: ['de', 'ja']}` meaning English translates to German and Japanese
 <a name="Client+getServiceInfo"></a>
 
 ### client.getServiceInfo([opts], cb)
-Get information about this service.
-At present, no information is returned beyond that expressed by supportedTranslations().
+Get global information about this service, not specific to one service instance.
 
 **Kind**: instance method of [<code>Client</code>](#Client)  
 
@@ -316,6 +317,19 @@ At present, no information is returned beyond that expressed by supportedTransla
 | --- | --- | --- | --- |
 | [opts] | <code>object</code> | <code>{}</code> | ignored argument |
 | cb | [<code>serviceInfoCallback</code>](#Client..serviceInfoCallback) |  |  |
+
+<a name="Client+getServiceInstanceInfo"></a>
+
+### client.getServiceInstanceInfo([opts], cb)
+Get information about our specific service instance.
+
+**Kind**: instance method of [<code>Client</code>](#Client)  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [opts] | <code>object</code> | <code>{}</code> | options |
+| [opts.serviceInstance] | <code>string</code> |  | request a specific service instance’s info |
+| cb | [<code>serviceInstanceInfoCallback</code>](#Client..serviceInstanceInfoCallback) |  |  |
 
 <a name="Client+createUser"></a>
 
@@ -438,7 +452,32 @@ Callback used by getServiceInfo()
 | err | <code>object</code> | error, or null |
 | info | <code>Object</code> | detailed information about the service |
 | info.supportedTranslation | <code>Object.&lt;string, Array.&lt;string&gt;&gt;</code> | map from source language to array of target languages Example: `{ en: ['de', 'ja']}` meaning English translates to German and Japanese. |
+| info.supportedHumanTranslation | <code>Object.&lt;string, Array.&lt;string&gt;&gt;</code> | map from source language to array of target languages  supported for human translation. Example: `{ en: ['de', 'ja']}` meaning English translates to German and Japanese. |
 | info.externalServices | [<code>Array.&lt;ExternalService&gt;</code>](#ExternalService) | info about external services available |
+
+<a name="Client..serviceInstanceInfoCallback"></a>
+
+### Client~serviceInstanceInfoCallback : <code>function</code>
+Callback returned by getServiceInstanceInfo()
+
+**Kind**: inner typedef of [<code>Client</code>](#Client)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| err | <code>object</code> | error, or null |
+| instanceInfo | <code>object</code> | Additional information about the service instance |
+| instanceInfo.updatedBy | <code>string</code> | information about how our service instance was updated |
+| instanceInfo.updatedAt | <code>date</code> | when the instance was last updated |
+| instanceInfo.region | <code>string</code> | the Bluemix region name |
+| instanceInfo.cfServiceInstanceId | <code>string</code> | the CloudFoundry service instance ID |
+| instanceInfo.serviceId | <code>string</code> | this is equivalent to the service instance ID |
+| instanceInfo.orgId | <code>string</code> | this is the Bluemix organization ID |
+| instanceInfo.spaceId | <code>string</code> | this is the Bluemix space ID |
+| instanceInfo.planId | <code>string</code> | this is the Bluemix plan ID |
+| instanceInfo.htServiceEnabled | <code>boolean</code> | true if the Human Translation service is enabled |
+| instanceInfo.usage | <code>object</code> | usage information |
+| instanceInfo.usage.size | <code>number</code> | the size of resource data used by the Globalization Pipeline instance in bytes |
+| instanceInfo.disabled | <code>boolean</code> | true if this service has been set as disabled by Bluemix |
 
 <a name="Client..listUsersCallback"></a>
 
