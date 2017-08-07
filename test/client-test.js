@@ -195,6 +195,27 @@ describe('gaasClient.supportedTranslations()', function() {
       done();
     });
   });
+  it('Should let us get service instance info', function(done) {
+    gaasClient.getServiceInstanceInfo(function(err, instanceInfo) {
+      if(err) return done(err);
+      if(VERBOSE) console.dir(instanceInfo);
+      expect(instanceInfo).to.be.ok;
+      expect(instanceInfo.updatedAt).to.be.a('date');
+      expect(instanceInfo.updatedBy).to.be.a('string');
+      expect(instanceInfo.orgId).to.be.a('string');
+      expect(instanceInfo.spaceId).to.be.a('string');
+      expect(instanceInfo.planId).to.be.a('string');
+      expect(instanceInfo.htServiceEnabled).to.be.a('boolean');
+      expect(instanceInfo.htServiceEnabled).to.be.true;
+      expect(instanceInfo.usage).to.be.an('object');
+      expect(instanceInfo.usage.size).to.be.a('number');
+      expect(instanceInfo.disabled).to.not.be.ok; // If it was disabled, this call would fail
+      // These are not tested because of the fakebroker server limitations:
+      //expect(instanceInfo.region).to.be.a('string');
+      //expect(instanceInfo.cfServiceInstanceId).to.be.a('string');
+      return done();
+    });
+  });
 });
 
 var randInstanceName = randHex()+'-'+randHex()
