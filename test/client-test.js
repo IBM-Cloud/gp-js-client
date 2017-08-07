@@ -174,6 +174,43 @@ describe('Verifying again that we can reach the server', function() {
   });
 });
 
+describe('Verify client.swaggerClient and *.gp are hidden', function () {
+  it('Should verify properties on gaasClient', function() {
+    expect(gaasClient).to.be.ok;
+    expect(gaasClient.swaggerClient).to.be.an('object');
+    expect(gaasClient).to.have.a.property('swaggerClient');
+    expect(Object.keys(gaasClient)).to.not.include('swaggerClient');
+  });
+  it('Should verify properties on bundle()', function() {
+    const o = gaasClient.bundle('something');
+    expect(o).to.be.ok;
+    expect(o.gp).to.be.an('object');
+    expect(o).to.have.a.property('gp');
+    expect(Object.keys(o)).to.not.include('gp');
+  });
+  it('Should verify properties on bundle().entry()', function() {
+    const o = gaasClient.bundle('something').entry({resourceKey: 'somethingElse', languageId: 'tlh'});
+    expect(o).to.be.ok;
+    expect(o.gp).to.be.an('object');
+    expect(o).to.have.a.property('gp');
+    expect(Object.keys(o)).to.not.include('gp');
+  });
+  it('Should verify properties on tr()', function() {
+    const o = gaasClient.tr('something');
+    expect(o).to.be.ok;
+    expect(o.gp).to.be.an('object');
+    expect(o).to.have.a.property('gp');
+    expect(Object.keys(o)).to.not.include('gp');
+  });
+  it('Should verify properties on user()', function() {
+    const o = gaasClient.user('something');
+    expect(o).to.be.ok;
+    expect(o.gp).to.be.an('object');
+    expect(o).to.have.a.property('gp');
+    expect(Object.keys(o)).to.not.include('gp');
+  });
+});
+
 describe('gaasClient.supportedTranslations()', function() {
   it('Should let us list translations', function(done) {
     gaasClient.supportedTranslations({}, function(err, translations) {
