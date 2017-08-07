@@ -466,18 +466,18 @@ Callback returned by getServiceInstanceInfo()
 | --- | --- | --- |
 | err | <code>object</code> | error, or null |
 | instanceInfo | <code>object</code> | Additional information about the service instance |
-| updatedBy | <code>string</code> | information about how our service instance was updated |
-| updatedAt | <code>date</code> | when the instance was last updated |
-| region | <code>string</code> | the Bluemix region name |
-| cfServiceInstanceId | <code>string</code> | the CloudFoundry service instance ID |
-| serviceId | <code>string</code> | this is equivalent to the service instance ID |
-| orgId | <code>string</code> | this is the Bluemix organization ID |
-| spaceId | <code>string</code> | this is the Bluemix space ID |
-| planId | <code>string</code> | this is the Bluemix plan ID |
-| htServiceEnabled | <code>boolean</code> | true if the Human Translation service is enabled |
-| usage | <code>object</code> | usage information |
-| usage.size | <code>number</code> | the size of resource data used by the Globalization Pipeline instance in bytes |
-| disabled | <code>boolean</code> | true if this service has been set as disabled by Bluemix |
+| instanceInfo.updatedBy | <code>string</code> | information about how our service instance was updated |
+| instanceInfo.updatedAt | <code>date</code> | when the instance was last updated |
+| instanceInfo.region | <code>string</code> | the Bluemix region name |
+| instanceInfo.cfServiceInstanceId | <code>string</code> | the CloudFoundry service instance ID |
+| instanceInfo.serviceId | <code>string</code> | this is equivalent to the service instance ID |
+| instanceInfo.orgId | <code>string</code> | this is the Bluemix organization ID |
+| instanceInfo.spaceId | <code>string</code> | this is the Bluemix space ID |
+| instanceInfo.planId | <code>string</code> | this is the Bluemix plan ID |
+| instanceInfo.htServiceEnabled | <code>boolean</code> | true if the Human Translation service is enabled |
+| instanceInfo.usage | <code>object</code> | usage information |
+| instanceInfo.usage.size | <code>number</code> | the size of resource data used by the Globalization Pipeline instance in bytes |
+| instanceInfo.disabled | <code>boolean</code> | true if this service has been set as disabled by Bluemix |
 
 <a name="Client..listUsersCallback"></a>
 
