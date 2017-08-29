@@ -33,7 +33,7 @@ const testData = gaasTest.testData;
 
 if (process.env.NO_TR_TEST) { describe = describe.skip; }
 
-var gaas = require('../index.js'); // required, below
+var gaas = require('../lib/main.js'); // required, below
 var gaasClient;
 
 var ourReaderKey; // to be filled in - API key.

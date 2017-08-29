@@ -59,7 +59,7 @@ describe('lib/gaas-hmac', function() {
 		
 		// we must force the Date so that we have a consistent test.
 		myHmac.forceDateString = "Mon, 30 Jun 2014 00:00:00 GMT"; // Bluemix launch date
-		expect(myHmac.apply(obj)).to.be.true;
+		expect(myHmac.apply(obj)).to.equal(obj);
 
 		expect(obj.headers.Authorization).to.be.ok;
 		expect(obj.headers.Authorization).to.equal(
@@ -85,7 +85,7 @@ describe('lib/gaas-hmac', function() {
 		
 		// we must force the Date so that we have a consistent test.
 		myHmac.forceDateString = "Mon, 30 Jun 2014 00:00:00 GMT"; // Bluemix launch date
-		expect(myHmac.apply(obj)).to.be.true;
+		expect(myHmac.apply(obj)).to.be.ok;
 
 		expect(obj.headers.Authorization).to.be.ok;
 		expect(obj.headers.Authorization).to.equal(
@@ -111,7 +111,7 @@ describe('lib/gaas-hmac', function() {
 		
 		// we must force the Date so that we have a consistent test.
 		myHmac.forceDateString = "Mon, 30 Jun 2014 00:00:00 GMT"; // Bluemix launch date		expect(myHmac.apply(obj)).to.be.true;
-		expect(myHmac.apply(obj)).to.be.true;
+		expect(myHmac.apply(obj)).to.be.ok;
 
 		expect(obj.headers.Authorization).to.be.ok;
 		expect(obj.headers.Authorization).to.equal(
@@ -135,7 +135,7 @@ describe('lib/gaas-hmac', function() {
 			body: undefined
 		};
 		
-		expect(myHmac.apply(obj)).to.be.true;
+		expect(myHmac.apply(obj)).to.be.ok;
 
 		expect(obj.headers.Authorization).to.be.ok;
 		expect(obj.headers.Authorization.length).to.not.equal(0);
