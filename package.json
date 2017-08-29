@@ -1,10 +1,10 @@
 {
   "name": "g11n-pipeline",
-  "version": "1.5.2-0",
+  "version": "1.6.0-0",
   "description": "JavaScript (Node.js, etc) client for Bluemix Globalization Pipeline",
   "main": "index.js",
   "engines": {
-    "node": ">=0.12"
+    "node": ">=4"
   },
   "scripts": {
     "test": "mocha",
