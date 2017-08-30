@@ -32,5 +32,3 @@ const options = {
 
 // run the linter
 mochaEslint(paths, options);
-
-describe.skip('eslint: linting of test/ files');

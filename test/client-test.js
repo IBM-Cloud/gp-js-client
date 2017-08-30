@@ -26,7 +26,7 @@ var randHex = require('./lib/randhex');
 var gaasTest = require ('./lib/gp-test');
 var GaasHmac = require('../lib/gp-hmac');
 
-if(process.env.NO_CLIENT_TEST) { describe = describe.skip;  }
+// if(process.env.NO_CLIENT_TEST) { describe = describe.skip;  }
 var gaas = require('../lib/main.js'); // required, below
 var gaasClient;
 

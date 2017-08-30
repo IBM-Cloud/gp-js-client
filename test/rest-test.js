@@ -24,7 +24,7 @@ var projectId2 = process.env.GP_PROJECT2 || 'MyOtherLLProject'+Math.random();
 var CLEANSLATE = false; // CLEANSLATE: assume no other projects
 var VERBOSE = process.env.GP_VERBOSE || false;
 var d = describe;
-if(process.env.NO_REST_TEST) { describe = describe.skip; }
+// if(process.env.NO_REST_TEST) { describe = describe.skip; }
 
 if(VERBOSE) console.dir(module.filename);
 var http = require('http');
