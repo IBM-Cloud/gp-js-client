@@ -252,7 +252,7 @@ describe('GP-HPE.bundle()', function () {
 
 var trId1;
 
-describe.skip('GP-HPE: Requesting our first TR', function () {
+describe('GP-HPE: Requesting our first TR', function () {
   it('Should request the first TR', function (done) {
     const requestData = {
       name: 'FirstTR',
