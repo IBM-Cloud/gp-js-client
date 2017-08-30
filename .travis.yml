@@ -1,4 +1,4 @@
-language: node_js
+OBlanguage: node_js
 node_js:
 - '4'
 - '6'
@@ -6,7 +6,7 @@ node_js:
 script:
 - npm install
 - curl $GP_FAKE_BROKER2 > local-credentials.json
-- if [[ $TRAVIS_NODE_VERSION == '6' ]]; then nyc npm test && nyc report --reporter=text-lcov
+- if [[ $TRAVIS_NODE_VERSION == '8' ]]; then nyc npm test && nyc report --reporter=text-lcov
   | coveralls; else npm test; fi
 env:
   global:
