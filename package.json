@@ -11,9 +11,9 @@
     "coverage": "nyc mocha && nyc report --reporter=lcov",
     "mocha": "mocha --reporter dot",
     "docs": "jsdoc2md lib/*.js --template template-README.md > README.md",
-    "html": "npm run docs ; node gen-html.js",
+    "html": "npm run docs && node util/gen-html.js",
     "vscode-typings": "tsd query node mocha chai request --action install",
-    "eslint": "mocha -f eslint"
+    "eslint": "mocha -f eslint --reporter list"
   },
   "repository": {
     "type": "git",

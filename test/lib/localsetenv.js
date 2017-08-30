@@ -1,4 +1,4 @@
-/*	
+/*
  * Copyright IBM Corp. 2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,43 +19,45 @@ var fs = require('fs');
 var alreadyRead = {};
 
 function tryRead(fn) {
-	// read each file only once.
-	if(alreadyRead[fn]) return;
-	alreadyRead[fn]=true;
+  // read each file only once.
+  if(alreadyRead[fn]) return;
+  alreadyRead[fn]=true;
 
-	var fc;
-    try {
-        fs.accessSync(fn);
-    } catch(e) {
-		console.log('# Missing (ignored): ' + fn);
-        return;
-    }
-	try {
-		fc = fs.readFileSync(fn);
-	} catch(e) {
-		console.error('# Error reading: ' + fn + ' ('+e+')');
-	}
-	if(fc) {
-		console.log('# Using: '+fn);
-		fc.toString().split(/[\n\r]/).forEach(function(s) {
-			if(!s || s[0]===('#') || (s==='') ) return;
-			var e = s.split('=');
-			if(process.env.hasOwnProperty(e[0])) {
-				// console.log('Not overriding $'+e[0] +' with entry from ' +fn);
-			} else {
-				process.env[e[0]] = e[1];
-				console.log(e[0]+"="+e[1]);
-			}
-		});
-	}
+  var fc;
+  try {
+    fs.accessSync(fn);
+  } catch(e) {
+    console.log('# Missing (ignored): ' + fn);
+    return;
+  }
+  try {
+    fc = fs.readFileSync(fn);
+  } catch(e) {
+    console.error('# Error reading: ' + fn + ' ('+e+')');
+  }
+  if (fc) {
+    console.log('# Using: ' + fn);
+    fc.toString()
+      .split(/[\n\r]/)
+      .forEach(function (s) {
+        if (!s || s[0] === ('#') || (s === '')) return;
+        var e = s.split('=');
+        if (process.env.hasOwnProperty(e[0])) {
+          // console.log('Not overriding $'+e[0] +' with entry from ' +fn);
+        } else {
+          process.env[e[0]] = e[1];
+          console.log(e[0] + "=" + e[1]);
+        }
+      });
+  }
 }
 
 function applyLocal() {
-	tryRead('local-test.properties');
-	tryRead('test.properties');
+  tryRead('local-test.properties');
+  tryRead('test.properties');
 }
 
 module.exports = {
-	tryRead: tryRead,
-	applyLocal: applyLocal
+  tryRead: tryRead,
+  applyLocal: applyLocal
 };
