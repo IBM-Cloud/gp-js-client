@@ -1,4 +1,4 @@
-/*	
+/*
  * Copyright IBM Corp. 2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,17 +23,17 @@ var localCredsFile = './local-credentials.json';
 var localCredentials;
 
 try {
-    fs.accessSync(localCredsFile);
+  fs.accessSync(localCredsFile);
 } catch (e) {
-    console.log('# Missing (ignored): ' + localCredsFile);
-    localCredsFile = null;
+  console.log('# Missing (ignored): ' + localCredsFile);
+  localCredsFile = null;
 }
 
 if(localCredsFile) {
-    localCredentials = optional(localCredsFile);
-    if(!localCredentials) {
-        throw Error('could not read (check for malformed JSON) ' + localCredsFile);
-    }
+  localCredentials = optional(localCredsFile);
+  if(!localCredentials) {
+    throw Error('could not read (check for malformed JSON) ' + localCredsFile);
+  }
 }
 
 /**
@@ -74,7 +74,7 @@ module.exports.getCredentials = function getCredentials() {
       instanceId: process.env.GP_INSTANCE_ID || process.env.GAAS_INSTANCE_ID || null /*admin*/,
       userId: process.env.GP_ADMIN_ID || process.env.GAAS_ADMIN_ID || process.env.GAAS_USER_ID || null,
       password: process.env.GP_ADMIN_PASSWORD || process.env.GAAS_ADMIN_PASSWORD || process.env.GAAS_PASSWORD || null,
-      isAdmin: ((process.env.GP_ADMIN_ID || process.env.GAAS_ADMIN_ID)!=null)?true:false
+      isAdmin: ((process.env.GP_ADMIN_ID || process.env.GAAS_ADMIN_ID) !== null)
     };
   }
   if(VERBOSE) console.dir(creds);
@@ -101,8 +101,8 @@ var securityHeaders = module.exports.securityHeaders = {
   'x-xss-protection': '1',
   'x-frame-options': 'deny',
   'frame-options': 'deny',
-  'cache-control': 'no-store, no-cache=\"set-cookie\"',
-  'pragma': 'no-cache',
+  'cache-control': 'no-store, no-cache="set-cookie"',
+  'pragma': 'no-cache'
 };
 
 function expectSecurityHeaders(res) {
@@ -205,9 +205,9 @@ module.exports.expectCORSURL = function expectCORSURL(swaggerUrl, auth, str) {
           expectResCORSGET(res, done);
         })
         .on('error', function(e) {
-            // console.dir(e);
-            // console.dir(optionsGet);
-            done(Error(e.message+':'+e.code));
+          // console.dir(e);
+          // console.dir(optionsGet);
+          done(Error(e.message+':'+e.code));
         });
       oreq.end();
     });

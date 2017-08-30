@@ -1,4 +1,4 @@
-/*	
+/*
  * Copyright IBM Corp. 2015,2017
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,16 +40,16 @@ var gaasTest = require ('./lib/gp-test');
 var opts = {credentials: gaasTest.getCredentials()};
 var isAdmin = opts.credentials.isAdmin; // admin creds available?
 var gaasClient = gaas.getClient(opts);
-// var basicOpts = {basicAuth: true, credentials: gaasTest.getCredentials()};
-// var basicClient = gaas.getClient(basicOpts); // not implemented
+var basicOpts = {basicAuth: true, credentials: gaasTest.getCredentials()};
+var basicClient = gaas.getClient(basicOpts); // not implemented
 var url = gaasClient.url;
 
 var sourceLoc = "en-US";
 var targLoc = "zh-Hans";
 
 var sourceData = {
-    "key1": "First string to translate",
-    "key2": "Second string to translate"
+  "key1": "First string to translate",
+  "key2": "Second string to translate"
 };
 
 if ( ! url ) {
@@ -75,72 +75,72 @@ if ( url.indexOf('https:') === 0 ) {
 }
 
 describe('Check URL ' + url+'/', function() {
-    var urlToPing = url+'/';
-    if(VERBOSE) console.dir(urlToPing);
-    it('should let us eventually ping ' + urlToPing, function(done) {
-      var timeout;
-      var http_or_https = require('./lib/byscheme')(urlToPing);
-      var t = 200;
-      var loopy = function() {
-          if(timeout) {
-            clearTimeout(timeout);
-            timeout = undefined;
-          }
-          minispin.step();
-          try {
-            http_or_https.get(urlToPing, // trailing slash to avoid 302
-            function(d) {
-               if(VERBOSE) console.log(urlToPing + '-> ' + d.statusCode); // dontcare
-               if(d.statusCode === 200) {
-                 minispin.clear();
-                 done();
-               } else {
-                 timeout = setTimeout(loopy, t);
-               }
-            }).on('error', function(e) {
-              if(VERBOSE) console.dir(e, {color: true});
-               timeout = setTimeout(loopy, t);
-            });
-          } catch(e) {
-              if(VERBOSE) console.dir(e, {color: true});
-             timeout = setTimeout(loopy, t);
-          }
-      };
-      process.nextTick(loopy); // first run
-    });
+  var urlToPing = url+'/';
+  if(VERBOSE) console.dir(urlToPing);
+  it('should let us eventually ping ' + urlToPing, function(done) {
+    var timeout;
+    var http_or_https = require('./lib/byscheme')(urlToPing);
+    var t = 200;
+    var loopy = function() {
+      if(timeout) {
+        clearTimeout(timeout);
+        timeout = undefined;
+      }
+      minispin.step();
+      try {
+        http_or_https.get(urlToPing, // trailing slash to avoid 302
+          function(d) {
+            if(VERBOSE) console.log(urlToPing + '-> ' + d.statusCode); // dontcare
+            if(d.statusCode === 200) {
+              minispin.clear();
+              done();
+            } else {
+              timeout = setTimeout(loopy, t);
+            }
+          }).on('error', function(e) {
+          if(VERBOSE) console.dir(e, {color: true});
+          timeout = setTimeout(loopy, t);
+        });
+      } catch(e) {
+        if(VERBOSE) console.dir(e, {color: true});
+        timeout = setTimeout(loopy, t);
+      }
+    };
+    process.nextTick(loopy); // first run
+  });
     
-    // verify security headers on landing page
-    gaasTest.verifySecurityHeaders(url+'/');
+  // verify security headers on landing page
+  gaasTest.verifySecurityHeaders(url+'/');
 
-    it('Should let me fetch landing page', function(done) {
+  it('Should let me fetch landing page', function(done) {
     http_or_https.get(url+'/', // trailing slash to avoid 302
-                      function(d) {
-                        if(VERBOSE) console.log('-> ' + d.statusCode); // dontcare
-                         done();
-                      })
-    .on('error', done);
-    });
-    var swaggerUrl = url+'/rest/swagger.json';
-    gaasTest.expectCORSURL(swaggerUrl); // expect CORS here
-    var swaggerUIUrl = url+'/swagger/';
-    gaasTest.verifySecurityHeadersSwagger(swaggerUIUrl); // expect CORS here
-    var otherUrl = url+'/';
-    gaasTest.expectNonCORSURL(otherUrl); // don't expect CORS here
-    it('Should let me fetch version page', function(done) {
+      function(d) {
+        if(VERBOSE) console.log('-> ' + d.statusCode); // dontcare
+        done();
+      })
+      .on('error', done);
+  });
+  var swaggerUrl = url+'/rest/swagger.json';
+  gaasTest.expectCORSURL(swaggerUrl); // expect CORS here
+  var swaggerUIUrl = url+'/swagger/';
+  gaasTest.verifySecurityHeadersSwagger(swaggerUIUrl); // expect CORS here
+  var otherUrl = url+'/';
+  gaasTest.expectNonCORSURL(otherUrl); // don't expect CORS here
+  it('Should let me fetch version page', function(done) {
     http_or_https.get(url+'/version',
-        function(res) {
-          if(VERBOSE) console.log('-> ' + res.statusCode); // dontcare
-          res.on('data', function(d) {
-            var data = JSON.parse(d);
-            if(VERBOSE) console.dir(data.components[Object.keys(data.components)[0]], {color: true});
-            done();
-          });
-          res.on('error', function(d) {
-            done(d);
-          });
-        })
-    .on('error', done);
-    });
+      function(res) {
+        if(VERBOSE) console.log('-> ' + res.statusCode); // dontcare
+        res.on('data', function(d) {
+          var data = JSON.parse(d);
+          if(VERBOSE) console.dir(data.components[Object.keys(data.components)[0]], {color: true});
+          done();
+        });
+        res.on('error', function(d) {
+          done(d);
+        });
+      })
+      .on('error', done);
+  });
 });
 
 describe('Check HTTP URL', function() {
@@ -191,7 +191,7 @@ describe.skip('BASIC auth [not implemented]', function() { // TODO: not supporte
         }
       });
     });
-    } else it('should NOT become ready', function(done) {
+  } else it('should NOT become ready', function(done) {
     basicClient.ready(null, function(err) {
       if(err) {
         done();
