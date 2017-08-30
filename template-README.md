@@ -161,11 +161,15 @@ APIs may take a callback OR return a promise, and use this general pattern
 
 ### Promise mode
 
+* ⚠ _please note that the apidocs [haven’t been updated yet](https://github.com/IBM-Bluemix/gp-js-client/issues/85) to note that 
+the callback `cb` is optional and that Promises are returned by most functions.
+
 ```javascript
     gpClient.function( { /* opts */ })
     .then( result => /* do something with result */)
     .catch( err => /* do something with err */ );
 ```
+
 
 * opts: an object containing input parameters, if needed.
 
