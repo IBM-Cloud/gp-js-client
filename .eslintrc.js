@@ -1,4 +1,4 @@
-/*	
+/*
  * Copyright IBM Corp. 2015-2017
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -94,7 +94,7 @@ module.exports = {
         "id-blacklist": "error",
         "id-length": "off",
         "id-match": "error",
-        "indent": "off",
+        "indent": ["error", 2],
         "indent-legacy": "off",
         "init-declarations": "off",
         "jsx-quotes": "error",
@@ -195,7 +195,7 @@ module.exports = {
         "no-shadow-restricted-names": "error",
         "no-spaced-func": "off",
         "no-sync": "error",
-        "no-tabs": "off",
+        "no-tabs": "error",
         "no-template-curly-in-string": "error",
         "no-ternary": "off",
         "no-throw-literal": "error",

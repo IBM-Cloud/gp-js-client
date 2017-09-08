@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-const mochaEslint = require('mocha-eslint');
-// run lint as part of tests
+// Configuration for eslint.
+// See: https://eslint.org/docs/rules/
 
-const paths = [
-  'lib',
-  'test',
-  'util'
-];
+// this is just for the util subdirectory
 
-const options = {
-  formatter: 'compact',
-  alwaysWarn: true,
-  // timeout: 5000,
-  strict: false
+module.exports = {
+    "rules": {
+        "no-console": "off"
+    }
 };
-
-// run the linter
-mochaEslint(paths, options);

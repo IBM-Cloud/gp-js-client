@@ -1,4 +1,4 @@
-/*	
+/*
  * Copyright IBM Corp. 2015
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,19 +25,19 @@ var interval;
  * Start the spinner. No effect if already started.
  */
 function dospin() {
-    if(!interval) {
-        interval = spinner({delay:50});
-    }
+  if(!interval) {
+    interval = spinner({delay:50});
+  }
 }
 
 /**
  * Stop the spinner.
  */
 function doclear() {
-    interval = clearInterval(interval);
+  interval = clearInterval(interval);
 }
 
 module.exports = {
-	step: dospin,
-	clear: doclear 
+  step: dospin,
+  clear: doclear 
 };

@@ -1,4 +1,4 @@
-/*	
+/*
  * Copyright IBM Corp. 2015,2017
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -277,77 +277,77 @@ describe('GP-HPE: Requesting our first TR', function () {
         return done();
       });
   });
-      var t = 8192;
+  var t = 8192;
 
   // It's possible that the TR is merged by the time we get to it.
   it('should eventually show the TR as STARTED (or MERGED or TRANSLATED)', function (done) {
-      var timeout;
-      var c = 100;
-      var loopy = function(c) {
-        minispin.step();
-        c--;
-        if(c === 0) {
-          return done(Error('Patience exceeded!'));
-        } else if(timeout) {
-          clearTimeout(timeout);
-          timeout = undefined;
-        }
-        if(VERBOSE) console.log('Will try',c,'more times for',trId1);
-        gaasClient.tr(trId1)
-          .getInfo(function cb(err, tr) {
-            if(err) {
-              return done(err);
-            } else if(tr.status !== 'STARTED' && tr.status !== 'MERGED' && tr.status !== 'TRANSLATED') {
-              if(VERBOSE) console.log(tr.id,'=',tr.status);
-              timeout = setTimeout(loopy, t, c);
-            } else {
-              expect(tr.id).to.equal(trId1);
-              // TODO: more here.
-              expect(tr.startedAt).to.be.ok;
-              expect(tr.startedAt).to.be.at.least(tr.createdAt);
-              if(VERBOSE) console.dir(tr);
-              return done();
-            }
-          });
-      };
-      process.nextTick(loopy, c); // first run
+    var timeout;
+    var c = 100;
+    var loopy = function(c) {
+      minispin.step();
+      c--;
+      if(c === 0) {
+        return done(Error('Patience exceeded!'));
+      } else if(timeout) {
+        clearTimeout(timeout);
+        timeout = undefined;
+      }
+      if(VERBOSE) console.log('Will try',c,'more times for',trId1);
+      gaasClient.tr(trId1)
+        .getInfo(function cb(err, tr) {
+          if(err) {
+            return done(err);
+          } else if(tr.status !== 'STARTED' && tr.status !== 'MERGED' && tr.status !== 'TRANSLATED') {
+            if(VERBOSE) console.log(tr.id,'=',tr.status);
+            timeout = setTimeout(loopy, t, c);
+          } else {
+            expect(tr.id).to.equal(trId1);
+            // TODO: more here.
+            expect(tr.startedAt).to.be.ok;
+            expect(tr.startedAt).to.be.at.least(tr.createdAt);
+            if(VERBOSE) console.dir(tr);
+            return done();
+          }
+        });
+    };
+    process.nextTick(loopy, c); // first run
   });
   it('should eventually show the TR as MERGED', function (done) {
-      var timeout;
-      var c = 100;
-      var loopy = function(c) {
-        if(VERBOSE) console.log('Will try',c,'more times for',trId1);
-        minispin.step();
-        c--;
-        if(c === 0) {
-          return done(Error('Patience exceeded!'));
-        }else if(timeout) {
-          clearTimeout(timeout);
-          timeout = undefined;
-        }
-        gaasClient.tr(trId1)
-          .getInfo(function cb(err, tr) {
-            if(err) {
-              return done(err);
-            } else if(tr.status !== 'MERGED') {
-              if(VERBOSE) console.log(tr.id,'=',tr.status);
-              timeout = setTimeout(loopy, t, c);
-            } else {
-              expect(tr.id).to.equal(trId1);
-              expect(tr.translatedAt).to.be.ok;
-              expect(tr.translatedAt).to.be.at.least(tr.startedAt);
-              expect(tr.mergedAt).to.be.ok;
-              expect(tr.mergedAt).to.be.at.least(tr.translatedAt);
+    var timeout;
+    var c = 100;
+    var loopy = function(c) {
+      if(VERBOSE) console.log('Will try',c,'more times for',trId1);
+      minispin.step();
+      c--;
+      if(c === 0) {
+        return done(Error('Patience exceeded!'));
+      }else if(timeout) {
+        clearTimeout(timeout);
+        timeout = undefined;
+      }
+      gaasClient.tr(trId1)
+        .getInfo(function cb(err, tr) {
+          if(err) {
+            return done(err);
+          } else if(tr.status !== 'MERGED') {
+            if(VERBOSE) console.log(tr.id,'=',tr.status);
+            timeout = setTimeout(loopy, t, c);
+          } else {
+            expect(tr.id).to.equal(trId1);
+            expect(tr.translatedAt).to.be.ok;
+            expect(tr.translatedAt).to.be.at.least(tr.startedAt);
+            expect(tr.mergedAt).to.be.ok;
+            expect(tr.mergedAt).to.be.at.least(tr.translatedAt);
 
 
-              // TODO: more here.
-              delete tr.gp; // for console.dir
-              if(VERBOSE) console.dir(tr, {depth: null, color: true});
-              return done();
-            }
-          });
-      };
-      process.nextTick(loopy, c); // first run
+            // TODO: more here.
+            delete tr.gp; // for console.dir
+            if(VERBOSE) console.dir(tr, {depth: null, color: true});
+            return done();
+          }
+        });
+    };
+    process.nextTick(loopy, c); // first run
   });
   it('Should now have a reviewed field and translated content thanks to the TR', function (done) {
     var entry = gaasClient
@@ -429,30 +429,30 @@ describe('GP-HPE now try using tr.update', function() {
       });
   });
 
-    const updateData = { 
-      notes: [ 'b', 'c', 'a' ]
-    };
+  const updateData = { 
+    notes: [ 'b', 'c', 'a' ]
+  };
   it('Should be able to update the TR', function(done) {
     gaasClient.tr(trId2)
-    .update(updateData, function(err, data) {
-      if(err) return done(err);
+      .update(updateData, function(err, data) {
+        if(err) return done(err);
 
-      if(VERBOSE) console.dir(data);
-      return done();
-    });
+        if(VERBOSE) console.dir(data);
+        return done();
+      });
   });
 
   it('Should be able to verify the updated TR values', function(done) {
     gaasClient.tr(trId2)
-    .getInfo(function(err, tr) {
-      if(err) return done(err);
+      .getInfo(function(err, tr) {
+        if(err) return done(err);
 
-      if(VERBOSE) console.dir(tr);
+        if(VERBOSE) console.dir(tr);
 
-      expect(tr.notes).to.deep.equal(updateData.notes);
+        expect(tr.notes).to.deep.equal(updateData.notes);
 
-      return done();
-    });
+        return done();
+      });
   });
 
 });
