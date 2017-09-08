@@ -21,22 +21,20 @@ require('./lib/localsetenv').applyLocal();
 
 //return true;
 
-var Q = require('q');
-
 var minispin = require('./lib/minispin');
 var randHex = require('./lib/randhex');
 var gaasTest = require ('./lib/gp-test');
 var GaasHmac = require('../lib/gp-hmac');
 
-if(process.env.NO_CLIENT_TEST) { describe = describe.skip;  }
-var gaas = require('../index.js'); // required, below
+// if(process.env.NO_CLIENT_TEST) { describe = describe.skip;  }
+var gaas = require('../lib/main.js'); // required, below
 var gaasClient;
 
 var ourReaderKey; // to be filled in - API key.
 var ourReaderClient; // to be filled in - separate client that's just a reader.
 
-var expect = require('chai').expect;
-var assert = require('assert');
+const chai = require('chai');
+const expect = chai.expect;
 
 var VERBOSE = process.env.GP_VERBOSE || false;
 var NO_DELETE = process.env.NO_DELETE || false;
@@ -177,7 +175,7 @@ describe('Verifying again that we can reach the server', function() {
 describe('Verify client.swaggerClient and *.gp are hidden', function () {
   it('Should verify properties on gaasClient', function() {
     expect(gaasClient).to.be.ok;
-    expect(gaasClient.swaggerClient).to.be.an('object');
+    expect(gaasClient.swaggerClient).to.be.ok;
     expect(gaasClient).to.have.a.property('swaggerClient');
     expect(Object.keys(gaasClient)).to.not.include('swaggerClient');
   });
@@ -381,25 +379,18 @@ describe('gaasClient.bundle()', function() {
         done('Expected error.');
     });
   });
-  it('Should let us create', function(done) {
+  it('Should let us create', function() {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
-    Q.ninvoke(proj, "create", {sourceLanguage: gaasTest.SOURCES[0], 
+    return proj.create({sourceLanguage: gaasTest.SOURCES[0], 
                             targetLanguages: [gaasTest.TARGETS[0],gaasTest.CYRILLIC],
-                            notes: ['Note to self'] })
-    .then(function(resp) {
-      done();
-    }, done);
+                            notes: ['Note to self'] });
   });
-
 // Create some strings for later
-  it('Should let us create ' + projectId4, function(done) {
+  it('Should let us create ' + projectId4, function() {
     var proj = gaasClient.bundle({id:projectId4, serviceInstance: instanceName});
-    Q.ninvoke(proj, "create", {sourceLanguage: gaasTest.SOURCES[0],
-                              targetLanguages: [gaasTest.KLINGON]})
-    .then(function(resp) {
-      done();
-    }, done);
-  });
+    return proj.create({sourceLanguage: gaasTest.SOURCES[0],
+                              targetLanguages: [gaasTest.KLINGON]});
+    });
   it('Should let us upload some strings ' + projectId4, function(done) {
     var proj = gaasClient.bundle({id:projectId4, serviceInstance: instanceName});
     proj.uploadStrings({
@@ -615,13 +606,9 @@ describe('gaasClient.bundle()', function() {
       done();
     });
   });
-  it('should now let me call old getBundleList  (promises!)', function(done) {
-    Q.ninvoke(gaasClient, "getBundleList", {serviceInstance: instanceName})
-    .then(function(data) {
-        expect(data).to.contain(projectId);
-        done();
-    },done);
-  });
+  it('should now let me call old getBundleList  (promises!)', () =>
+      gaasClient.getBundleList({serviceInstance: instanceName})
+        .then(data =>  expect(data).to.contain(projectId)));
   it('Should let me update the review status of a bundle', function(done) {
     var entry = gaasClient
                     .bundle({id:projectId, serviceInstance: instanceName})
@@ -730,17 +717,16 @@ describe('gaasClient.bundle()', function() {
   var otherReaderInfo = undefined;
   var gaasReaderClient = undefined;
   var gaasAdminClient = undefined;
-  it('should not let me create a bad user', function(done) {
-    Q.ninvoke(gaasClient, "createUser", {serviceInstance: instanceName,
+  it('should not let me create a bad user', (done) => {
+    // No return - we are using done() here.
+    gaasClient.createUser({serviceInstance: instanceName,
                            type:'SOME_BAD_TYPE',
                            bundles: ['*'],
-                           displayName: 'Somebody'})
-    .then(function(data) {
-      done(Error('Should have failed.'));
-    },function(err){done();});
+                           displayName: 'Somebody' })
+    .then(() => done('Should fail'), (/*e*/) => done());
   });
-  it('should let me create an admin user', function(done) {
-    Q.ninvoke(gaasClient, "createUser", {serviceInstance: instanceName,
+  it('should let me create an admin user', function() {
+    return gaasClient.createUser({serviceInstance: instanceName,
                            type:'ADMINISTRATOR',
                            bundles: ['*'],
                            displayName: 'Somebody'})
@@ -760,11 +746,10 @@ describe('gaasClient.bundle()', function() {
         url: opts.credentials.url
       };
       adminInfo = { credentials: myUserInfo };
-      done();
-    },done);
+    });
   });
-  it('should let me create a reader user', function(done) {
-    Q.ninvoke(gaasClient, "createUser", {serviceInstance: instanceName,
+  it('should let me create a reader user', function() {
+    return gaasClient.createUser({serviceInstance: instanceName,
                            type:'READER',
                            bundles: [projectId3],
                            displayName: 'Reador'})
@@ -789,11 +774,10 @@ describe('gaasClient.bundle()', function() {
       if(VERBOSE || NO_DELETE) console.dir({
         sampleconfig: readerInfo
       },{color:true});
-      done();
-    },done);
+    });
   });
-  it('should let me create another reader user', function(done) {
-    Q.ninvoke(gaasClient, "createUser", {serviceInstance: instanceName,
+  it('should let me create another reader user', () => {
+    return gaasClient.createUser({serviceInstance: instanceName,
                            type:'READER',
                            bundles: [projectId3],
                            displayName: 'AnotherReader'})
@@ -818,8 +802,7 @@ describe('gaasClient.bundle()', function() {
       if(VERBOSE || NO_DELETE) console.dir({
         sampleconfig: readerInfo
       },{color:true});
-      done();
-    },done);
+    });
   });
   it('Should let us call client.users() and delete the other reader', function (done) {
       gaasClient.users({ serviceInstance: instanceName }, function (err, users) {
@@ -1220,41 +1203,33 @@ describe('gaasClient.bundle()', function() {
   });
 
 
-  it('Should let us delete', function(done) {
+  it('Should let us delete', function() {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
-    Q.ninvoke(proj, "delete", {})
-    .then(function(resp) {
-      done();
-    }, done);
+    return proj.delete();
   });
-  it('should now let me query the bundle list again (promises!)', function(done) {
-    Q.ninvoke(gaasClient, "getBundleList", {serviceInstance: instanceName})
+  it('should now let me query the bundle list again (promises!)', function() {
+    return gaasClient.getBundleList({serviceInstance: instanceName})
     .then(function(data) {
         expect(data).to.not.contain(projectId);
-        done();
-    },done);
+    });
   });
   if(!opts.credentials.isAdmin)  
-     it('should now let me query the bundle list again without an instance id (promises!)', function(done) {
-    Q.ninvoke(gaasClient, "getBundleList", {})
+     it('should now let me query the bundle list again without an instance id (promises!)', function() {
+    gaasClient.getBundleList()
     .then(function(data) {
         expect(data).to.not.contain(projectId);
-        done();
-    },done);
+    });
   });
-  it('test gaasAdminClient(admin).bundle('+projectId3+').create(...)', function(done) {
+  it('test gaasAdminClient(admin).bundle('+projectId3+').create(...)', function() {
     expect(gaasAdminClient).to.be.ok; // from previous test
     
     var proj = gaasAdminClient.bundle({id:projectId3});
     
-    Q.ninvoke(proj, "create", {sourceLanguage: gaasTest.SOURCES[0], targetLanguages: [gaasTest.SOURCES[0],gaasTest.CYRILLIC]})
-    .then(function(resp) {
-      Q.ninvoke(proj, "uploadResourceStrings", {languageId: gaasTest.SOURCES[0], strings: {
+    return proj.create({sourceLanguage: gaasTest.SOURCES[0], targetLanguages: [gaasTest.SOURCES[0],gaasTest.CYRILLIC]})
+    .then((/*resp*/) => proj.uploadResourceStrings({languageId: gaasTest.SOURCES[0], strings: {
         hello: 'Hello, World!',
         "msgError": "—"
-      }})
-      .then(function(resp){ done(); }, done);
-    }, done);
+    }}));
   });
   it('test gaasAdminClient.users() with no first argument', function(done) {
     expect(gaasAdminClient).to.be.ok; // from previous test

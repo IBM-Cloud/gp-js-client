@@ -157,27 +157,40 @@ See [TESTING.md](TESTING.md)
 API convention
 ==
 
-APIs take a callback and use this general pattern:
+APIs may take a callback OR return a promise, and use this general pattern
+
+### Promise mode
+
+* ⚠ _please note that the apidocs [haven’t been updated yet](https://github.com/IBM-Bluemix/gp-js-client/issues/85) to note that 
+the callback `cb` is optional and that Promises are returned by most functions.
 
 ```javascript
-    gpClient.function( { /*opts*/ } ,  function callback(err, ...))
+    gpClient.function( { /* opts */ })
+    .then( result => /* do something with result */)
+    .catch( err => /* do something with err */ );
+```
+
+
+* opts: an object containing input parameters, if needed.
+
+### Callback mode
+
+Prior to v2.0, only the callback model was supported. This is still supported.
+
+```javascript
+    gpClient.function( { /*opts*/ } ,  function callback(err, result))
 ```
 
 * opts: an object containing input parameters, if needed.
-* `err`: if truthy, indicates an error has occured.
-* `...`: other parameters (optional)
+* callback: a callback with:
+    - `err`: if truthy, indicates an error has occured.
+    -`result`: the operation’s result
+
 
 Sometimes the `opts` object is optional. If this is the case, the
 API doc will indicate it with this notation:  `[opts]`
 For example,  `bundle.getInfo(cb)` and `bundle.getInfo({}, cb)`  are equivalent.
 
-These APIs may be promisified easily using a library such as `Q`'s
-[nfcall](http://documentup.com/kriskowal/q/#adapting-node):
-
-```javascript
-    return Q.ninvoke(bundle, "delete", {});
-    return Q.ninvoke(gpClient, "getBundleList", {});
-```
 
 Also, note that there are aliases from the swagger doc function names
 to the convenience name. For example, `bundle.uploadResourceStrings` can be 
