@@ -6,7 +6,10 @@ This is the JavaScript SDK for the
 Bluemix service. 
 The Globalization Pipeline service makes it easy for you to provide your global customers
 with Bluemix applications translated into the languages in which they work. 
-This SDK currently supports [Node.js](http://nodejs.org).
+This SDK currently supports:
+
+* [Node.js](http://nodejs.org)
+* Web Browsers via [Browserify](#browserify)
 
 [![npm version](https://badge.fury.io/js/g11n-pipeline.svg)](https://badge.fury.io/js/g11n-pipeline)
 [![Build Status](https://travis-ci.org/IBM-Bluemix/gp-js-client.svg?branch=master)](https://travis-ci.org/IBM-Bluemix/gp-js-client)
@@ -153,6 +156,30 @@ bundle.create({…}, function(…){
 ## Testing
 
 See [TESTING.md](TESTING.md)
+
+## Browserify
+
+The gp-js-client can be used in a web browser via [browserify](https://www.npmjs.com/package/browserify#example).
+
+You can call the g11n-pipeline API just as from Node.js:
+```js
+// mycode.js
+const gp = require('g11n-pipeline');
+gp.getClient({/*...*/}) // do some great stuff here
+```
+
+And then, package up the code for the browser:
+```
+npm i --save g11n-pipeline
+npm i -g browserify
+browserify mycode.js > bundle.js
+```
+
+Finally, include the bundle in your HTML:
+```html
+<script src="./bundle.js"></script>
+```
+
 
 API convention
 ==
