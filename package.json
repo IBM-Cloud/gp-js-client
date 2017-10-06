@@ -1,6 +1,6 @@
 {
   "name": "g11n-pipeline",
-  "version": "2.0.1-0",
+  "version": "2.0.1",
   "description": "JavaScript (Node.js, etc) client for Bluemix Globalization Pipeline",
   "main": "lib/main.js",
   "engines": {
@@ -14,7 +14,7 @@
     "html": "npm run docs && node util/gen-html.js",
     "vscode-typings": "tsd query node mocha chai request --action install",
     "eslint": "mocha -f eslint --reporter list",
-    "prepack": "rm -f README.html"  
+    "prepack": "rm -f README.html"
   },
   "repository": {
     "type": "git",
