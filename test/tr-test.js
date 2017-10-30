@@ -68,7 +68,7 @@ var instanceName = (opts.credentials.instanceId) // given
 // if we are using a random instance name, set it here.
 opts.credentials.instanceId = opts.credentials.instanceId || instanceName;
 
-const partnerId = process.env.GP_TEST_PARTNER || 'TST';
+const partnerId = process.env.GP_TEST_PARTNER || 'IBM';
 
 
 function resterr(o) {
@@ -224,7 +224,7 @@ describe('GP-HPE.bundle()', function () {
     entry.update({
       reviewed: false,
       sequenceNumber: 42,
-      notes: [ '{{10,10,IBM}}' ]
+      notes: [ '{{10,10,'+partnerId+'}}' ]
     }, function (err, data) {
       if (err) return done(err);
 
