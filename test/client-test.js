@@ -229,27 +229,6 @@ describe('gaasClient.supportedTranslations()', function() {
       done();
     });
   });
-  it('Should let us get service instance info', function(done) {
-    gaasClient.getServiceInstanceInfo(function(err, instanceInfo) {
-      if(err) return done(err);
-      if(VERBOSE) console.dir(instanceInfo);
-      expect(instanceInfo).to.be.ok;
-      expect(instanceInfo.updatedAt).to.be.a('date');
-      expect(instanceInfo.updatedBy).to.be.a('string');
-      expect(instanceInfo.orgId).to.be.a('string');
-      expect(instanceInfo.spaceId).to.be.a('string');
-      expect(instanceInfo.planId).to.be.a('string');
-      expect(instanceInfo.htServiceEnabled).to.be.a('boolean');
-      expect(instanceInfo.htServiceEnabled).to.be.true;
-      expect(instanceInfo.usage).to.be.an('object');
-      expect(instanceInfo.usage.size).to.be.a('number');
-      expect(instanceInfo.disabled).to.not.be.ok; // If it was disabled, this call would fail
-      // These are not tested because of the fakebroker server limitations:
-      //expect(instanceInfo.region).to.be.a('string');
-      //expect(instanceInfo.cfServiceInstanceId).to.be.a('string');
-      return done();
-    });
-  });
 });
 
 var randInstanceName = randHex()+'-'+randHex()
@@ -290,30 +269,17 @@ describe('gaasClient.setup instance ' + instanceName, function() {
       done(); // expect
     }
   });
-  if(opts.credentials.isAdmin) it('should let us create our instance', function(done) {
-    gaasClient.ready(done, function(err, done, apis) {
-      if(err) { done(err); return; }
-      apis.admin.createServiceInstance({
-        serviceInstanceId: instanceName,
-        body: {
-          serviceId: 'rand-'+randHex(),
-          orgId: 'rand-'+randHex(),
-          spaceId: 'rand-'+randHex(),
-          planId: 'rand-'+randHex(),
-          disabled: false
-        }
-      }, function onSuccess(o) {
-        if(o.obj.status !== 'SUCCESS') {
-          done(Error(o.obj.status));
-        } else {
-          //console.dir(o.obj, {depth: null, color: true});
-          done();
-        }
-      }, function onFailure(o) {
-        done(resterr(o));
-      });
-    });
-  });
+  if(opts.credentials.isAdmin) it('should let us create our instance', () => gaasClient.restCall("admin.createServiceInstance", 
+    {
+      serviceInstanceId: instanceName,
+      body: {
+        serviceId: 'rand-'+randHex(),
+        orgId: 'rand-'+randHex(),
+        spaceId: 'rand-'+randHex(),
+        planId: 'rand-'+randHex(),
+        disabled: false
+      }
+    }));
   it('should now let me call deprecated getBundleList() (cb)', function(done) {
     gaasClient.getBundleList({serviceInstance: instanceName}, function(err, data) {
       if(err) {
@@ -345,6 +311,27 @@ describe('gaasClient.setup instance ' + instanceName, function() {
         }
         done();
       }
+    });
+  });
+  it('Should let us get service instance info', function(done) {
+    gaasClient.getServiceInstanceInfo({serviceInstance: instanceName}, function(err, instanceInfo) {
+      if(err) return done(err);
+      if(VERBOSE) console.dir(instanceInfo);
+      expect(instanceInfo).to.be.ok;
+      expect(instanceInfo.updatedAt).to.be.a('date');
+      expect(instanceInfo.updatedBy).to.be.a('string');
+      expect(instanceInfo.orgId).to.be.a('string');
+      expect(instanceInfo.spaceId).to.be.a('string');
+      expect(instanceInfo.planId).to.be.a('string');
+      expect(instanceInfo.htServiceEnabled).to.be.a('boolean');
+      expect(instanceInfo.htServiceEnabled).to.be.true;
+      expect(instanceInfo.usage).to.be.an('object');
+      expect(instanceInfo.usage.size).to.be.a('number');
+      expect(instanceInfo.disabled).to.not.be.ok; // If it was disabled, this call would fail
+      // These are not tested because of the fakebroker server limitations:
+      //expect(instanceInfo.region).to.be.a('string');
+      //expect(instanceInfo.cfServiceInstanceId).to.be.a('string');
+      return done();
     });
   });
 });
@@ -1341,23 +1328,9 @@ if(NO_DELETE) {
   });
 } else if(opts.credentials.isAdmin) {
   describe('gaasClient.delete instance ' + instanceName, function() {
-    it('should let us delete our instance', function(done) {
-      gaasClient.ready(done, function(err, done, apis) {
-        if(err) { done(err); return; }
-        apis.admin.deleteServiceInstance({
-          serviceInstanceId: instanceName
-        }, function onSuccess(o) {
-          if(o.obj.status !== 'SUCCESS') {
-            done(Error(o.obj.status));
-          } else {
-            //console.dir(o.obj, {depth: null, color: true});
-            done();
-          }
-        }, function onFailure(o) {
-          done(Error('Failed: ' + o));
-        });
-      });
-    });
+    it('should let us delete our instance', () => gaasClient.restCall("admin.deleteServiceInstance", {
+      serviceInstanceId: instanceName
+    }));
   });
 }
 //  END NO_DELETE

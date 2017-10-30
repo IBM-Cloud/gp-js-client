@@ -38,6 +38,17 @@ const expect = chai.expect;
 
 
 describe('Partner: setup', () => {
+  if(opts.credentials.isAdmin) it('should let us create our instance', () => gaasClient.restCall("admin.createServiceInstance", 
+    {
+      serviceInstanceId: instanceName,
+      body: {
+        serviceId: 'rand-'+randHex(),
+        orgId: 'rand-'+randHex(),
+        spaceId: 'rand-'+randHex(),
+        planId: 'rand-'+randHex(),
+        disabled: false
+      }
+    }));
   // We are creating a READER user.
   // This is a way of intentionally dropping privileges.
   // This way we will test that all of the partner APIs
@@ -151,4 +162,12 @@ describe('Partner: test APIs with reader (expected access denied)', () => {
         return done();
       });
   });
+
+  if(opts.credentials.isAdmin) {
+    describe('partner delete instance ' + instanceName, function() {
+      it('should let us delete our instance', () => gaasClient.restCall("admin.deleteServiceInstance", {
+        serviceInstanceId: instanceName
+      }));
+    });
+  }
 });

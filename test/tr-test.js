@@ -61,6 +61,16 @@ var opts = {
   credentials: gaasTest.getCredentials()
 };
 
+var randInstanceName = randHex() + '-' + randHex()
+var instanceName = (opts.credentials.instanceId) // given
+  || randInstanceName;  // random
+
+// if we are using a random instance name, set it here.
+opts.credentials.instanceId = opts.credentials.instanceId || instanceName;
+
+const partnerId = process.env.GP_TEST_PARTNER || 'TST';
+
+
 function resterr(o) {
   if (!o) {
     return Error("(falsy object)");
@@ -109,35 +119,16 @@ describe('GP-HPE Verifying again that we can reach the server', function () {
   });
 });
 
-var randInstanceName = randHex() + '-' + randHex()
-var instanceName = (opts.credentials.instanceId) // given
-  || randInstanceName;  // random
-
 describe('GP-HPE.setup instance ' + instanceName, function () {
-  if (opts.credentials.isAdmin) it('should let us create our instance', function (done) {
-    gaasClient.ready(done, function (err, done, apis) {
-      if (err) { done(err); return; }
-      apis.admin.createServiceInstance({
-        serviceInstanceId: instanceName,
-        body: {
-          serviceId: 'rand-' + randHex(),
-          orgId: 'rand-' + randHex(),
-          spaceId: 'rand-' + randHex(),
-          planId: 'rand-' + randHex(),
-          disabled: false
-        }
-      }, function onSuccess(o) {
-        if (o.obj.status !== 'SUCCESS') {
-          done(Error(o.obj.status));
-        } else {
-          //console.dir(o.obj, {depth: null, color: true});
-          done();
-        }
-      }, function onFailure(o) {
-        done(resterr(o));
-      });
-    });
-  });
+  if (opts.credentials.isAdmin) it('should let us create our instance', () => gaasClient.restCall("admin.createServiceInstance", {
+    serviceInstanceId: instanceName,
+    body: {
+      serviceId: 'rand-' + randHex(),
+      orgId: 'rand-' + randHex(),
+      spaceId: 'rand-' + randHex(),
+      planId: 'rand-' + randHex(),
+      disabled: false
+    }}));
   // just make sure it's OK
   it('should now let me call bundles() (cb)', function (done) {
     gaasClient.bundles({ serviceInstance: instanceName }, function (err, data) {
@@ -175,7 +166,7 @@ describe('GP-HPE tr() and trs() api test', function () {
     expect(tr.b).to.equal('two');
   });
   it('Should let us call trs() and have an empty list', function (done) {
-    gaasClient.trs(function (err, trs) {
+    gaasClient.trs({serviceInstance: instanceName}, function (err, trs) {
       if (err) return done(err);
       expect(trs).to.be.ok;
       expect(trs).to.deep.equal({});
@@ -257,13 +248,14 @@ describe('GP-HPE: Requesting our first TR', function () {
     const requestData = {
       name: 'FirstTR',
       emails: ['noname@example.com'],
-      partner: 'IBM',
+      partner: partnerId,
       targetLanguagesByBundle: {}, // to fill in
       status: 'SUBMITTED' // request to submit it right away.
     };
     requestData.targetLanguagesByBundle[projectId] = [targLang0];
+    if(VERBOSE) console.dir(requestData);
     gaasClient.tr(requestData)
-      .create(function cb(err, tr) {
+      .create({serviceInstance: instanceName}, function cb(err, tr) {
         if (err) return done(err);
         expect(tr.id).to.be.ok;
         trId1 = tr.id;
@@ -326,7 +318,7 @@ describe('GP-HPE: Requesting our first TR', function () {
         timeout = undefined;
       }
       gaasClient.tr(trId1)
-        .getInfo(function cb(err, tr) {
+        .getInfo({serviceInstance: instanceName}, function cb(err, tr) {
           if(err) {
             return done(err);
           } else if(tr.status !== 'MERGED') {
@@ -353,11 +345,11 @@ describe('GP-HPE: Requesting our first TR', function () {
     var entry = gaasClient
       .bundle({ id: projectId, serviceInstance: instanceName })
       .entry({ languageId: targLang0, resourceKey: 'hi' });
-    entry.getInfo({},
+    entry.getInfo({serviceInstance: instanceName},
       function (err, entry2) {
         if (err) return done(err);
         expect(entry2.reviewed).to.be.true;
-        expect(entry2.updatedBy).to.equal('$IBM.AUTOTEST');
+        expect(entry2.updatedBy).to.equal('$'+partnerId+'.AUTOTEST');
         expect(entry2.value).to.equal(testData('t1', '1', targLang0)[entry2.resourceKey]);
         expect(entry2.translationStatus).to.equal('TRANSLATED');
         if(VERBOSE) console.dir(entry2);
@@ -401,7 +393,7 @@ describe('GP-HPE now try using tr.update', function() {
     const requestData = {
       name: 'Second TR draft', // TODO: docs say this is optional?
       emails: ['my_real_name_not_really@example.com'], // TODO: docs say this is optional?
-      partner: 'IBM', // TODO: try changing partner name in update
+      partner: partnerId, // TODO: try changing partner name in update
       targetLanguagesByBundle: {}, // to fill in
       status: 'DRAFT', // do not submit yet
       domains: [ 'FINSVCS', 'CNSTRCT' ],
@@ -486,23 +478,9 @@ if (NO_DELETE) {
   });
 } else if (opts.credentials.isAdmin) {
   describe('GP-HPE.delete instance ' + instanceName, function () {
-    it('should let us delete our instance', function (done) {
-      gaasClient.ready(done, function (err, done, apis) {
-        if (err) { done(err); return; }
-        apis.admin.deleteServiceInstance({
-          serviceInstanceId: instanceName
-        }, function onSuccess(o) {
-          if (o.obj.status !== 'SUCCESS') {
-            done(Error(o.obj.status));
-          } else {
-            //console.dir(o.obj, {depth: null, color: true});
-            done();
-          }
-        }, function onFailure(o) {
-          done(Error('Failed: ' + o));
-        });
-      });
-    });
+    it('should let us delete our instance', () => gaasClient.restCall("admin.deleteServiceInstance", {
+      serviceInstanceId: instanceName
+    }));
   });
 }
 
