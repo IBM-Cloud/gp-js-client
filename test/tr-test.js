@@ -223,11 +223,9 @@ describe('GP-HPE.bundle()', function () {
       .entry({ languageId: targLang0, resourceKey: 'hi' });
     entry.update({
       reviewed: false,
-      sequenceNumber: 42,
-      notes: [ '{{10,10,'+partnerId+'}}' ]
+      sequenceNumber: 42
     }, function (err, data) {
       if (err) return done(err);
-
       entry.getInfo({},
         function (err, entry2) {
           if (err) return done(err);
@@ -250,7 +248,8 @@ describe('GP-HPE: Requesting our first TR', function () {
       emails: ['noname@example.com'],
       partner: partnerId,
       targetLanguagesByBundle: {}, // to fill in
-      status: 'SUBMITTED' // request to submit it right away.
+      status: 'SUBMITTED', // request to submit it right away.
+      notes: [ '{{10,10,@@@ }}' ]      
     };
     requestData.targetLanguagesByBundle[projectId] = [targLang0];
     if(VERBOSE) console.dir(requestData);
