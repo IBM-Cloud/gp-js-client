@@ -43,6 +43,6 @@
     "request": "^2.81.0"
   },
   "dependencies": {
-    "swagger-client": "3.2.x"
+    "swagger-client": "^3.3.1"
   }
 }
