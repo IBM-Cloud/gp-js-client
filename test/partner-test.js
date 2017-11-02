@@ -1,3 +1,4 @@
+"use strict"; 
 /*
  * Copyright IBM Corp. 2015,2017
  *
