@@ -5,13 +5,12 @@ node_js:
 - '8'
 script:
 - npm install
-- curl $GP_FAKE_BROKER2 > local-credentials.json
+- curl $GP_FAKE_BROKER > local-credentials.json
 - if [[ $TRAVIS_NODE_VERSION == '8' ]]; then nyc npm test && nyc report --reporter=text-lcov
   | coveralls; else npm test; fi
 env:
   global:
   - secure: fvzulZVjH3s1MjbmYL4qUvxI9NYq7AIt3ioPJC54fHgeHzINeDjvQFYtwVVSjTzeDsP/EcqdrTo8w9e8NRXJ/PUR17t6Q5Zlnvxj8VBPaqfZEK41RKf4CMnSTZwbPA/PHNGvmU5pu2646k+8ychnQ3jwkCDruVOBVCJwe3gRp0g=
-  - secure: HtHmDfZeyuVCifYk2oh/ilT3gSER2SnC4zwc1ve0oX98k7enm2yWsgka2M91RW53a1+1gTu2US7PM8yAfEkar6B7tBunfhm65+HnRYq0wmsDcGNzzKrIRk4REsrdY1tYLG1CNPsUCxX9dxBCdgHwAyrWGRapAkl2ivhBRgtgzWI=
 cache:
   directories:
   - node_modules
