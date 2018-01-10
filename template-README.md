@@ -2,37 +2,37 @@ Globalization Pipeline Client for JavaScript
 ============================================
 
 This is the JavaScript SDK for the
-[Globalization Pipeline](https://github.com/IBM-Bluemix/gp-common#globalization-pipeline)
-Bluemix service. 
+[Globalization Pipeline](https://github.com/IBM-Cloud/gp-common#globalization-pipeline)
+IBM Cloud service. 
 The Globalization Pipeline service makes it easy for you to provide your global customers
-with Bluemix applications translated into the languages in which they work. 
+with IBM Cloud applications translated into the languages in which they work. 
 This SDK currently supports:
 
 * [Node.js](http://nodejs.org)
 * Web Browsers via [Browserify](#browserify)
 
 [![npm version](https://badge.fury.io/js/g11n-pipeline.svg)](https://badge.fury.io/js/g11n-pipeline)
-[![Build Status](https://travis-ci.org/IBM-Bluemix/gp-js-client.svg?branch=master)](https://travis-ci.org/IBM-Bluemix/gp-js-client)
-[![Coverage Status](https://coveralls.io/repos/github/IBM-Bluemix/gp-js-client/badge.svg)](https://coveralls.io/github/IBM-Bluemix/gp-js-client)
+[![Build Status](https://travis-ci.org/IBM-Cloud/gp-js-client.svg?branch=master)](https://travis-ci.org/IBM-Cloud/gp-js-client)
+[![Coverage Status](https://coveralls.io/repos/github/IBM-Cloud/gp-js-client/badge.svg)](https://coveralls.io/github/IBM-Cloud/gp-js-client)
 [![Coverity Status](https://img.shields.io/coverity/scan/9399.svg)](https://scan.coverity.com/projects/ibm-bluemix-gp-js-client)
 
 ### News
 
-* ⚠ Please note that support for Node v0.12 [has been dropped in version 2.0 of this SDK](https://github.com/IBM-Bluemix/gp-js-client/issues/55). See the [Node.js LTS schedule](https://github.com/nodejs/LTS).
+* ⚠ Please note that support for Node v0.12 [has been dropped in version 2.0 of this SDK](https://github.com/IBM-Cloud/gp-js-client/issues/55). See the [Node.js LTS schedule](https://github.com/nodejs/LTS).
 
 ## Sample
 
-For a working Bluemix application sample,
-see [gp-nodejs-sample](https://github.com/IBM-Bluemix/gp-nodejs-sample).
+For a working IBM Cloud application sample,
+see [gp-nodejs-sample](https://github.com/IBM-Cloud/gp-nodejs-sample).
 
 ## Quickstart
 
 * You should familiarize yourself with the service itself. A
 good place to begin is by reading the
-[Quick Start Guide](https://github.com/IBM-Bluemix/gp-common#quick-start-guide)
+[Quick Start Guide](https://github.com/IBM-Cloud/gp-common#quick-start-guide)
 and the official
 [Getting Started with IBM Globalization ](https://www.ng.bluemix.net/docs/services/GlobalizationPipeline/index.html) documentation.
-The documentation explains how to find the service on Bluemix, create a new service instance, create a new bundle, and access the translated messages.
+The documentation explains how to find the service on IBM Cloud, create a new service instance, create a new bundle, and access the translated messages.
 
 * Next, add `g11n-pipeline` to your project, as well as `cfenv` and `optional`.
 
@@ -188,7 +188,7 @@ APIs may take a callback OR return a promise, and use this general pattern
 
 ### Promise mode
 
-* ⚠ _please note that the apidocs [haven’t been updated yet](https://github.com/IBM-Bluemix/gp-js-client/issues/85) to note that 
+* ⚠ _please note that the apidocs [haven’t been updated yet](https://github.com/IBM-Cloud/gp-js-client/issues/85) to note that 
 the callback `cb` is optional and that Promises are returned by most functions.
 
 ```javascript
@@ -234,7 +234,7 @@ API reference
 
 Community
 ===
-* View or file GitHub [Issues](https://github.com/IBM-Bluemix/gp-js-client/issues)
+* View or file GitHub [Issues](https://github.com/IBM-Cloud/gp-js-client/issues)
 * Connect with the open source community on [developerWorks Open](https://developer.ibm.com/open/ibm-bluemix-globalization-pipeline/node-js-sdk/)
 
 Contributing

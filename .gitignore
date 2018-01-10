@@ -8,3 +8,4 @@ npm-debug.log
 /.vscode
 /.nyc_output
 *.tgz
+.DS_Store

@@ -1,7 +1,7 @@
 {
   "name": "g11n-pipeline",
   "version": "2.0.6-0",
-  "description": "JavaScript (Node.js, etc) client for Bluemix Globalization Pipeline",
+  "description": "JavaScript client for IBM Globalization Pipeline",
   "main": "lib/main.js",
   "engines": {
     "node": ">=4"
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/IBM-Bluemix/gp-js-client"
+    "url": "https://github.com/IBM-Cloud/gp-js-client"
   },
   "keywords": [
     "l10n"
