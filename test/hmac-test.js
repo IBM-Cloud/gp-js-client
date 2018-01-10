@@ -93,6 +93,32 @@ describe('lib/gaas-hmac', function() {
     expect(obj.headers.Date).to.be.ok;
     expect(obj.headers.Date).to.equal(myHmac.forceDateString);
   });
+  it('Should verify that we can apply with a spacious key body (golden test)', function() {
+    var myHmac = new GaasHmac('MyAuth', 'MyUser', 'MySecret');
+
+    expect(myHmac).to.be.ok;
+    expect(myHmac.name).to.be.ok;
+    expect(myHmac.name).to.equal('MyAuth');
+
+    var obj = {
+      method: 'GET',
+      url: "https://example.com/translate/rest/19e7b569069447b6b1f7bbdf8106decc/v2/bundles/mybundle/fr/I'%20d_2dd7f01d", // This gets escaped to I%27%20 …
+      headers: {
+        Authorization: undefined
+      },
+      body: '{"param":"value"}'
+    };
+
+    // we must force the Date so that we have a consistent test.
+    myHmac.forceDateString = "Mon, 30 Jun 2014 00:00:00 GMT"; // Bluemix launch date
+    expect(myHmac.apply(obj)).to.be.ok;
+
+    expect(obj.headers.Authorization).to.be.ok;
+    expect(obj.headers.Authorization).to.equal(
+      'GaaS-HMAC MyUser:6iqc3pISoVrgGLMzxhZ9jujUm64=');
+    expect(obj.headers.Date).to.be.ok;
+    expect(obj.headers.Date).to.equal(myHmac.forceDateString);
+  });
   it('Should verify that we can apply with undefined body', function() {
     var myHmac = new GaasHmac('MyAuth', 'MyUser', 'MySecret');
     
