@@ -543,7 +543,7 @@ describe('gaasClient.bundle()', function() {
     gaasClient
       .bundle({id: projectId_space, serviceInstance: instanceName})
       .getResourceEntryInfo({languageId: 'en', resourceKey: "I' d_2dd7f01d"})
-      .then(((data) => console.dir(data) && expect(data.resourceEntry.value).to.contain('Dave'))));
+      .then(((data) => expect(data.resourceEntry.value).to.contain('Dave'))));
 
   it('should let us verify some source entries', function(done) {
     var bund = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
