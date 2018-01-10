@@ -40,6 +40,7 @@ var NO_DELETE = process.env.NO_DELETE || false;
 if(VERBOSE) console.dir(module.filename);
 
 var projectId = process.env.GP_PROJECT  || 'MyHLProject'+Math.random();
+const projectId_space = projectId+'_space';
 // var projectId2 = process.env.GP_PROJECT2 || 'MyOtherHLProject'+Math.random();
 var projectId3 = process.env.GP_PROJECT3 || 'MyUserProject'+Math.random();
 var projectId4 = process.env.GP_PROJECT3 || 'MyUpdatedProject'+Math.random();
@@ -371,6 +372,11 @@ describe('gaasClient.bundle()', function() {
       targetLanguages: [gaasTest.TARGETS[0],gaasTest.CYRILLIC],
       notes: ['Note to self'] });
   });
+  it('Should let us create ' + projectId_space, () =>
+    gaasClient
+      .bundle({id: projectId_space, serviceInstance: instanceName})
+      .create({sourceLanguage: 'en', targetLanguages: []}));
+
   // Create some strings for later
   it('Should let us create ' + projectId4, function() {
     var proj = gaasClient.bundle({id:projectId4, serviceInstance: instanceName});
@@ -467,7 +473,10 @@ describe('gaasClient.bundle()', function() {
         return done();
       });
   });
-
+  it('Should let us upload to ' + projectId_space, () =>
+    gaasClient
+      .bundle({id: projectId_space, serviceInstance: instanceName})
+      .uploadStrings({ languageId: 'en', strings: { "I' d_2dd7f01d": 'I’m sorry, Dave.' }}));
 
   if(DELAY_AVAIL) it('should let us verify the target entry(qru).key1 is in progress', function(done) {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
@@ -530,6 +539,12 @@ describe('gaasClient.bundle()', function() {
         done();
       });
   });
+  it('Should let us verfy ' + projectId_space, () =>
+    gaasClient
+      .bundle({id: projectId_space, serviceInstance: instanceName})
+      .getResourceEntryInfo({languageId: 'en', resourceKey: "I' d_2dd7f01d"})
+      .then(((data) => expect(data.resourceEntry.value).to.contain('Dave'))));
+
   it('should let us verify some source entries', function(done) {
     var bund = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
     var entry = bund.entry({languageId:gaasTest.SOURCES[0],resourceKey:'key1'});
