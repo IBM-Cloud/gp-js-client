@@ -236,7 +236,7 @@ describe('GP-HPE.bundle()', function () {
   });
 });
 
-// OK now 'hi' is marked not reviewed. 
+// OK now 'hi' is marked not reviewed.
 // open a TR.
 
 var trId1;
@@ -249,7 +249,7 @@ describe('GP-HPE: Requesting our first TR', function () {
       partner: partnerId,
       targetLanguagesByBundle: {}, // to fill in
       status: 'SUBMITTED', // request to submit it right away.
-      notes: [ '{{10,10,@@@ }}' ]      
+      notes: [ '{{10,10,@@@ }}' ]
     };
     requestData.targetLanguagesByBundle[projectId] = [targLang0];
     if(VERBOSE) console.dir(requestData);
@@ -420,7 +420,7 @@ describe('GP-HPE now try using tr.update', function() {
       });
   });
 
-  const updateData = { 
+  const updateData = {
     notes: [ 'b', 'c', 'a' ]
   };
   it('Should be able to update the TR', function(done) {

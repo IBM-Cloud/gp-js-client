@@ -196,7 +196,7 @@ module.exports = {
         "no-template-curly-in-string": "error",
         "no-ternary": "off",
         "no-throw-literal": "error",
-        "no-trailing-spaces": "off",
+        "no-trailing-spaces": "error",
         "no-undef-init": "off",
         "no-undefined": "off",
         "no-underscore-dangle": "off",

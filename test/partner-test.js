@@ -1,4 +1,4 @@
-"use strict"; 
+"use strict";
 /*
  * Copyright IBM Corp. 2015,2017
  *
@@ -39,7 +39,7 @@ const expect = chai.expect;
 
 
 describe('Partner: setup', () => {
-  if(opts.credentials.isAdmin) it('should let us create our instance', () => gaasClient.restCall("admin.createServiceInstance", 
+  if(opts.credentials.isAdmin) it('should let us create our instance', () => gaasClient.restCall("admin.createServiceInstance",
     {
       serviceInstanceId: instanceName,
       body: {

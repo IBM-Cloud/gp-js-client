@@ -22,7 +22,7 @@ var expect = require('chai').expect;
 var cfenvUtils = require('../lib/cfenv-credsbylabel');
 
 // from https://www.npmjs.com/package/cfenv#appenv-getservices
-var testData = 
+var testData =
 {
   "cf-env-test": {
     "name": "cf-env-test",

@@ -174,7 +174,7 @@ function optionsCreate(swaggerUrl, method) {
   var options = url.parse(swaggerUrl);
   options.url = swaggerUrl;
   options.method = method;
-  
+
   return options;
 }
 
