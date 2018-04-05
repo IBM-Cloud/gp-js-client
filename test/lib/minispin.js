@@ -39,5 +39,5 @@ function doclear() {
 
 module.exports = {
   step: dospin,
-  clear: doclear 
+  clear: doclear
 };

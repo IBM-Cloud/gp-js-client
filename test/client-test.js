@@ -83,7 +83,7 @@ function resterr(o) {
   }
 }
 var urlEnv = gaas._normalizeUrl(opts.credentials.url); // use GaaS normalize
-  
+
 describe('Setting up GaaS test', function() {
   if ( urlEnv ) {
     var urlToPing = urlEnv.replace(/\/rest.*$/,'/');
@@ -119,8 +119,8 @@ describe('Setting up GaaS test', function() {
       };
       process.nextTick(loopy); // first run
     });
-    
-    
+
+
     it('requiring gaas with options', function(done) {
       gaasClient = gaas.getClient(opts);
       //if(VERBOSE) console.log( gaasClient._getUrl() );
@@ -142,12 +142,12 @@ describe('Verifying again that we can reach the server', function() {
       process.exit(1);
     }
     gaasClient.ping({}, function(err, data) {
-      
+
       if(err && process.env.BAIL_ON_ERR) {
         console.error('Could not reach server');
         process.exit(1);
       }
-      
+
       if(err) { done(err); return; }
       if(VERBOSE) console.dir(data);
       done();
@@ -159,12 +159,12 @@ describe('Verifying again that we can reach the server', function() {
       process.exit(1);
     }
     gaasClient.ping(function(err, data) {
-      
+
       if(err && process.env.BAIL_ON_ERR) {
         console.error('Could not reach server');
         process.exit(1);
       }
-      
+
       if(err) { done(err); return; }
       if(VERBOSE) console.dir(data);
       done();
@@ -270,7 +270,7 @@ describe('gaasClient.setup instance ' + instanceName, function() {
       done(); // expect
     }
   });
-  if(opts.credentials.isAdmin) it('should let us create our instance', () => gaasClient.restCall("admin.createServiceInstance", 
+  if(opts.credentials.isAdmin) it('should let us create our instance', () => gaasClient.restCall("admin.createServiceInstance",
     {
       serviceInstanceId: instanceName,
       body: {
@@ -368,7 +368,7 @@ describe('gaasClient.bundle()', function() {
   });
   it('Should let us create', function() {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
-    return proj.create({sourceLanguage: gaasTest.SOURCES[0], 
+    return proj.create({sourceLanguage: gaasTest.SOURCES[0],
       targetLanguages: [gaasTest.TARGETS[0],gaasTest.CYRILLIC],
       notes: ['Note to self'] });
   });
@@ -620,7 +620,7 @@ describe('gaasClient.bundle()', function() {
       notes: [ 'Take note.', 'note: Take.' ]
     }, function(err, data) {
       if(err) return done(err);
-        
+
       entry.getInfo({},
         function(err, entry2) {
           if(err) return done(err);
@@ -632,7 +632,7 @@ describe('gaasClient.bundle()', function() {
             if(err) return done(err);
             expect(entry2.reviewed).to.be.true; // unchanged
             entry.getInfo({},
-              function(err, entry3){ 
+              function(err, entry3){
                 if(err) return done(err);
                 expect(entry3.reviewed).to.be.false;
                 expect(entry3.notes).to.deep.equal([ 'Take note.', 'note: Take.' ])
@@ -663,7 +663,7 @@ describe('gaasClient.bundle()', function() {
         if(err) return done(err);
         expect(entries).to.be.ok;
         expect(entries).to.be.an('object');
-        expect(entries).to.contain.keys(Object.keys(sourceDataUpd));  
+        expect(entries).to.contain.keys(Object.keys(sourceDataUpd));
         expect(entries.key1.value).to.equal(sourceDataUpd.key1);
         entries.key1.getInfo(function(err, entryKey1){
           if(err) return done(err);
@@ -682,7 +682,7 @@ describe('gaasClient.bundle()', function() {
         expect(entries).to.be.ok;
         expect(entries).to.be.an('object');
         expect(entries).to.deep.equal({});
-        done();       
+        done();
       });
   });
   it('Should let me iterate with bundle.entries('+gaasTest.KLINGON+', fallback=true) ' + projectId4, function(done) {
@@ -694,7 +694,7 @@ describe('gaasClient.bundle()', function() {
         expect(entries).to.be.an('object');
         expect(entries).to.contain.keys(Object.keys(sourceDataUpd));
         expect(entries.key1.value).to.equal(sourceDataUpd.key1);
-        done();       
+        done();
       });
   });
 
@@ -712,7 +712,7 @@ describe('gaasClient.bundle()', function() {
   });
 
   // Below we work with separate users
-  var myUserInfo = undefined;  
+  var myUserInfo = undefined;
   var readerInfo = undefined;
   var adminInfo  = undefined;
   var otherReaderInfo = undefined;
@@ -829,34 +829,34 @@ describe('gaasClient.bundle()', function() {
 
 
   // Let's test that reader user
-    
+
   it('Should verify the reader user can ping', function(done) {
     expect(myUserInfo).to.be.ok; // otherwise, user creation failed
     gaasReaderClient = gaas.getClient(readerInfo);
     gaasReaderClient.ping({}, done);
   });
-  
+
   it('Should verify the admin user can ping', function(done) {
     expect(adminInfo).to.be.ok; // otherwise, user creation failed
     gaasAdminClient = gaas.getClient(adminInfo);
     gaasAdminClient.ping({}, done);
   });
-  
+
   // Metadata test here.
   (/*describe.skip || */describe) ('Metadata Test', function() {
     var kinds = {
-      bundle: function () { 
+      bundle: function () {
         return gaasAdminClient
-          .bundle(projectId3); 
+          .bundle(projectId3);
       },
-      user: function () { 
+      user: function () {
         return gaasAdminClient
-          .user(readerInfo.credentials.userId); 
+          .user(readerInfo.credentials.userId);
       },
-      entry: function () { 
+      entry: function () {
         return gaasAdminClient
           .bundle(projectId3)
-          .entry({languageId:gaasTest.SOURCES[0], resourceKey:'hello'}); 
+          .entry({languageId:gaasTest.SOURCES[0], resourceKey:'hello'});
       }
     };
     Object.keys(kinds).forEach(function(k) {
@@ -959,7 +959,7 @@ describe('gaasClient.bundle()', function() {
       });
     });
   });
-        
+
   it('Should verify the reader user can NOT getInfo ' + projectId, function(done) {
     expect(gaasReaderClient).to.be.ok; // otherwise, user creation failed
     gaasReaderClient
@@ -969,7 +969,7 @@ describe('gaasClient.bundle()', function() {
         done();
       });
   });
-  
+
   it('should verify the reader user can NOT read the source data(en)', function(done) {
     var proj = gaasReaderClient.bundle(projectId);
     proj.getStrings({ languageId: gaasTest.SOURCES[0]},
@@ -997,7 +997,7 @@ describe('gaasClient.bundle()', function() {
         done();
       });
   });
-  
+
   it('Should verify the reader user can NOT read en:key1 in ' + projectId, function(done) {
     expect(gaasReaderClient).to.be.ok; // otherwise, user creation failed
     gaasReaderClient
@@ -1008,7 +1008,7 @@ describe('gaasClient.bundle()', function() {
         done();
       });
   });
-    
+
   it('Should change the reader user to read ' + projectId, function(done) {
     expect(gaasAdminClient).to.be.ok; // otherwise, user creation failed
     gaasAdminClient
@@ -1017,7 +1017,7 @@ describe('gaasClient.bundle()', function() {
         bundles: [projectId3, projectId] // change bundles
       }, done);
   });
-  
+
   it('Should verify the admin user can getInfo ' + projectId, function(done) {
     //   console.dir(adminInfo);
     expect(gaasAdminClient).to.be.ok; // otherwise, user creation failed
@@ -1031,7 +1031,7 @@ describe('gaasClient.bundle()', function() {
         done();
       });
   });
-  
+
   it('Should let the admin user set metadata ' + projectId, function(done) {
     expect(gaasAdminClient).to.be.ok; // otherwise, user creation failed
     gaasAdminClient
@@ -1078,7 +1078,7 @@ describe('gaasClient.bundle()', function() {
             done();
         });
   }*/);
-  
+
   it('Should verify the reader can get basic bundle info ' + projectId, function(done) {
     expect(gaasReaderClient).to.be.ok; // otherwise, user creation failed
     gaasReaderClient
@@ -1104,7 +1104,7 @@ describe('gaasClient.bundle()', function() {
         done();
       });
   });
-    
+
   it('should let the reader user verify the target data(qru)', function(done) {
     var proj = gaasReaderClient.bundle(projectId);
     proj.getStrings({ languageId: gaasTest.CYRILLIC},
@@ -1115,7 +1115,7 @@ describe('gaasClient.bundle()', function() {
         done();
       });
   });
-  
+
   it('should let the admin user verify the source data(en)', function(done) {
     expect(gaasAdminClient).to.be.ok; // otherwise, user creation failed
     var proj = gaasAdminClient.bundle(projectId);
@@ -1132,9 +1132,9 @@ describe('gaasClient.bundle()', function() {
     expect(gaasAdminClient).to.be.ok; // otherwise, user creation failed
     const bundle =     gaasAdminClient
       .bundle(projectId);
-    const entry = 
+    const entry =
     bundle.entry({languageId: gaasTest.SOURCES[0], resourceKey: 'key1'});
-    const entry_target = 
+    const entry_target =
     bundle.entry({languageId: gaasTest.CYRILLIC, resourceKey: 'key1'});
 
     entry.getInfo({}, function(err, entry2) {
@@ -1171,7 +1171,7 @@ describe('gaasClient.bundle()', function() {
         done();
       });
   });
-    
+
   it('Should let us verify the reader user has access to read ' + projectId, function (done) {
     gaasClient.users({ serviceInstance: instanceName }, function (err, users) {
       if (err) return done(err);
@@ -1214,7 +1214,7 @@ describe('gaasClient.bundle()', function() {
         expect(data).to.not.contain(projectId);
       });
   });
-  if(!opts.credentials.isAdmin)  
+  if(!opts.credentials.isAdmin)
     it('should now let me query the bundle list again without an instance id (promises!)', function() {
       gaasClient.getBundleList()
         .then(function(data) {
@@ -1223,9 +1223,9 @@ describe('gaasClient.bundle()', function() {
     });
   it('test gaasAdminClient(admin).bundle('+projectId3+').create(...)', function() {
     expect(gaasAdminClient).to.be.ok; // from previous test
-    
+
     var proj = gaasAdminClient.bundle({id:projectId3});
-    
+
     return proj.create({sourceLanguage: gaasTest.SOURCES[0], targetLanguages: [gaasTest.SOURCES[0],gaasTest.CYRILLIC]})
       .then((/*resp*/) => proj.uploadResourceStrings({languageId: gaasTest.SOURCES[0], strings: {
         hello: 'Hello, World!',
@@ -1254,39 +1254,39 @@ describe('gaasClient.bundle()', function() {
   var myAuth = function(opts){opts.auth = (readerInfo.credentials.userId+':'+readerInfo.credentials.password); };
 
   // if(opts.credentials.isAdmin) {
- 
-    
+
+
   gaasTest.expectCORSURL(urlEnv + '/swagger.json',
     null, ' noauth');
-                        
+
   gaasTest.expectCORSURL(urlEnv + '/swagger.json',
     myAuth, ' reader');
-  
+
   // hardcoded URL here..
   gaasTest.expectCORSURL(urlEnv + '/' + instanceName + '/v2/bundles/'+projectId3+'/qru',
     myAuth, ' reader');
-  
+
   // // this should authenticate but NOT be CORS
-  
-  
+
+
   // check ADMINISTRATOR
   var myAdminAuth = function(opts) {
     if(!opts.headers) opts.headers = {};
-    // this is a callback because the user info isn't defined until AFTER the inner 'it()' is called. 
+    // this is a callback because the user info isn't defined until AFTER the inner 'it()' is called.
     var myHmac = new GaasHmac('gaashmac',myUserInfo.userId,
       myUserInfo.password);
     myHmac.apply(opts);
   };
-  
+
   gaasTest.expectCORSURL(urlEnv + '/swagger.json',
     myAdminAuth, ' admin');
-  
+
   // hardcoded URL here..
   gaasTest.expectCORSURL(urlEnv + '/' + instanceName + '/v2/bundles/'+projectId3+'/qru',
     myAdminAuth, ' admin');
   // if(isAdmin) {
   //   gaasTest.expectNonCORSURL(urlEnv + '/' + instanceName + '/v2/bundles',
-  //                       myAdminAuth, ' admin');    
+  //                       myAdminAuth, ' admin');
   // }
 
 

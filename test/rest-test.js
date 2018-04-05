@@ -108,7 +108,7 @@ describe('Check URL ' + url+'/', function() {
     };
     process.nextTick(loopy); // first run
   });
-    
+
   // verify security headers on landing page
   gaasTest.verifySecurityHeaders(url+'/');
 
@@ -168,7 +168,7 @@ describe('Check HTTP URL', function() {
           });
         }).on('error', done); // transport err
     });
-  } 
+  }
 });
 
 describe.skip('BASIC auth [not implemented]', function() { // TODO: not supported
@@ -222,7 +222,7 @@ describe.skip('client.apis', function() {
       done();
     });
   });
-  
+
   it('should let me get service info', function(done) {
     gaasClient.ready(done, function(err, done, apis) {
       if(err) { done(err); return; }

@@ -125,7 +125,7 @@ describe('lib/utils', function() {
       var o = f.processFields({
         fields: "rugby,baseball",
         //baseball: false,
-        // ^^ Fields only add. 
+        // ^^ Fields only add.
         soccer: true
       });
       expect(o).to.be.ok;

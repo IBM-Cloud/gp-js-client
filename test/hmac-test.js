@@ -121,11 +121,11 @@ describe('lib/gaas-hmac', function() {
   });
   it('Should verify that we can apply with undefined body', function() {
     var myHmac = new GaasHmac('MyAuth', 'MyUser', 'MySecret');
-    
+
     expect(myHmac).to.be.ok;
     expect(myHmac.name).to.be.ok;
     expect(myHmac.name).to.equal('MyAuth');
-    
+
     var obj = {
       method: 'put',
       url: 'http://example.com/gaas',
@@ -134,7 +134,7 @@ describe('lib/gaas-hmac', function() {
       },
       body: undefined
     };
-    
+
     // we must force the Date so that we have a consistent test.
     myHmac.forceDateString = "Mon, 30 Jun 2014 00:00:00 GMT"; // Bluemix launch date    expect(myHmac.apply(obj)).to.be.true;
     expect(myHmac.apply(obj)).to.be.ok;
@@ -147,11 +147,11 @@ describe('lib/gaas-hmac', function() {
   });
   it('Should verify that we can apply with a random date', function() {
     var myHmac = new GaasHmac('MyAuth', 'MyUser', 'MySecret');
-    
+
     expect(myHmac).to.be.ok;
     expect(myHmac.name).to.be.ok;
     expect(myHmac.name).to.equal('MyAuth');
-    
+
     var obj = {
       method: 'delete',
       url: 'http://example.com/gaas',
@@ -160,7 +160,7 @@ describe('lib/gaas-hmac', function() {
       },
       body: undefined
     };
-    
+
     expect(myHmac.apply(obj)).to.be.ok;
 
     expect(obj.headers.Authorization).to.be.ok;

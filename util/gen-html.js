@@ -36,7 +36,7 @@ function readFile(fn) {
 
 /**
  * Write file, return promise
- * @param {Object} o 
+ * @param {Object} o
  * @param {String} o.fn - filename
  * @param {*} o.data - stuff to write
  */
