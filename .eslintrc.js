@@ -23,6 +23,9 @@ module.exports = {
         "node": true,
         "mocha": true
     },
+    "parserOptions": {
+        "ecmaVersion": 8
+    },
     "plugins": [
         "chai-friendly"
     ],

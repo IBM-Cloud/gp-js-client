@@ -4,7 +4,7 @@
   "description": "JavaScript client for IBM Globalization Pipeline",
   "main": "lib/main.js",
   "engines": {
-    "node": ">=4"
+    "node": ">=7.10.x"
   },
   "scripts": {
     "test": "mocha",
@@ -27,6 +27,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "chai": "^4.1.2",
+    "chai-html": "^1.2.0",
     "char-spinner": "^1.0.1",
     "coveralls": "^3.0.1",
     "diff": "^3.3.0",

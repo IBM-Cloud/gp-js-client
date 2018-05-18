@@ -66,21 +66,14 @@ as given in the bound service:
 To fetch the strings for a bundle named "hello", first create a bundle accessor:
 
 ```javascript
-    var mybundle = gpClient.bundle('hello');
+    const mybundle = gpClient.bundle('hello');
 ```
 
-Then, call the `getStrings` function with a callback:
+Then, call the `getStrings` function:
 
 ```javascript
-    mybundle.getStrings({ languageId: 'es'}, function (err, result) {
-        if (err) {
-            // handle err..
-            console.error(err);
-        } else {
-            var myStrings = result.resourceStrings;
-            console.dir(myStrings);
-        }
-    });
+    const {resourceStrings} = await mybundle.getStrings({ languageId: 'es'});
+    console.dir(resourceStrings);
 ```
 
 This code snippet will output the translated strings such as the following:
@@ -98,7 +91,7 @@ This code snippet will output the translated strings such as the following:
 To create a Translation request:
 
 ```javascript
-    gpClient.tr({
+    const tr = await gpClient.tr({
       name: 'My first TR',
       domains: [ 'HEALTHC' ],
 
@@ -111,46 +104,39 @@ To create a Translation request:
       notes: [ 'This is a mobile health advice application.' ],
       status: 'SUBMITTED' // request to submit it right away.
     })
-    .create((err, tr) => {
-        if(err) { … handle err … }
-
-        console.log('TR submitted with ID:', tr.id);
-        console.log('Estimated completion:', 
-            tr.estimatedCompletion.toLocaleString());
-    });
+    .create();
+    console.log('TR submitted with ID:', tr.id);
+    console.log('Estimated completion:', 
+        tr.estimatedCompletion.toLocaleString());
 ```
 
 To then check on the status of that request:
 
 ```javascript
-    gpClient.tr('333cfaecabdedbd8fa16a24b626848d6')
-    .getInfo((err, tr) => {
-        if(err) { … handle err … }
+    const {status} = await gpClient.tr('333cfaecabdedbd8fa16a24b626848d6')
+        .getInfo();
 
-        console.log('Current status:', tr.status);
-    });
+    console.log('Current status:', status);
 ```
 
 ### Async
 
-Note that all calls that take a callback are asynchronous.
+Note that all calls that are async (or take a callback) are asynchronous.
 For example, the following code:
 
 ```javascript
 var bundle = client.bundle('someBundle');
-bundle.create({…}, function(…){…});
-bundle.uploadStrings({…}, function(…){…});
+bundle.create().then(…);
+bundle.uploadStrings().then(…);
 ```
 
 …will fail, because the bundle `someBundle` hasn’t been `create`d by the time the
-`uploadStrings` call is made. Instead, make the `uploadStrings` call within a callback:
+`uploadStrings` call is made. Instead, make sure `create` is called before `uploadStrings`: 
 
 ```javascript
 var bundle = client.bundle('someBundle');
-bundle.create({…}, function(…){
-    …
-    bundle.uploadStrings({…}, function(…){…});
-});
+await bundle.create();
+await bundle.uploadStrings();
 ```
 
 ## Testing
@@ -184,25 +170,27 @@ Finally, include the bundle in your HTML:
 API convention
 ==
 
-APIs may take a callback OR return a promise, and use this general pattern
-
-### Promise mode
-
-* ⚠ _please note that the apidocs [haven’t been updated yet](https://github.com/IBM-Cloud/gp-js-client/issues/85) to note that 
-the callback `cb` is optional and that Promises are returned by most functions.
+Most APIs will return a promise. APIs that return a promise are either identified as `async`
+or have the optional callback (`cb`) parameter. These APIs can be used using `async/await`
+or else with `.then(…)`
 
 ```javascript
-    gpClient.function( { /* opts */ })
+    await gpClient.ping();
+```
+
+
+```javascript
+    gpClient.ping( { /* opts */ })
     .then( result => /* do something with result */)
     .catch( err => /* do something with err */ );
 ```
 
-
 * opts: an object containing input parameters, if needed.
 
-### Callback mode
+### Callback mode (deprecated)
 
-Prior to v2.0, only the callback model was supported. This is still supported.
+Prior to v2.0, only the callback model was supported. This is still supported
+for some APIs, but is deprecated.
 
 ```javascript
     gpClient.function( { /*opts*/ } ,  function callback(err, result))
@@ -211,13 +199,13 @@ Prior to v2.0, only the callback model was supported. This is still supported.
 * opts: an object containing input parameters, if needed.
 * callback: a callback with:
     - `err`: if truthy, indicates an error has occured.
-    -`result`: the operation’s result
-
+    - `result`: the operation’s result
 
 Sometimes the `opts` object is optional. If this is the case, the
 API doc will indicate it with this notation:  `[opts]`
 For example,  `bundle.getInfo(cb)` and `bundle.getInfo({}, cb)`  are equivalent.
 
+### Naming
 
 Also, note that there are aliases from the swagger doc function names
 to the convenience name. For example, `bundle.uploadResourceStrings` can be 

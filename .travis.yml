@@ -1,8 +1,7 @@
-OBlanguage: node_js
+language: node_js
 node_js:
-- '4'
-- '6'
 - '8'
+- '9'
 script:
 - npm install
 - curl $GP_FAKE_BROKER > local-credentials.json
