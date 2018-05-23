@@ -28,21 +28,21 @@
   "devDependencies": {
     "chai": "^4.1.1",
     "char-spinner": "^1.0.1",
-    "coveralls": "^2.13.1",
+    "coveralls": "^3.0.1",
     "diff": "^3.3.0",
-    "eslint": "^4.5.0",
+    "eslint": "^4.19.1",
     "eslint-plugin-chai-friendly": "^0.4.0",
     "github-markdown-css": "^2.8.0",
     "istanbul": "^0.4.5",
-    "jsdoc-to-markdown": "^3.0.0",
-    "marked": "^0.3.6",
-    "mocha": "^3.5.0",
+    "jsdoc-to-markdown": "^3.0.4",
+    "marked": "^0.3.19",
+    "mocha": "^5.2.0",
     "mocha-eslint": "^4.1.0",
-    "nyc": "^11.1.0",
+    "nyc": "^11.8.0",
     "optional": "^0.1.4",
-    "request": "^2.81.0"
+    "request": "^2.87.0"
   },
   "dependencies": {
-    "swagger-client": "^3.3.1"
+    "swagger-client": "^3.8.3"
   }
 }
