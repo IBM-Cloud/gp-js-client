@@ -635,7 +635,8 @@ describe('gaasClient.bundle()', function() {
               function(err, entry3){
                 if(err) return done(err);
                 expect(entry3.reviewed).to.be.false;
-                expect(entry3.notes).to.deep.equal([ 'Take note.', 'note: Take.' ])
+                // Notes are no longer on subitems.
+                // expect(entry3.notes).to.deep.equal([ 'Take note.', 'note: Take.' ])
                 done();
               });
           })
