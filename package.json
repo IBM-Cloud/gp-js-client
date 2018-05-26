@@ -10,11 +10,11 @@
     "test": "mocha",
     "coverage": "nyc mocha && nyc report --reporter=lcov",
     "mocha": "mocha --reporter dot",
-    "docs": "jsdoc2md lib/*.js --template template-README.md > README.md",
+    "docs": "jsdoc2md lib/*.js --template template.md > API.md",
     "html": "npm run docs && node util/gen-html.js",
     "vscode-typings": "tsd query node mocha chai request --action install",
     "eslint": "mocha -f eslint --reporter list",
-    "prepack": "rm -f README.html"
+    "prepack": "rm -f API.html"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
     "char-spinner": "^1.0.1",
     "coveralls": "^3.0.1",
     "diff": "^3.3.0",
+    "delay": "^3.0.0",
     "eslint": "^4.19.1",
     "eslint-plugin-chai-friendly": "^0.4.0",
     "github-markdown-css": "^2.8.0",

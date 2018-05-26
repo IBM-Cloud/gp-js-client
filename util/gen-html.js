@@ -1,5 +1,5 @@
 /*
- * Copyright IBM Corp. 2015
+ * Copyright IBM Corp. 2015,2018
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,38 +16,19 @@
 
 const marked = require('marked');
 const fs = require('fs');
+const {promisify} = require('util');
+const readdir = promisify(fs.readdir);
+const readFile = promisify(fs.readFile);
+const writeFile = promisify(fs.writeFile);
+const {name,version} = require('../package.json');
+const {basename} = require('path');
 
 
-const ifn = 'README.md';
-const ofn = 'README.html';
-const tfn = 'util/template-README.html';
+// all md files
+const mdfiles = readdir('.')
+  .then((list) => list.filter((n) => (/\.md$/).test(n)));
 
-/**
- * Read a file, return a promise
- * @param {String} fn - the filename
- */
-function readFile(fn) {
-  return new Promise((resolve, reject) =>
-    fs.readFile(fn, 'utf-8', (err, data) => {
-      if(err) return reject(err);
-      return resolve(data.toString());
-    }));
-}
-
-/**
- * Write file, return promise
- * @param {Object} o
- * @param {String} o.fn - filename
- * @param {*} o.data - stuff to write
- */
-function writeFile(o) {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(o.fn, o.data, (err) => {
-      if(err) return reject(err);
-      return resolve();
-    });
-  });
-}
+const templatefn = 'util/template.html';
 
 /**
  * Convert input to markdown, return data
@@ -69,17 +50,30 @@ function convertMarkdown(opts) {
  * @param {Object} opts
  */
 function insertIntoTemplate(opts) {
-  return readFile(opts.template)
+  const {templatefn} = opts;
+  return readFile(templatefn, 'utf-8')
     .then((template) => new Promise((resolve /*, reject*/) => {
-      const str = template.toString().replace(/@@@.*/, opts.data);
+      const str = template.toString()
+        .replace(/\${(name|version|file|data|templatefn)}/gi, (ignored,k) => opts[k] || `(unknown: ${k})`);
+
       return resolve(str);
     }));
 }
 
-// OK, now process.
-readFile(ifn)
-  .then((data) => convertMarkdown({data: data}))
-  .then((data) => insertIntoTemplate({data: data, template: tfn}))
-  .then((data) => writeFile({ fn: ofn, data: data }))
-  .then(() => console.log('gen-html:', ifn, '+', tfn, '=>', ofn))
-  .catch((e) => console.error(e));
+function processFile(file) {
+  const outfile = `${basename(file, '.md')}.html`;
+  return readFile(file, 'utf-8')
+    .then((data) => convertMarkdown({data}))
+    .then((data) => insertIntoTemplate({name, version, file, data, templatefn}))
+    .then((data) => writeFile(outfile, data, 'utf-8'))
+    .then(() => ({ file, templatefn, outfile }));
+}
+
+function processAll(files) {
+  return Promise.all(files.map((file) => processFile(file)));
+}
+
+// OK, do it
+mdfiles
+  .then(processAll)
+  .then((res) => console.dir(res), (err) => console.error(err));

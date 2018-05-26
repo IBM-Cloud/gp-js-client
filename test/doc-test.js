@@ -21,6 +21,7 @@ require('./lib/localsetenv').applyLocal();
 
 //return true;
 
+const delay = require('delay');
 var minispin = require('./lib/minispin');
 var randHex = require('./lib/randhex');
 var gpTest = require ('./lib/gp-test');
@@ -170,7 +171,7 @@ describe('doc crud markdown', () => {
   it(`should let us create ${testmd}`, () => client.MarkdownDocument(testmd)
     .create({
       sourceLanguage: 'en',
-      targetLanguages: [ 'qru' ]
+      targetLanguages: [ ]
     }));
   it(`should let us getInfo  ${testmd}`, async () => {
     const doc = await (client.MarkdownDocument(testmd)
@@ -210,6 +211,19 @@ describe('doc crud markdown', () => {
       }));
     // round trip test via lenient HTML comparison
     expect(await gpTest.mdToHtml(r)).html.to.equal(await gpTest.mdToHtml(gpTest.testString('upd', testmd)));
+  });
+  it.skip(`should let us update and verify target langs ${testmd}`, async () => {
+    const doc = client.MarkdownDocument(testmd);
+    await doc.update({ targetLanguages: ['qru'] });
+    const doc2 = await doc.getInfo();
+    expect(doc2.targetLanguages).to.deep.equal(['qru']);
+  });
+  it.skip(`should let us update and verify notes/metadata ${testmd}`, async () => {
+    const doc = client.MarkdownDocument(testmd);
+    await doc.update({  notes: ['hello'], metadata: { foo: 'bar'} });
+    const doc2 = await doc.getInfo();
+    expect(doc2.notes).to.deep.equal(['hello2']);
+    expect(doc2.metadata).to.deep.equal({foo: 'bar'});
   });
 });
 

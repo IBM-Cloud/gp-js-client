@@ -1,5 +1,5 @@
 node_modules
-README.html
+/*.html
 npm-debug.log
 /local-*
 /.vscode
