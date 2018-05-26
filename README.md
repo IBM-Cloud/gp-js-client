@@ -18,7 +18,8 @@ This SDK currently supports:
 
 ### News
 
-* ⚠ Please note that support for Node v0.12 [has been dropped in version 2.0 of this SDK](https://github.com/IBM-Cloud/gp-js-client/issues/55). See the [Node.js LTS schedule](https://github.com/nodejs/LTS).
+* ⚠ Please note that at present, the 3.x version of the SDK [requires Node 8 or later](https://github.com/IBM-Cloud/gp-js-client/issues/124) (async/await yes). See the [Node.js LTS schedule](https://github.com/nodejs/LTS). Use 2.x if you need to use Node versions back to 4. We may try to support prior Node versions in 3.x later if needed. Please comment on [this issue](https://github.com/IBM-Cloud/gp-js-client/issues/124) if you have feedback.
+* New APIs will not support the callback model, but only return promises. Existing APIs that used to take a callback should continue to do so.
 
 ## Sample
 
