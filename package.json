@@ -4,17 +4,17 @@
   "description": "JavaScript client for IBM Globalization Pipeline",
   "main": "lib/main.js",
   "engines": {
-    "node": ">=4"
+    "node": ">=7.10.x"
   },
   "scripts": {
     "test": "mocha",
     "coverage": "nyc mocha && nyc report --reporter=lcov",
     "mocha": "mocha --reporter dot",
-    "docs": "jsdoc2md lib/*.js --template template-README.md > README.md",
+    "docs": "jsdoc2md lib/*.js --template template.md > API.md",
     "html": "npm run docs && node util/gen-html.js",
     "vscode-typings": "tsd query node mocha chai request --action install",
     "eslint": "mocha -f eslint --reporter list",
-    "prepack": "rm -f README.html"
+    "prepack": "rm -f API.html"
   },
   "repository": {
     "type": "git",
@@ -27,9 +27,11 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "chai": "^4.1.2",
+    "chai-html": "^1.2.0",
     "char-spinner": "^1.0.1",
     "coveralls": "^3.0.1",
     "diff": "^3.3.0",
+    "delay": "^3.0.0",
     "eslint": "^4.19.1",
     "eslint-plugin-chai-friendly": "^0.4.0",
     "github-markdown-css": "^2.8.0",

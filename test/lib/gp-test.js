@@ -18,6 +18,7 @@ var expect = require('chai').expect;
 var byscheme = require('./byscheme');
 var optional = require('optional');
 var fs = require('fs');
+const marked = require('marked');
 
 var localCredsFile = './local-credentials.json';
 var localCredentials;
@@ -297,11 +298,38 @@ module.exports.verifySecurityHeadersSwagger = function verifySecurityHeadersSwag
   });
 }
 
+module.exports.testPath = function testPath() {
+  const newPath = [].slice.call(arguments).join('_');
+  return newPath;
+}
+
 /**
  * Return a JSON object with the given path.
  * Example:  testData('a','b','c') -> require('…/data/a_b_c.json');
  */
 module.exports.testData = function testData() {
-  const newPath = [].slice.call(arguments).join('_');
+  const newPath = module.exports.testPath.apply(this,arguments);
   return require('../data/'+newPath);
 };
+
+/**
+* Return a String with the given path.
+* Example:  testData('a','b','c.txt') -> read('…/data/a_b_c.txt');
+*/
+module.exports.testString = function testString() {
+  const newPath = module.exports.testPath.apply(this,arguments);
+  return fs.readFileSync('./test/data/'+newPath, 'utf-8').toString();
+};
+
+/**
+ * Promise based MD to HTML
+ * @param {String} md
+ */
+module.exports.mdToHtml = function mdToHtml(md) {
+  return new Promise((resolve, reject) => {
+    marked(md, {}, (err, content) => {
+      if(err) return reject(err);
+      return resolve(content);
+    });
+  });
+}
