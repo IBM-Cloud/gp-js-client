@@ -30,13 +30,13 @@
     "chai-html": "^1.2.0",
     "char-spinner": "^1.0.1",
     "coveralls": "^3.0.1",
-    "diff": "^3.3.0",
     "delay": "^3.0.0",
+    "diff": "^3.3.0",
     "eslint": "^4.19.1",
     "eslint-plugin-chai-friendly": "^0.4.0",
     "github-markdown-css": "^2.8.0",
     "istanbul": "^0.4.5",
-    "jsdoc-to-markdown": "^3.0.4",
+    "jsdoc-to-markdown": "^4.0.1",
     "marked": "^0.3.19",
     "mocha": "^5.2.0",
     "mocha-eslint": "^4.1.0",
@@ -45,6 +45,8 @@
     "request": "^2.87.0"
   },
   "dependencies": {
+    "minimist": "^1.2.0",
     "swagger-client": "^3.8.3"
-  }
+  },
+  "bin": "./bin/gp-js-cli"
 }
