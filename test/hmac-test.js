@@ -64,8 +64,8 @@ describe('lib/gaas-hmac', function() {
     expect(obj.headers.Authorization).to.be.ok;
     expect(obj.headers.Authorization).to.equal(
       'GaaS-HMAC MyUser:C+0WoqztV6Go5Ttu05y2jcCD450=');
-    expect(obj.headers.Date).to.be.ok;
-    expect(obj.headers.Date).to.equal(myHmac.forceDateString);
+    expect(obj.headers['GP-Date']).to.be.ok;
+    expect(obj.headers['GP-Date']).to.equal(myHmac.forceDateString);
   });
   it('Should verify that we can apply with a string body (golden test)', function() {
     var myHmac = new GaasHmac('MyAuth', 'MyUser', 'MySecret');
@@ -90,8 +90,8 @@ describe('lib/gaas-hmac', function() {
     expect(obj.headers.Authorization).to.be.ok;
     expect(obj.headers.Authorization).to.equal(
       'GaaS-HMAC MyUser:ONBJapYEveDZfsPFdqZHQ64GDgc=');
-    expect(obj.headers.Date).to.be.ok;
-    expect(obj.headers.Date).to.equal(myHmac.forceDateString);
+    expect(obj.headers['GP-Date']).to.be.ok;
+    expect(obj.headers['GP-Date']).to.equal(myHmac.forceDateString);
   });
   it('Should verify that we can apply with a spacious key body (golden test)', function() {
     var myHmac = new GaasHmac('MyAuth', 'MyUser', 'MySecret');
@@ -116,8 +116,8 @@ describe('lib/gaas-hmac', function() {
     expect(obj.headers.Authorization).to.be.ok;
     expect(obj.headers.Authorization).to.equal(
       'GaaS-HMAC MyUser:6iqc3pISoVrgGLMzxhZ9jujUm64=');
-    expect(obj.headers.Date).to.be.ok;
-    expect(obj.headers.Date).to.equal(myHmac.forceDateString);
+    expect(obj.headers['GP-Date']).to.be.ok;
+    expect(obj.headers['GP-Date']).to.equal(myHmac.forceDateString);
   });
   it('Should verify that we can apply with undefined body', function() {
     var myHmac = new GaasHmac('MyAuth', 'MyUser', 'MySecret');
@@ -142,8 +142,8 @@ describe('lib/gaas-hmac', function() {
     expect(obj.headers.Authorization).to.be.ok;
     expect(obj.headers.Authorization).to.equal(
       'GaaS-HMAC MyUser:VutLpxSxYtUZKLJPV8eqRU3Spxw=');
-    expect(obj.headers.Date).to.be.ok;
-    expect(obj.headers.Date).to.equal(myHmac.forceDateString);
+    expect(obj.headers['GP-Date']).to.be.ok;
+    expect(obj.headers['GP-Date']).to.equal(myHmac.forceDateString);
   });
   it('Should verify that we can apply with a random date', function() {
     var myHmac = new GaasHmac('MyAuth', 'MyUser', 'MySecret');
@@ -166,8 +166,8 @@ describe('lib/gaas-hmac', function() {
     expect(obj.headers.Authorization).to.be.ok;
     expect(obj.headers.Authorization.length).to.not.equal(0);
     // can't test the auth header against a static string
-    expect(obj.headers.Date).to.be.ok;
-    expect(obj.headers.Date.length).to.not.equal(0);
-    expect(obj.headers.Date).to.contain(" GMT");
+    expect(obj.headers['GP-Date']).to.be.ok;
+    expect(obj.headers['GP-Date'].length).to.not.equal(0);
+    expect(obj.headers['GP-Date']).to.contain(" GMT");
   });
 });
