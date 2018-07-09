@@ -168,7 +168,22 @@ Finally, include the bundle in your HTML:
 ```
 ## API
 
-See [API.md](API.md)
+See [API.md](API.md) for more details.
+
+## CLI
+
+You can use the GP CLI to perform some operations from the commandline.
+
+    $ npm install -g g11n-pipeline
+    $ g11n-pipeline -j gpconfig.json ping
+    true
+
+Using `npx` you do not even need to install g11n-pipeline to run a one-off command.
+
+    $ npx g11n-pipeline -j gpconfig.json ping
+    true
+
+See [CLI.md](CLI.md) for more details.
 
 ## Community
 

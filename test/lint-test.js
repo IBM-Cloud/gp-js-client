@@ -20,7 +20,8 @@ const mochaEslint = require('mocha-eslint');
 const paths = [
   'lib',
   'test',
-  'util'
+  'util',
+  'bin'
 ];
 
 const options = {

@@ -132,4 +132,11 @@ describe('lib/utils', function() {
       expect(o).to.equal("rugby,baseball,soccer");
     });
   });
+  describe('readJson', () => {
+    const {readJson} = require('../lib/utils');
+    it('should let us read', async () => {
+      const d = await readJson('test/data/t1_0_en.json');
+      expect(d).to.deep.equal({hi: 'hello'});
+    });
+  });
 });
