@@ -1,0 +1,17 @@
+{
+    "this": {
+        "hi": "hello",
+        "bye": "good-bye"
+    },
+    "that": {
+        "hi": "Hello World",
+        "bye": "Good bye!"
+    },
+    "other": {
+        "things": [
+            "apple",
+            "banana",
+            "cherry"
+        ]
+    }
+}

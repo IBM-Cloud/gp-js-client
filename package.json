@@ -45,6 +45,7 @@
     "request": "^2.87.0"
   },
   "dependencies": {
+    "g11n-pipeline-flatten": "^2.0.0",
     "minimist": "^1.2.0",
     "swagger-client": "^3.8.3"
   },
