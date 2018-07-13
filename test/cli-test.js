@@ -373,6 +373,47 @@ describe('cli test', () => {
     }).run();
     expect(output).to.deep.equal(require('./data/t1_0_en.json'))
   });
+  it('should be able to call export -T no change', async () => {
+    const output = await new Cli({
+      _: [ 'export' ],
+      serviceUrl: opts.credentials.url,
+      instanceId: opts.credentials.instanceId,
+      user: opts.credentials.userId,
+      password: opts.credentials.password,
+      bundle: 'mybundle',
+      languages: 'en',
+      flatten: true
+    }).run();
+    expect(output).to.deep.equal(require('./data/t1_0_en.json'))
+  });
+  it('should be able to call import -T with no change', async () => {
+    const output = await new Cli({
+      _: [ 'import' ],
+      serviceUrl: opts.credentials.url,
+      instanceId: opts.credentials.instanceId,
+      user: opts.credentials.userId,
+      password: opts.credentials.password,
+      bundle: 'mybundle',
+      languages: 'en',
+      file: 'test/data/t1_0_en.json',
+      flatten: true
+    }).run();
+
+    expect(output).to.be.ok;
+  });
+  it('should be able to call export -T no change', async () => {
+    const output = await new Cli({
+      _: [ 'export' ],
+      serviceUrl: opts.credentials.url,
+      instanceId: opts.credentials.instanceId,
+      user: opts.credentials.userId,
+      password: opts.credentials.password,
+      bundle: 'mybundle',
+      languages: 'en',
+      flatten: true
+    }).run();
+    expect(output).to.deep.equal(require('./data/t1_0_en.json'))
+  });
   it('should be able to call delete', async () => {
     const output = await new Cli({
       _: [ 'instanceInfo' ],
@@ -387,6 +428,73 @@ describe('cli test', () => {
   });
 });
 
+describe('cli flatten/unflatten test', () => {
+  it('should be able to call create', async () => {
+    const output = await new Cli({
+      _: [ 'create' ],
+      serviceUrl: opts.credentials.url,
+      instanceId: opts.credentials.instanceId,
+      user: opts.credentials.userId,
+      password: opts.credentials.password,
+      bundle: 'flattest',
+      languages: 'en'
+    }).run();
+
+    expect(output).to.be.ok;
+  });
+  it('should be able to call import with -T', async () => {
+    const output = await new Cli({
+      _: [ 'import' ],
+      serviceUrl: opts.credentials.url,
+      instanceId: opts.credentials.instanceId,
+      user: opts.credentials.userId,
+      password: opts.credentials.password,
+      bundle: 'flattest',
+      languages: 'en',
+      file: 'test/data/flattest.json',
+      flatten: true
+    }).run();
+
+    expect(output).to.be.ok;
+  });
+  it('should be able to call export', async () => {
+    const output = await new Cli({
+      _: [ 'export' ],
+      serviceUrl: opts.credentials.url,
+      instanceId: opts.credentials.instanceId,
+      user: opts.credentials.userId,
+      password: opts.credentials.password,
+      bundle: 'flattest',
+      languages: 'en'
+    }).run();
+    expect(output).to.deep.equal(require('./data/flattest-expand.json'))
+  });
+  it('should be able to call export -T ', async () => {
+    const output = await new Cli({
+      _: [ 'export' ],
+      serviceUrl: opts.credentials.url,
+      instanceId: opts.credentials.instanceId,
+      user: opts.credentials.userId,
+      password: opts.credentials.password,
+      bundle: 'flattest',
+      languages: 'en',
+      flatten: true
+    }).run();
+    expect(output).to.deep.equal(require('./data/flattest.json'))
+  });
+  it('should be able to call delete', async () => {
+    const output = await new Cli({
+      _: [ 'instanceInfo' ],
+      serviceUrl: opts.credentials.url,
+      instanceId: opts.credentials.instanceId,
+      user: opts.credentials.userId,
+      password: opts.credentials.password,
+      bundle: 'flattest'
+    }).run();
+
+    expect(output).to.be.ok;
+  });
+});
 
 // unless !delete?
 if(NO_DELETE) {
