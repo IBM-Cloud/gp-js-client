@@ -149,11 +149,15 @@ Verbs
 
 - `import -b mybundle -l en -f mybundle.json`
 
-    Import `mybundle.json` to replace the `en` language content for bundle `mybundle`
+    Import `mybundle.json` to replace the `en` language content for bundle `mybundle`.
+    
+    For nested structure, use the `-T` option to flatten the keys using the [g11n-pipeline-flatten](https://github.com/IBM-Cloud/gp-js-flatten#usage) component.
 
 - `export -b mybundle -l en -F json > mybundle.json`
 
     Export bundle `mybundle` to disk as `mybundle.json`
+    
+    For nested structure, use the `-T` option to expand the keys using the [g11n-pipeline-flatten](https://github.com/IBM-Cloud/gp-js-flatten#usage) component.
 
 ### Translation Request Commands
 
