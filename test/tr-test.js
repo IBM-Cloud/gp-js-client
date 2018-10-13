@@ -180,7 +180,7 @@ describe('GP-HPE.bundle()', function () {
     var proj = gaasClient.bundle({ id: projectId, serviceInstance: instanceName });
     proj.create({
       sourceLanguage: srcLang,
-      targetLanguages: [targLang0],
+      // targetLanguages: [targLang0], // add trgLang when we upload, to avoid MT
       notes: ['Note to self']
     }, function (err, resp) {
       if (err) return done(err);
