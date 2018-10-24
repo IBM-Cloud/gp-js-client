@@ -105,7 +105,7 @@ describe('Setting up doc test', function() {
 });
 
 // ping
-describe('Verifying again that we can reach the server', function() {
+describe('doc: Verifying again that we can reach the server', function() {
   it('Should let us call client.ping', function(done) {
     if(process.env.BAIL_ON_ERR && !client.hasOwnProperty('ping')) {
       console.error('Could not reach server');
@@ -143,7 +143,7 @@ describe('Verifying again that we can reach the server', function() {
 });
 
 
-describe('client.setup instance ' + serviceInstanceId, function() {
+describe('doc: client.setup instance ' + serviceInstanceId, function() {
   if(opts.credentials.isAdmin) it('should let us create our instance', () => client.restCall("admin.createServiceInstance",
     {
       serviceInstanceId,
@@ -277,11 +277,11 @@ describe('doc crud html', () => {
 
 // unless !delete?
 if(NO_DELETE) {
-  describe('client.delete', function() {
+  describe('doc: client.delete', function() {
     it('(skipped- NO_DELETE)');
   });
 } else if(opts.credentials.isAdmin) {
-  describe('client.delete instance ' + serviceInstanceId, function() {
+  describe('doc: client.delete instance ' + serviceInstanceId, function() {
     it('should let us delete our instance', () => client.restCall("admin.deleteServiceInstance", {
       serviceInstanceId: serviceInstanceId
     }));
