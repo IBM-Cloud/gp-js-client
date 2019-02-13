@@ -115,10 +115,13 @@ Usage: <code>var credentials = require(&#39;cfEnv&#39;)
 ## Functions
 
 <dl>
-<dt><a href="#getClient">getClient(params)</a> ⇒ <code><a href="#Client">Client</a></code></dt>
+<dt><del><a href="#getClient">getClient(params)</a> ⇒ <code><a href="#Client">Client</a></code></del></dt>
 <dd><p>Construct a g11n-pipeline client.
 params.credentials is required unless params.appEnv is supplied.
 Required either: (userId &amp; password) or (apikey &amp; iam_endpoint)</p>
+</dd>
+<dt><a href="#connect">connect()</a></dt>
+<dd><p>Create a GP client… returns a promise to the client.</p>
 </dd>
 <dt><a href="#readJson">readJson(filename)</a> ⇒ <code>Promise.&lt;Object&gt;</code></dt>
 <dd><p>Read a file, return promise to parsed obj</p>
@@ -1444,7 +1447,9 @@ Possible translation domains. These provide hints as to the type of translation 
 
 <a name="getClient"></a>
 
-## getClient(params) ⇒ [<code>Client</code>](#Client)
+## ~~getClient(params) ⇒ [<code>Client</code>](#Client)~~
+***Deprecated***
+
 Construct a g11n-pipeline client.
 params.credentials is required unless params.appEnv is supplied.
 Required either: (userId & password) or (apikey & iam_endpoint)
@@ -1463,6 +1468,12 @@ Required either: (userId & password) or (apikey & iam_endpoint)
 | params.credentials.iam_endpoint | <code>string</code> | IAM endpoint |
 | params.credentials.instanceId | <code>string</code> | instance ID |
 
+<a name="connect"></a>
+
+## connect()
+Create a GP client… returns a promise to the client.
+
+**Kind**: global function  
 <a name="readJson"></a>
 
 ## readJson(filename) ⇒ <code>Promise.&lt;Object&gt;</code>
