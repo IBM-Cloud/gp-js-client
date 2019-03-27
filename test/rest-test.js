@@ -151,14 +151,24 @@ describe('Check HTTP URL', function() {
     it('Should not let me access ' + urlToPing, function(done) {
       http.get(urlToPing,
         function(res) {
-          expect(res.statusCode).to.equal(403);
+          expect([403, 301]).to.include(res.statusCode);
           res.on('data', function(d) {
             try {
-              var err = JSON.parse(d);
-              expect(err.status).to.equal("ERROR");
-              expect(err.message).to.contain('crypt');
-              expect(err.message).to.contain('HTTP');
-              done();
+              if(res.statusCode === 403) {
+                // error status
+                var err = JSON.parse(d);
+                expect(err.status).to.equal("ERROR");
+                expect(err.message).to.contain('crypt');
+                expect(err.message).to.contain('HTTP');
+                done();
+              } else if(res.statusCode === 301) {
+                // it's a redirect, hopefully to the https location
+                expect(res.headers.location).to.be.ok;
+                expect(res.headers.location.substring(0,6)).to.equal('https:'); // redirect to HTTPS
+                done();
+              } else {
+                done(Error(`Don't know how to validate statusCode ${res.statusCode}`));
+              }
             } catch(e) {
               done(e);
             }
