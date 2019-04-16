@@ -246,7 +246,9 @@ describe('cli test', () => {
       serviceUrl: opts.credentials.url,
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
-      password: opts.credentials.password
+      password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint
     }).run();
 
     expect(output).to.equal(true);
@@ -257,7 +259,9 @@ describe('cli test', () => {
       serviceUrl: opts.credentials.url,
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
-      password: opts.credentials.password
+      password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint
     }).run();
 
     expect(output).to.be.ok;
@@ -268,7 +272,9 @@ describe('cli test', () => {
       serviceUrl: opts.credentials.url,
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
-      password: opts.credentials.password
+      password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint
     }).run();
 
     expect(output).to.be.ok;
@@ -279,7 +285,9 @@ describe('cli test', () => {
       serviceUrl: opts.credentials.url,
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
-      password: opts.credentials.password
+      password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint
     }).run();
 
     expect(output).to.be.ok;
@@ -291,6 +299,8 @@ describe('cli test', () => {
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
       password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint,
       bundle: 'mybundle',
       languages: 'en,mt,fr'
     }).run();
@@ -304,6 +314,8 @@ describe('cli test', () => {
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
       password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint,
       bundle: 'mybundle'
     }).run();
 
@@ -319,6 +331,8 @@ describe('cli test', () => {
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
       password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint,
       bundle: 'mybundle',
       languages: 'es,fr,mt' // add some target languages
     }).run();
@@ -332,6 +346,8 @@ describe('cli test', () => {
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
       password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint,
       bundle: 'mybundle',
       languages: 'en',
       file: 'test/data/t1_0_en.json'
@@ -345,7 +361,9 @@ describe('cli test', () => {
       serviceUrl: opts.credentials.url,
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
-      password: opts.credentials.password
+      password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint
     }).run();
 
     expect(output).to.be.ok;
@@ -356,7 +374,9 @@ describe('cli test', () => {
       serviceUrl: opts.credentials.url,
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
-      password: opts.credentials.password
+      password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint
     }).run();
 
     expect(output).to.be.ok;
@@ -368,6 +388,8 @@ describe('cli test', () => {
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
       password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint,
       bundle: 'mybundle',
       languages: 'en'
     }).run();
@@ -380,6 +402,8 @@ describe('cli test', () => {
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
       password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint,
       bundle: 'mybundle',
       languages: 'en',
       flatten: true
@@ -393,6 +417,8 @@ describe('cli test', () => {
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
       password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint,
       bundle: 'mybundle',
       languages: 'en',
       file: 'test/data/t1_0_en.json',
@@ -408,6 +434,8 @@ describe('cli test', () => {
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
       password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint,
       bundle: 'mybundle',
       languages: 'en',
       flatten: true
@@ -421,6 +449,8 @@ describe('cli test', () => {
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
       password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint,
       bundle: 'mybundle'
     }).run();
 
@@ -436,6 +466,8 @@ describe('cli flatten/unflatten test', () => {
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
       password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint,
       bundle: 'flattest',
       languages: 'en'
     }).run();
@@ -449,6 +481,8 @@ describe('cli flatten/unflatten test', () => {
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
       password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint,
       bundle: 'flattest',
       languages: 'en',
       file: 'test/data/flattest.json',
@@ -464,6 +498,8 @@ describe('cli flatten/unflatten test', () => {
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
       password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint,
       bundle: 'flattest',
       languages: 'en'
     }).run();
@@ -476,6 +512,8 @@ describe('cli flatten/unflatten test', () => {
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
       password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint,
       bundle: 'flattest',
       languages: 'en',
       flatten: true
@@ -489,6 +527,8 @@ describe('cli flatten/unflatten test', () => {
       instanceId: opts.credentials.instanceId,
       user: opts.credentials.userId,
       password: opts.credentials.password,
+      apikey: opts.credentials.apikey,
+      iam_endpoint: opts.credentials.iam_endpoint,
       bundle: 'flattest'
     }).run();
 
