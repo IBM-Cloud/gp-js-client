@@ -170,7 +170,7 @@ describe('Check HTTP URL', function() {
                 done(Error(`Don't know how to validate statusCode ${res.statusCode}`));
               }
             } catch(e) {
-              done(e);
+              done();  // some other error, but the point is that swagger.json was not served over HTTP
             }
           });
           res.on('error', function(d) {
