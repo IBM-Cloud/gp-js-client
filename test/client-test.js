@@ -1227,7 +1227,7 @@ describe('gaasClient.bundle()', function() {
 
     var proj = gaasAdminClient.bundle({id:projectId3});
 
-    return proj.create({sourceLanguage: gaasTest.SOURCES[0], targetLanguages: [gaasTest.SOURCES[0],gaasTest.CYRILLIC]})
+    return proj.create({sourceLanguage: gaasTest.SOURCES[0], targetLanguages: [gaasTest.CYRILLIC]})
       .then((/*resp*/) => proj.uploadResourceStrings({languageId: gaasTest.SOURCES[0], strings: {
         hello: 'Hello, World!',
         "msgError": "—"
