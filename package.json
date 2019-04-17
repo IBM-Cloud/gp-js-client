@@ -37,17 +37,17 @@
     "github-markdown-css": "^2.8.0",
     "istanbul": "^0.4.5",
     "jsdoc-to-markdown": "^4.0.1",
-    "marked": "^0.3.19",
+    "marked": "^0.6.2",
     "mocha": "^5.2.0",
     "mocha-eslint": "^4.1.0",
-    "nyc": "^11.8.0",
+    "nyc": "^14.0.0",
     "optional": "^0.1.4",
     "request": "^2.87.0"
   },
   "dependencies": {
     "g11n-pipeline-flatten": "^2.0.0",
     "minimist": "^1.2.0",
-    "swagger-client": "^3.8.3"
+    "swagger-client": "^3.8.25"
   },
   "bin": "./bin/gp-js-cli"
 }
