@@ -75,7 +75,9 @@ module.exports.getCredentials = function getCredentials() {
       instanceId: process.env.GP_INSTANCE_ID || process.env.GAAS_INSTANCE_ID || null /*admin*/,
       userId: process.env.GP_ADMIN_ID || process.env.GAAS_ADMIN_ID || process.env.GAAS_USER_ID || null,
       password: process.env.GP_ADMIN_PASSWORD || process.env.GAAS_ADMIN_PASSWORD || process.env.GAAS_PASSWORD || null,
-      isAdmin: ((process.env.GP_ADMIN_ID || process.env.GAAS_ADMIN_ID) !== null)
+      isAdmin: ((process.env.GP_ADMIN_ID || process.env.GAAS_ADMIN_ID) !== null),
+      apikey: process.env.GP_IAM_API_KEY,
+      iam_endpoint: process.env.GP_IAM_ENDPOINT
     };
   }
   if(VERBOSE) console.dir(creds);

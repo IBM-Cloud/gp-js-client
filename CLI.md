@@ -35,17 +35,26 @@ Options have a short or a long form. Therefore, the following are all equivalent
 Credentials
 --
 
+See also the [`getClient()` API docs](./API.md#getClient)
 Credentials may be passed in one of the following ways:
 
 1. Via the `-j/--jsonCreds` option, which takes a path to a JSON file with credentials
-2. Via the four individual options `--serviceUrl`, `--instanceId`, `--user`, and `--password`
+2a. For GP Auth: the four individual options `--serviceUrl`, `--instanceId`, `--user`, and `--password`
+2b. for IAM auth via `--iam_endpoint` and `--apikey`
 3. By the following environment variables:
 
     * __GP_URL__: Service URL (e.g. https://gp-rest.ng.bluemix.net/translate/rest)
     * __GP_INSTANCE_ID__: Service instance ID (e.g. d3f537cd617f34c86ac6b270f3065e73)
-    * __GP_USER_ID__: User ID (e.g. e92a1282a0e4f97bec93aa9f56fdb838)
-    * __GP_PASSWORD__: User password (e.g. zg5SlD+ftXYRIZDblLgEA/ILkkCNqE1y)
 
+    - _if using GP Authentication_:
+
+        * __GP_USER_ID__: User ID (e.g. e92a1282a0e4f97bec93aa9f56fdb838)
+        * __GP_PASSWORD__: User password (e.g. zg5SlD+ftXYRIZDblLgEA/ILkkCNqE1y)
+
+    - _if using IAM Authentication_:
+
+        * __GP_IAM_API_KEY__: IAM API Key
+        * __GP_IAM_ENDPOINT__: IAM endpoint (e.g. https://iam.cloud.ibm.com)
 
 Common Options
 --
@@ -54,7 +63,7 @@ Common Options
 
     See [Credentials](#Credentials), above.
 
-    This option specifies a credentials file containing the [GP credentials](https://github.com/IBM-Cloud/gp-common/blob/master/README.md#4-credentials). This is a JSON file with either of the following formats:
+    This option specifies a credentials file containing the [GP credentials](https://github.com/IBM-Cloud/gp-common/blob/master/README.md#4-credentials). This is a JSON file with any of the following formats:
     
     ```json
     {"url":"≈",
@@ -70,11 +79,31 @@ Common Options
         "userId":"≈",
         "password":"≈"}}
     ```
+    
+    ```json
+    {"url":"≈",
+     "instanceId":"≈",
+     "iam_endpoint":"≈",
+     "apikey":"≈"}
+    ```
+    
+    ```json
+    {"credentials":
+       {"url":"≈",
+        "instanceId":"≈",
+        "iam_endpoint":"≈",
+        "apikey":"≈"}}
+    ```
 
 - `--serviceUrl`, `--instanceId`, `--user`, `--password`
 
     See [Credentials](#Credentials), above.
-    These options specify the four credential parameters individually.
+    These options specify the four credential parameters individually for GP Auth.
+
+- `--iam_endpoint`, `--apikey`
+
+    See [Credentials](#Credentials), above.
+    These options specify the two credential parameters individually for IAM Auth.
 
 - `-F json` | `--outputFormat=json`
 

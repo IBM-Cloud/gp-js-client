@@ -99,8 +99,14 @@ Usage: <code>var credentials = require(&#39;cfEnv&#39;)
 <dt><a href="#exampleCredentials">exampleCredentials</a></dt>
 <dd><p>Example credentials such as for documentation.</p>
 </dd>
+<dt><a href="#exampleIamCredentials">exampleIamCredentials</a></dt>
+<dd><p>Example IAM credentials such as for documentation.</p>
+</dd>
 <dt><a href="#exampleCredentialsString">exampleCredentialsString</a></dt>
 <dd><p>Example credentials string</p>
+</dd>
+<dt><a href="#exampleIamCredentialsString">exampleIamCredentialsString</a></dt>
+<dd><p>Example IAM credentials string</p>
 </dd>
 <dt><a href="#version">version</a></dt>
 <dd><p>Current version</p>
@@ -112,7 +118,8 @@ Usage: <code>var credentials = require(&#39;cfEnv&#39;)
 <dl>
 <dt><a href="#getClient">getClient(params)</a> ⇒ <code><a href="#Client">Client</a></code></dt>
 <dd><p>Construct a g11n-pipeline client.
-params.credentials is required unless params.appEnv is supplied.</p>
+params.credentials is required unless params.appEnv is supplied.
+Required either: (userId &amp; password) or (apikey &amp; iam_endpoint)</p>
 </dd>
 <dt><a href="#readJson">readJson(filename)</a> ⇒ <code>Promise.&lt;Object&gt;</code></dt>
 <dd><p>Read a file, return promise to parsed obj</p>
@@ -1352,6 +1359,18 @@ Example credentials such as for documentation.
 | --- |
 | exampleCredentials | 
 
+<a name="exampleIamCredentials"></a>
+
+## exampleIamCredentials
+Example IAM credentials such as for documentation.
+
+**Kind**: global variable  
+**Properties**
+
+| Name |
+| --- |
+| exampleUamCredentials | 
+
 <a name="exampleCredentialsString"></a>
 
 ## exampleCredentialsString
@@ -1363,6 +1382,18 @@ Example credentials string
 | Name |
 | --- |
 | exampleCredentialsString | 
+
+<a name="exampleIamCredentialsString"></a>
+
+## exampleIamCredentialsString
+Example IAM credentials string
+
+**Kind**: global variable  
+**Properties**
+
+| Name |
+| --- |
+| exampleIamCredentialsString | 
 
 <a name="version"></a>
 
@@ -1417,6 +1448,7 @@ Possible translation domains. These provide hints as to the type of translation 
 ## getClient(params) ⇒ [<code>Client</code>](#Client)
 Construct a g11n-pipeline client.
 params.credentials is required unless params.appEnv is supplied.
+Required either: (userId & password) or (apikey & iam_endpoint)
 
 **Kind**: global function  
 
@@ -1426,8 +1458,10 @@ params.credentials is required unless params.appEnv is supplied.
 | params.appEnv | <code>Object</code> | pass the result of cfEnv.getAppEnv(). Ignored if params.credentials is supplied. |
 | params.credentials | <code>Object.&lt;string, string&gt;</code> | Bound credentials as from the CF service broker (overrides appEnv) |
 | params.credentials.url | <code>string</code> | service URL. (should end in '/translate') |
-| params.credentials.userId | <code>string</code> | service API key. |
-| params.credentials.password | <code>string</code> | service API key. |
+| params.credentials.userId | <code>string</code> | GP auth userid. |
+| params.credentials.password | <code>string</code> | GP auth password. |
+| params.credentials.apikey | <code>string</code> | IAM apikey |
+| params.credentials.iam_endpoint | <code>string</code> | IAM endpoint |
 | params.credentials.instanceId | <code>string</code> | instance ID |
 
 <a name="readJson"></a>
