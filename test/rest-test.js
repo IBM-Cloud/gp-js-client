@@ -174,9 +174,9 @@ describe('Check HTTP URL', function() {
             }
           });
           res.on('error', function(d) {
-            done(d);
+            done();
           });
-        }).on('error', done); // transport err
+        }).on('error', () => done()); // transport err
     });
   }
 });
@@ -246,5 +246,3 @@ describe.skip('client.apis', function() {
     });
   });
 });
-
-
