@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "bent": "^1.4.0",
-    "g11n-pipeline-flatten": "^2.0.0",
+    "g11n-pipeline-flatten": "^2.0.1",
     "minimist": "^1.2.0",
     "swagger-client": "^3.8.25"
   },
