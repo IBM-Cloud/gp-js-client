@@ -585,7 +585,7 @@ describe('gaasClient.bundle()', function() {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
     proj.uploadStrings({ languageId: '123',
       strings: sourceData},
-    function(err){if(err){done(); return;} done(Error('should have failed')); });
+    function(err){console.log(err); if(err){done(); return;} done(Error('should have failed')); });
   });
   it('should let us upload the language(tlh) not supported by MT', function(done) {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
