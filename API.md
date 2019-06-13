@@ -67,9 +67,8 @@ API reference
 <dt><a href="#Cli">Cli</a></dt>
 <dd><p>Command line interface to the Globalization Pipeline.
 Example usage:</p>
-<pre><code class="language-javascript">const Cli = require(&#39;g11n-pipeline/lib/gpcli&#39;);
-new Cli(Cli.parseArgs(process.argv)).run().then(…);
-</code></pre>
+<pre><code class="language-js">const Cli = require(&#39;g11n-pipeline/lib/gpcli&#39;);
+new Cli(Cli.parseArgs(process.argv)).run().then(…);</code></pre>
 </dd>
 <dt><a href="#HTMLDocument">HTMLDocument</a></dt>
 <dd><p>HTML Document</p>
