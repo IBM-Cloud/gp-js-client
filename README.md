@@ -8,7 +8,7 @@ The Globalization Pipeline service makes it easy for you to provide your global 
 with IBM Cloud applications translated into the languages in which they work. 
 This SDK currently supports:
 
-* [Node.js](http://nodejs.org)
+* [Node.js](http://nodejs.org) 8+
 * Web Browsers via [Browserify](#browserify)
 
 [![npm version](https://badge.fury.io/js/g11n-pipeline.svg)](https://badge.fury.io/js/g11n-pipeline)
@@ -16,10 +16,11 @@ This SDK currently supports:
 [![Coverage Status](https://coveralls.io/repos/github/IBM-Cloud/gp-js-client/badge.svg)](https://coveralls.io/github/IBM-Cloud/gp-js-client)
 [![Coverity Status](https://img.shields.io/coverity/scan/9399.svg)](https://scan.coverity.com/projects/ibm-bluemix-gp-js-client)
 
-### News
+## News
 
-* ⚠ Please note that at present, the 3.x version of the SDK [requires Node 8 or later](https://github.com/IBM-Cloud/gp-js-client/issues/124) (async/await yes). See the [Node.js LTS schedule](https://github.com/nodejs/LTS). Use 2.x if you need to use Node versions back to 4. We may try to support prior Node versions in 3.x later if needed. Please comment on [this issue](https://github.com/IBM-Cloud/gp-js-client/issues/124) if you have feedback.
-* New APIs will not support the callback model, but only return promises. Existing APIs that used to take a callback should continue to do so.
+- The CLI is expected to move to a separate package (possibly with a scope). This will lighten
+the dependencies required in this package. See [#158](https://github.com/IBM-Cloud/gp-js-client/issues/158)
+- There's an open discussion about deprecating `getClient()` in favor of a `connect()` which returns a promise. See [#155](https://github.com/IBM-Cloud/gp-js-client/pull/155)
 
 ## Sample
 
