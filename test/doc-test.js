@@ -91,10 +91,10 @@ describe('Setting up doc test', function() {
     });
 
 
-    it('requiring g11n-pipeline with options', function(done) {
-      client = GP.getClient(opts);
+    it('requiring g11n-pipeline with options', async function() {
+      client = await GP.connect(opts);
+      expect(client).to.be.ok;
       //if(VERBOSE) console.log( client._getUrl() );
-      done();
     });
   } else {
     // no creds

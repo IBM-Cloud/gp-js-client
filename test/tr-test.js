@@ -85,10 +85,9 @@ var urlEnv = gaas._normalizeUrl(opts.credentials.url); // use GaaS normalize
 
 describe('Setting up GP-HPE test', function () {
   if (urlEnv) {
-    it('requiring gaas with options', function (done) {
-      gaasClient = gaas.getClient(opts);
+    it('requiring gaas with options', async function () {
+      gaasClient = await gaas.connect(opts);
       //if(VERBOSE) console.log( gaasClient._getUrl() );
-      done();
     });
   } else {
     // no creds
