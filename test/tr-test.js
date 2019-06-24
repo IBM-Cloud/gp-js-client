@@ -25,21 +25,15 @@ require('./lib/localsetenv').applyLocal();
 
 var randHex = require('./lib/randhex');
 var gaasTest = require('./lib/gp-test');
-var GaasHmac = require('../lib/gp-hmac');
 var gpTest = require ('./lib/gp-test');
 const testData = gaasTest.testData;
-
 
 // if (process.env.NO_TR_TEST) { describe = describe.skip; }
 
 var gaas = require('../lib/main.js'); // required, below
-var gaasClient;
 
-var ourReaderKey; // to be filled in - API key.
-var ourReaderClient; // to be filled in - separate client that's just a reader.
 
 var expect = require('chai').expect;
-var assert = require('assert');
 
 var VERBOSE = process.env.GP_VERBOSE || false;
 var NO_DELETE = process.env.NO_DELETE || false;
@@ -47,11 +41,11 @@ if (VERBOSE) console.dir(module.filename);
 
 var projectId = process.env.GP_TR_PROJECT || 'MyTRProject' + Math.random();
 
-var DELAY_AVAIL = process.env.DELAY_AVAIL || false;
-
-
-// MS to loop when waiting for things to happen.
-var UNTIL_DELAY = 1024;
+const retrier = require('./lib/retrier').getRetrier({
+  pause: 1000 * 9, // 9s
+  retries: 5, // ~50s + txn time
+  verbose: false
+});
 
 const srcLang = 'en';
 const targLang0 = 'es';
@@ -67,8 +61,9 @@ var instanceName = (opts.credentials.instanceId) // given
 // if we are using a random instance name, set it here.
 opts.credentials.instanceId = opts.credentials.instanceId || instanceName;
 
-const partnerId = process.env.GP_TEST_PARTNER || 'TST';
+const partnerId = opts.credentials.partnerId || process.env.GP_TEST_PARTNER || 'TST';
 
+var gaasClient;
 
 function resterr(o) {
   if (!o) {
@@ -86,7 +81,7 @@ describe('Setting up GP-HPE test', function () {
   if (urlEnv) {
     it('requiring gaas with options', async function () {
       gaasClient = await gaas.connect(opts);
-      //if(VERBOSE) console.log( gaasClient._getUrl() );
+      expect(gaasClient).to.be.ok;
     });
   } else {
     // no creds
@@ -266,76 +261,26 @@ describe('GP-HPE: Requesting our first TR', function () {
         return done();
       });
   });
-  var t = 8192;
-
   // It's possible that the TR is merged by the time we get to it.
-  it('should eventually show the TR as STARTED (or MERGED or TRANSLATED)', function (done) {
-    var timeout;
-    var c = 100;
-    var loopy = function(c) {
-      c--;
-      if(c === 0) {
-        return done(Error('Patience exceeded!'));
-      } else if(timeout) {
-        clearTimeout(timeout);
-        timeout = undefined;
-      }
-      if(VERBOSE) console.log('Will try',c,'more times for',trId1);
-      gaasClient.tr(trId1)
-        .getInfo(function cb(err, tr) {
-          if(err) {
-            return done(err);
-          } else if(tr.status !== 'STARTED' && tr.status !== 'MERGED' && tr.status !== 'TRANSLATED') {
-            if(VERBOSE) console.log(tr.id,'=',tr.status);
-            timeout = setTimeout(loopy, t, c);
-          } else {
-            expect(tr.id).to.equal(trId1);
-            // TODO: more here.
-            expect(tr.startedAt).to.be.ok;
-            expect(tr.startedAt).to.be.at.least(tr.createdAt);
-            if(VERBOSE) console.dir(tr);
-            return done();
-          }
-        });
-    };
-    process.nextTick(loopy, c); // first run
-  });
-  it('should eventually show the TR as MERGED', function (done) {
-    var timeout;
-    var c = 100;
-    var loopy = function(c) {
-      if(VERBOSE) console.log('Will try',c,'more times for',trId1);
-      c--;
-      if(c === 0) {
-        return done(Error('Patience exceeded!'));
-      }else if(timeout) {
-        clearTimeout(timeout);
-        timeout = undefined;
-      }
-      gaasClient.tr(trId1)
-        .getInfo({serviceInstance: instanceName}, function cb(err, tr) {
-          if(err) {
-            return done(err);
-          } else if(tr.status !== 'MERGED') {
-            if(VERBOSE) console.log(tr.id,'=',tr.status);
-            timeout = setTimeout(loopy, t, c);
-          } else {
-            expect(tr.id).to.equal(trId1);
-            expect(tr.translatedAt).to.be.ok;
-            expect(tr.translatedAt).to.be.at.least(tr.startedAt);
-            expect(tr.mergedAt).to.be.ok;
-            expect(tr.mergedAt).to.be.at.least(tr.translatedAt);
-
-
-            // TODO: more here.
-            delete tr.gp; // for console.dir
-            if(VERBOSE) console.dir(tr, {depth: null, color: true});
-            return done();
-          }
-        });
-    };
-    process.nextTick(loopy, c); // first run
-  });
+  it('should eventually show the TR as STARTED (or MERGED or TRANSLATED)', () =>
+    retrier(async () => {
+      const tr = await (gaasClient.tr(trId1).getInfo());
+      expect(['STARTED','MERGED','TRANSLATED']).to.include(tr.status, `${tr.id} status`);
+      expect(tr.id).to.equal(trId1);
+      // TODO: more here.
+      expect(tr.startedAt).to.be.ok;
+      expect(tr.startedAt).to.be.at.least(tr.createdAt);
+    }));
+  it('should eventually show the TR as MERGED', () =>
+    retrier(async () => {
+      const tr = await (gaasClient.tr(trId1).getInfo());
+      expect(['MERGED']).to.include(tr.status, `${tr.id} status`);
+      expect(tr.id).to.equal(trId1);
+      expect(tr.translatedAt).to.be.ok;
+      expect(tr.translatedAt).to.be.at.least(tr.startedAt);
+      expect(tr.mergedAt).to.be.ok;
+      expect(tr.mergedAt).to.be.at.least(tr.translatedAt);
+    }));
   it('Should now have a reviewed field and translated content thanks to the TR', function (done) {
     var entry = gaasClient
       .bundle({ id: projectId, serviceInstance: instanceName })
@@ -458,8 +403,6 @@ describe('GP-HPE now try using tr.update', function() {
       });
   });
 
-  const t = 8192;
-
   it('Should be able to update the DRAFT TR to SUBMITTED asynchronously', function(done) {
     const updateToSubmit = {
       status: "SUBMITTED",
@@ -472,36 +415,18 @@ describe('GP-HPE now try using tr.update', function() {
       // word count should be calculated as part of the asynchronous process
       expect(response.translationRequest.wordCountsByBundle).to.be.empty;
       // check if the word count is subsequently calculated as part of the asynchronous process.
-      let timeout;
-      const c = 10;
-      const loopy = function(c) {
-        c--;
-        if(c === 0) {
-          return done(Error('Patience exceeded!'));
-        } else if(timeout) {
-          clearTimeout(timeout);
-          timeout = undefined;
-        }
-        if(VERBOSE) console.log('Will try',c,'more times for',trId2);
-        gaasClient.tr(trId2)
-          .getInfo(function cb(err, tr) {
-            if(err) {
-              return done(err);
-            } else if(Object.keys(tr.wordCountsByBundle).length == 0){
-              timeout = setTimeout(loopy, t, c);
-            } else {
-              expect(tr.id).to.equal(trId2);
-              // word count is calculated asynchronously on submission
-              expect(tr.status).to.equal("SUBMITTED");
-              expect(tr.wordCountsByBundle).to.not.be.empty;
-              if(VERBOSE) console.dir(tr);
-              return done();
-            }
-          });
-      };
-      process.nextTick(loopy, c); // first run
-    })
-  })
+      return done();
+    });
+  });
+  it('Should be able to verify word counts', () => retrier(async () => {
+    const tr = await gaasClient.tr(trId2).getInfo();
+    expect(Object.keys(tr.wordCountsByBundle).length).to.not.equal(0, 'no word counts available');
+    expect(tr.id).to.equal(trId2);
+    // word count is calculated asynchronously on submission
+    expect(tr.status).to.equal("SUBMITTED");
+    expect(tr.wordCountsByBundle).to.not.be.empty;
+    if(VERBOSE) console.dir(tr);
+  }));
 });
 
 // Translation request test for documents
@@ -596,67 +521,27 @@ describe('GP-HPE: Requesting our first document TR', function () {
     expect(tr.wordCountsMap).to.be.empty;
     expect(tr.createdAt).to.be.ok;
   });
-  var t = 8192;
-
   // It's possible that the TR is merged by the time we get to it.
-  it('should eventually show the document TR as STARTED (or MERGED or TRANSLATED)', function (done) {
-    var timeout;
-    var c = 100;
-    var loopy = async function(c) {
-      c--;
-      if(c === 0) {
-        return done(Error('Patience exceeded!'));
-      } else if(timeout) {
-        clearTimeout(timeout);
-        timeout = undefined;
-      }
-      if(VERBOSE) console.log('Will try',c,'more times for',docTrId);
-      const tr = await gaasClient.docTr(docTrId).getInfo();
-      if(tr.status !== 'STARTED' && tr.status !== 'MERGED' && tr.status !== 'TRANSLATED') {
-        if(VERBOSE) console.log(tr.id,'=',tr.status);
-        timeout = setTimeout(loopy, t, c);
-      } else {
-        expect(tr.id).to.equal(docTrId);
-        expect(tr.startedAt).to.be.ok;
-        expect(tr.startedAt).to.be.at.least(tr.createdAt);
-        if(VERBOSE) console.dir(tr);
-        return done();
-      }
-    };
-    process.nextTick(loopy, c); // first run
-  });
+  it('should eventually show the document TR as STARTED (or MERGED or TRANSLATED)', () => retrier(async () => {
+    const tr = await gaasClient.docTr(docTrId).getInfo();
+    expect(['STARTED','MERGED','TRANSLATED']).to.include(tr.status, `${tr.id} status`);
+    expect(tr.id).to.equal(docTrId);
+    expect(tr.startedAt).to.be.ok;
+    expect(tr.startedAt).to.be.at.least(tr.createdAt);
+  }));
 
-  it('should eventually show the document TR as MERGED', function (done) {
-    var timeout;
-    var c = 100;
-    var loopy = async function(c) {
-      if(VERBOSE) console.log('Will try',c,'more times for',docTrId);
-      c--;
-      if(c === 0) {
-        return done(Error('Patience exceeded!'));
-      }else if(timeout) {
-        clearTimeout(timeout);
-        timeout = undefined;
-      }
-      const tr = await gaasClient.docTr(docTrId).getInfo({serviceInstance: instanceName, summary: true});
-      if(tr.status !== 'MERGED') {
-        if(VERBOSE) console.log(tr.id,'=',tr.status);
-        timeout = setTimeout(loopy, t, c);
-      } else {
-        expect(tr.id).to.equal(docTrId);
-        expect(tr.translatedAt).to.be.ok;
-        expect(tr.translatedAt).to.be.at.least(tr.startedAt);
-        expect(tr.mergedAt).to.be.ok;
-        expect(tr.mergedAt).to.be.at.least(tr.translatedAt);
-        delete tr.gp; // for console.dir
-        if(VERBOSE) console.dir(tr, {depth: null, color: true});
-        return done();
-      }
-    };
-    process.nextTick(loopy, c); // first run
-  });
+  it('should eventually show the document TR as MERGED', () => retrier(async () => {
+    const tr = await gaasClient.docTr(docTrId).getInfo({serviceInstance: instanceName, summary: true});
+    expect(['MERGED']).to.include(tr.status, `${tr.id} status`);
+    expect(tr.id).to.equal(docTrId);
+    expect(tr.translatedAt).to.be.ok;
+    expect(tr.translatedAt).to.be.at.least(tr.startedAt);
+    expect(tr.mergedAt).to.be.ok;
+    expect(tr.mergedAt).to.be.at.least(tr.translatedAt);
+    delete tr.gp; // for console.dir
+    if(VERBOSE) console.dir(tr, {depth: null, color: true});
+  }));
 });
-
 var docTrId2;
 
 describe('GP-HPE now try using tr.update', function() {
@@ -702,8 +587,6 @@ describe('GP-HPE now try using tr.update', function() {
     expect(tr.notes).to.deep.equal(['a','b','c']);
   });
 
-  const t = 8192;
-
   it('Should be able to update the DRAFT document TR to SUBMITTED asynchronously', async () => {
     const updateToSubmit = {
       status: "SUBMITTED",
@@ -715,30 +598,17 @@ describe('GP-HPE now try using tr.update', function() {
     // word count should be calculated as part of the asynchronous process
     expect(response.translationRequest.wordCountsMap).to.be.empty;
     // check if the word count is subsequently calculated as part of the asynchronous process.
-    let timeout;
-    const c = 10;
-    const loopy = async (c) => {
-      c--;
-      if(c === 0) {
-        return Error('Patience exceeded!');
-      } else if(timeout) {
-        clearTimeout(timeout);
-        timeout = undefined;
-      }
-      if(VERBOSE) console.log('Will try', c, 'more times for', docTrId2);
-      const tr = await gaasClient.docTr(docTrId2).getInfo();
-      if(Object.keys(tr.wordCountsMap).length == 0){
-        timeout = setTimeout(loopy, t, c);
-      } else {
-        expect(tr.id).to.equal(docTrId2);
-        // word count is calculated asynchronously on submission
-        expect(tr.status).to.equal("SUBMITTED");
-        expect(tr.wordCountsMap).to.not.be.empty;
-        if(VERBOSE) console.dir(tr);
-      }
-    }
-    process.nextTick(loopy, c); // first run
   });
+
+  it('Should verify word counts in that TR', () => retrier(async () => {
+    const tr = await gaasClient.docTr(docTrId2).getInfo();
+    // expect(Object.keys(tr.wordCountsMap)).to.be.ok.and.have.length.greaterThan(0, 'wordCountsMap length');
+    expect(tr.id).to.equal(docTrId2);
+    // word count is calculated asynchronously on submission
+    expect(tr.status).to.equal("SUBMITTED");
+    expect(tr.wordCountsMap).to.not.be.empty;
+    if(VERBOSE) console.dir(tr);
+  }));
 });
 
 

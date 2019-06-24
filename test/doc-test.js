@@ -20,8 +20,6 @@
 require('./lib/localsetenv').applyLocal();
 
 //return true;
-
-const delay = require('delay');
 var randHex = require('./lib/randhex');
 var gpTest = require ('./lib/gp-test');
 var GaasHmac = require('../lib/gp-hmac');

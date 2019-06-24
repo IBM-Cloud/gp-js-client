@@ -87,7 +87,7 @@ describe('Setting up GaaS test', function() {
   if ( urlEnv ) {
     var urlToPing = urlEnv.replace(/\/rest.*$/,'/');
     if(VERBOSE) console.dir(urlToPing);
-    it('should let us directly ping ' + urlToPing, function(done) {
+    it.skip('should let us directly ping ' + urlToPing, function(done) {
       var timeout;
       var http_or_https = require('./lib/byscheme')(urlEnv);
       var t = 200;
