@@ -152,10 +152,9 @@ describe('Setting up cli test', function() {
     });
 
 
-    it('requiring g11n-pipeline with options', function(done) {
-      client = GP.getClient(opts);
+    it('requiring g11n-pipeline with options', async function() {
+      client = await GP.connect(opts);
       //if(VERBOSE) console.log( client._getUrl() );
-      done();
     });
   } else {
     // no creds
@@ -165,17 +164,18 @@ describe('Setting up cli test', function() {
   }
 
   if(serviceInstanceId === randInstanceName) {
-    it(`should let us create the random instance ${randInstanceName}`, () => GP.getClient(opts).restCall("admin.createServiceInstance",
-      {
-        serviceInstanceId,
-        body: {
-          serviceId: 'rand-'+randHex(),
-          orgId: 'rand-'+randHex(),
-          spaceId: 'rand-'+randHex(),
-          planId: 'rand-'+randHex(),
-          disabled: false
-        }
-      }));
+    it(`should let us create the random instance ${randInstanceName}`, async () =>
+      (await GP.connect(opts)).restCall("admin.createServiceInstance",
+        {
+          serviceInstanceId,
+          body: {
+            serviceId: 'rand-'+randHex(),
+            orgId: 'rand-'+randHex(),
+            spaceId: 'rand-'+randHex(),
+            planId: 'rand-'+randHex(),
+            disabled: false
+          }
+        }));
   }
 });
 

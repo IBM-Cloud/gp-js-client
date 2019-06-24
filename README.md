@@ -18,9 +18,9 @@ This SDK currently supports:
 
 ## News
 
+- `getClient()` has been removed. Instead, use `connect()` which returns a `Promise` to a Client object.
 - The CLI is expected to move to a separate package (possibly with a scope). This will lighten
 the dependencies required in this package. See [#158](https://github.com/IBM-Cloud/gp-js-client/issues/158)
-- There's an open discussion about deprecating `getClient()` in favor of a `connect()` which returns a promise. See [#155](https://github.com/IBM-Cloud/gp-js-client/pull/155)
 
 ## Sample
 
@@ -45,7 +45,7 @@ The documentation explains how to find the service on IBM Cloud, create a new se
 ```javascript
 var optional = require('optional');
 var appEnv = require('cfenv').getAppEnv();
-var gpClient = require('g11n-pipeline').getClient(
+var gpClient = await require('g11n-pipeline').connect(
   optional('./local-credentials.json')   // if it exists, use local-credentials.json
     || {appEnv: appEnv}                  // otherwise, the appEnv
 );
@@ -153,7 +153,10 @@ You can call the g11n-pipeline API just as from Node.js:
 ```js
 // mycode.js
 const gp = require('g11n-pipeline');
-gp.getClient({/*...*/}) // do some great stuff here
+gp.connect({/*...*/})
+.then(client => {
+    // do some great stuff here
+});
 ```
 
 And then, package up the code for the browser:

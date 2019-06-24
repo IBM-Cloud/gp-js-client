@@ -39,9 +39,9 @@ var gaas = require('../lib/main.js'); // required, below
 var gaasTest = require ('./lib/gp-test');
 var opts = {credentials: gaasTest.getCredentials()};
 var isAdmin = opts.credentials.isAdmin; // admin creds available?
-var gaasClient = gaas.getClient(opts);
+var gaasClient = gaas.connect(opts);
 var basicOpts = {basicAuth: true, credentials: gaasTest.getCredentials()};
-var basicClient = gaas.getClient(basicOpts); // not implemented
+var basicClient = gaas.connect(basicOpts); // not implemented
 var url = gaasClient.url;
 
 var sourceLoc = "en-US";

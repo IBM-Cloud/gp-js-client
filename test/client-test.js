@@ -121,10 +121,9 @@ describe('Setting up GaaS test', function() {
     });
 
 
-    it('requiring gaas with options', function(done) {
-      gaasClient = gaas.getClient(opts);
+    it('requiring gaas with options', async () => {
+      gaasClient = await gaas.connect(opts);
       //if(VERBOSE) console.log( gaasClient._getUrl() );
-      done();
     });
   } else {
     // no creds
@@ -831,16 +830,16 @@ describe('gaasClient.bundle()', function() {
 
   // Let's test that reader user
 
-  it('Should verify the reader user can ping', function(done) {
+  it('Should verify the reader user can ping', async function() {
     expect(myUserInfo).to.be.ok; // otherwise, user creation failed
-    gaasReaderClient = gaas.getClient(readerInfo);
-    gaasReaderClient.ping({}, done);
+    gaasReaderClient = await gaas.connect(readerInfo);
+    await gaasReaderClient.ping();
   });
 
-  it('Should verify the admin user can ping', function(done) {
+  it('Should verify the admin user can ping', async function() {
     expect(adminInfo).to.be.ok; // otherwise, user creation failed
-    gaasAdminClient = gaas.getClient(adminInfo);
-    gaasAdminClient.ping({}, done);
+    gaasAdminClient = (await gaas.connect(adminInfo));
+    await gaasAdminClient.ping();
   });
 
   // Metadata test here.

@@ -115,8 +115,9 @@ Usage: <code>var credentials = require(&#39;cfEnv&#39;)
 ## Functions
 
 <dl>
-<dt><a href="#getClient">getClient(params)</a> ⇒ <code><a href="#Client">Client</a></code></dt>
-<dd><p>Construct a g11n-pipeline client.
+<dt><a href="#connect">connect(params)</a> ⇒ <code><a href="#Client">Promise.&lt;Client&gt;</a></code></dt>
+<dd><p>Create a GP client.
+Returns a promise to the client.
 params.credentials is required unless params.appEnv is supplied.
 Required either: (userId &amp; password) or (apikey &amp; iam_endpoint)</p>
 </dd>
@@ -1442,10 +1443,11 @@ Possible translation domains. These provide hints as to the type of translation 
 | ENGYUTL | <code>string</code> | <code>&quot;Energy and utilities&quot;</code> | 
 | AGRICLT | <code>string</code> | <code>&quot;Agriculture&quot;</code> | 
 
-<a name="getClient"></a>
+<a name="connect"></a>
 
-## getClient(params) ⇒ [<code>Client</code>](#Client)
-Construct a g11n-pipeline client.
+## connect(params) ⇒ [<code>Promise.&lt;Client&gt;</code>](#Client)
+Create a GP client.
+Returns a promise to the client.
 params.credentials is required unless params.appEnv is supplied.
 Required either: (userId & password) or (apikey & iam_endpoint)
 
