@@ -48,6 +48,5 @@
     "g11n-pipeline-flatten": "^2.0.1",
     "minimist": "^1.2.0",
     "swagger-client": "^3.8.25"
-  },
-  "bin": "./bin/gp-js-cli"
+  }
 }

@@ -19,8 +19,7 @@ This SDK currently supports:
 ## News
 
 - `getClient()` has been removed. Instead, use `connect()` which returns a `Promise` to a Client object.
-- The CLI is expected to move to a separate package (possibly with a scope). This will lighten
-the dependencies required in this package. See [#158](https://github.com/IBM-Cloud/gp-js-client/issues/158)
+- The CLI is moving to a separate package. See [#158](https://github.com/IBM-Cloud/gp-js-client/issues/158)
 
 ## Sample
 
