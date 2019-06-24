@@ -18,7 +18,6 @@ var expect = require('chai').expect;
 var byscheme = require('./byscheme');
 var optional = require('optional');
 var fs = require('fs');
-const marked = require('marked');
 
 var localCredsFile = './local-credentials.json';
 var localCredentials;
@@ -323,15 +322,3 @@ module.exports.testString = function testString() {
   return fs.readFileSync('./test/data/'+newPath, 'utf-8').toString();
 };
 
-/**
- * Promise based MD to HTML
- * @param {String} md
- */
-module.exports.mdToHtml = function mdToHtml(md) {
-  return new Promise((resolve, reject) => {
-    marked(md, {}, (err, content) => {
-      if(err) return reject(err);
-      return resolve(content);
-    });
-  });
-}

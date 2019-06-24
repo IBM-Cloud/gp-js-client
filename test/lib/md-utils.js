@@ -14,30 +14,17 @@
  * limitations under the License.
  */
 
-/**
- * Used to have my own implementation. Not anymore.
- */
-var spinner = require('char-spinner');
-
-var interval;
+const marked = require('marked');
 
 /**
- * Start the spinner. No effect if already started.
+ * Promise based MD to HTML
+ * @param {String} md
  */
-function dospin() {
-  if(!interval) {
-    interval = spinner({delay:50});
-  }
+module.exports.mdToHtml = function mdToHtml(md) {
+  return new Promise((resolve, reject) => {
+    marked(md, {}, (err, content) => {
+      if(err) return reject(err);
+      return resolve(content);
+    });
+  });
 }
-
-/**
- * Stop the spinner.
- */
-function doclear() {
-  interval = clearInterval(interval);
-}
-
-module.exports = {
-  step: dospin,
-  clear: doclear
-};

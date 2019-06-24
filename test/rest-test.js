@@ -28,7 +28,6 @@ var d = describe;
 
 if(VERBOSE) console.dir(module.filename);
 var http = require('http');
-var minispin = require('./lib/minispin');
 var randHex = require('./lib/randhex');
 var expect = require('chai').expect;
 
@@ -86,13 +85,11 @@ describe('Check URL ' + url+'/', function() {
         clearTimeout(timeout);
         timeout = undefined;
       }
-      minispin.step();
       try {
         http_or_https.get(urlToPing, // trailing slash to avoid 302
           function(d) {
             if(VERBOSE) console.log(urlToPing + '-> ' + d.statusCode); // dontcare
             if(d.statusCode === 200) {
-              minispin.clear();
               done();
             } else {
               timeout = setTimeout(loopy, t);

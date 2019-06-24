@@ -1,9 +1,0 @@
-{
-    "$.this.hi":"hello",
-    "$.this.bye":"good-bye",
-    "$.that.hi":"Hello World",
-    "$.that.bye":"Good bye!",
-    "$.other.things[0]":"apple",
-    "$.other.things[1]":"banana",
-    "$.other.things[2]":"cherry"
-}

@@ -23,7 +23,6 @@ require('./lib/localsetenv').applyLocal();
 
 // var Q = require('q');
 
-var minispin = require('./lib/minispin');
 var randHex = require('./lib/randhex');
 var gaasTest = require('./lib/gp-test');
 var GaasHmac = require('../lib/gp-hmac');
@@ -274,7 +273,6 @@ describe('GP-HPE: Requesting our first TR', function () {
     var timeout;
     var c = 100;
     var loopy = function(c) {
-      minispin.step();
       c--;
       if(c === 0) {
         return done(Error('Patience exceeded!'));
@@ -307,7 +305,6 @@ describe('GP-HPE: Requesting our first TR', function () {
     var c = 100;
     var loopy = function(c) {
       if(VERBOSE) console.log('Will try',c,'more times for',trId1);
-      minispin.step();
       c--;
       if(c === 0) {
         return done(Error('Patience exceeded!'));
@@ -478,7 +475,6 @@ describe('GP-HPE now try using tr.update', function() {
       let timeout;
       const c = 10;
       const loopy = function(c) {
-        minispin.step();
         c--;
         if(c === 0) {
           return done(Error('Patience exceeded!'));
@@ -607,7 +603,6 @@ describe('GP-HPE: Requesting our first document TR', function () {
     var timeout;
     var c = 100;
     var loopy = async function(c) {
-      minispin.step();
       c--;
       if(c === 0) {
         return done(Error('Patience exceeded!'));
@@ -636,7 +631,6 @@ describe('GP-HPE: Requesting our first document TR', function () {
     var c = 100;
     var loopy = async function(c) {
       if(VERBOSE) console.log('Will try',c,'more times for',docTrId);
-      minispin.step();
       c--;
       if(c === 0) {
         return done(Error('Patience exceeded!'));
@@ -724,7 +718,6 @@ describe('GP-HPE now try using tr.update', function() {
     let timeout;
     const c = 10;
     const loopy = async (c) => {
-      minispin.step();
       c--;
       if(c === 0) {
         return Error('Patience exceeded!');

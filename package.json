@@ -28,7 +28,6 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-html": "^1.2.0",
-    "char-spinner": "^1.0.1",
     "coveralls": "^3.0.1",
     "delay": "^3.0.0",
     "eslint": "^4.19.1",
@@ -45,7 +44,6 @@
   },
   "dependencies": {
     "bent": "^1.4.0",
-    "g11n-pipeline-flatten": "^2.0.1",
     "minimist": "^1.2.0",
     "swagger-client": "^3.8.25"
   }

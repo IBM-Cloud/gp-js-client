@@ -16,8 +16,6 @@
 
 var expect = require('chai').expect;
 
-var assert = require('assert');
-
 // process locals
 require('./lib/localsetenv').applyLocal();
 
@@ -37,16 +35,6 @@ describe('test/lib/byscheme', function() {
     expect(https).to.be.ok;
     expect(https).to.equal(require('https'));
     expect(https).to.not.equal(require('http'));
-  });
-});
-
-describe('test/lib/minispin', function() {
-  var minispin = require('./lib/minispin.js');
-  it('Should verify that the spinner works', function() {
-    for(var i=0;i<8;i++) {
-      minispin.step();
-    }
-    minispin.clear();
   });
 });
 
@@ -130,13 +118,6 @@ describe('lib/utils', function() {
       });
       expect(o).to.be.ok;
       expect(o).to.equal("rugby,baseball,soccer");
-    });
-  });
-  describe('readJson', () => {
-    const {readJson} = require('../lib/utils');
-    it('should let us read', async () => {
-      const d = await readJson('test/data/t1_0_en.json');
-      expect(d).to.deep.equal({hi: 'hello'});
     });
   });
 });
