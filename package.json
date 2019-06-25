@@ -45,6 +45,6 @@
   "dependencies": {
     "bent": "^1.4.0",
     "minimist": "^1.2.0",
-    "swagger-client": "^3.8.25"
+    "swagger-client": "^3.9.0"
   }
 }
