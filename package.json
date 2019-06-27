@@ -1,6 +1,6 @@
 {
   "name": "g11n-pipeline",
-  "version": "4.0.0",
+  "version": "4.0.1-0",
   "description": "JavaScript client for IBM Globalization Pipeline",
   "main": "lib/main.js",
   "engines": {
