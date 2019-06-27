@@ -18,9 +18,10 @@ This SDK currently supports:
 
 ## News
 
+### 4.0.0
+
 - `getClient()` has been removed. Instead, use `connect()` which returns a `Promise` to a Client object.
-- The CLI is expected to move to a separate package (possibly with a scope). This will lighten
-the dependencies required in this package. See [#158](https://github.com/IBM-Cloud/gp-js-client/issues/158)
+- The CLI is now in a separate package/repo. See https://github.com/IBM-Cloud/gp-js-cli for news and usage.
 
 ## Sample
 
@@ -177,17 +178,7 @@ See [API.md](API.md) for more details.
 ## CLI
 
 You can use the GP CLI to perform some operations from the commandline.
-
-    $ npm install -g g11n-pipeline
-    $ g11n-pipeline -j gpconfig.json ping
-    true
-
-Using `npx` you do not even need to install g11n-pipeline to run a one-off command.
-
-    $ npx g11n-pipeline -j gpconfig.json ping
-    true
-
-See [CLI.md](CLI.md) for more details.
+See https://github.com/IBM-Cloud/gp-js-cli for more details.
 
 ## Community
 

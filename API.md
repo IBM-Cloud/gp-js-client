@@ -64,12 +64,6 @@ API reference
 <dt><a href="#DocumentTranslationRequest">DocumentTranslationRequest</a></dt>
 <dd><p>Document Translation Request.</p>
 </dd>
-<dt><a href="#Cli">Cli</a></dt>
-<dd><p>Command line interface to the Globalization Pipeline.
-Example usage:</p>
-<pre><code class="language-js">const Cli = require(&#39;g11n-pipeline/lib/gpcli&#39;);
-new Cli(Cli.parseArgs(process.argv)).run().then(…);</code></pre>
-</dd>
 <dt><a href="#HTMLDocument">HTMLDocument</a></dt>
 <dd><p>HTML Document</p>
 </dd>
@@ -747,82 +741,6 @@ Fetch the TR’s data from the server.
 Update the TR’s data on the server.
 
 **Kind**: instance method of [<code>DocumentTranslationRequest</code>](#DocumentTranslationRequest)  
-<a name="Cli"></a>
-
-## Cli
-Command line interface to the Globalization Pipeline.
-Example usage:
-```js
-const Cli = require('g11n-pipeline/lib/gpcli');
-new Cli(Cli.parseArgs(process.argv)).run().then(…);
-```
-
-**Kind**: global class  
-
-* [Cli](#Cli)
-    * [new Cli(argv)](#new_Cli_new)
-    * _instance_
-        * [.filter()](#Cli+filter)
-        * [.run()](#Cli+run) ⇒ <code>Promise.&lt;Object&gt;</code>
-        * [.getCredentials(argv)](#Cli+getCredentials) ⇒ <code>Object</code>
-    * _static_
-        * [.parseOpts](#Cli.parseOpts)
-        * [.parseArgs(argv)](#Cli.parseArgs)
-
-<a name="new_Cli_new"></a>
-
-### new Cli(argv)
-To use from a script: `new Cli(Cli.parseArgs(process.argv))`
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| argv | <code>Object</code> | a minimist-compatible argv array (i.e. { "config": "config.json", "_": [ "list" ] }) |
-| argv._ | <code>Array.&lt;String&gt;</code> | array of non-option arguments (i.e. 'list', 'ping', etc.) |
-
-<a name="Cli+filter"></a>
-
-### cli.filter()
-Filter the result according to the --outputFormat option.
-Use:  `cli.run().then((result) => cli.filter(result))`
-
-**Kind**: instance method of [<code>Cli</code>](#Cli)  
-<a name="Cli+run"></a>
-
-### cli.run() ⇒ <code>Promise.&lt;Object&gt;</code>
-Run the verb, returning a Promise with the result.
-If you call this multiple times, it will run multiple times.
-
-**Kind**: instance method of [<code>Cli</code>](#Cli)  
-**Returns**: <code>Promise.&lt;Object&gt;</code> - the result (verb dependent)  
-<a name="Cli+getCredentials"></a>
-
-### cli.getCredentials(argv) ⇒ <code>Object</code>
-**Kind**: instance method of [<code>Cli</code>](#Cli)  
-**Returns**: <code>Object</code> - credentials  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| argv | <code>Object</code> | args |
-
-<a name="Cli.parseOpts"></a>
-
-### Cli.parseOpts
-Options to be used with minimist.
-See https://www.npmjs.com/package/minimist#var-argv--parseargsargs-opts
-
-**Kind**: static property of [<code>Cli</code>](#Cli)  
-<a name="Cli.parseArgs"></a>
-
-### Cli.parseArgs(argv)
-Parse the args with miminist
-
-**Kind**: static method of [<code>Cli</code>](#Cli)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| argv | <code>Object</code> | argv from process.argv |
-
 <a name="HTMLDocument"></a>
 
 ## HTMLDocument

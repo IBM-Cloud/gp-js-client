@@ -20,13 +20,10 @@
 require('./lib/localsetenv').applyLocal();
 
 //return true;
-
-const delay = require('delay');
-var minispin = require('./lib/minispin');
 var randHex = require('./lib/randhex');
 var gpTest = require ('./lib/gp-test');
 var GaasHmac = require('../lib/gp-hmac');
-
+const {mdToHtml} = require('./lib/md-utils');
 var GP = require('../lib/main.js'); // required, below
 var client;
 
@@ -67,13 +64,11 @@ describe('Setting up doc test', function() {
           clearTimeout(timeout);
           timeout = undefined;
         }
-        minispin.step();
         try {
           http_or_https.get(urlToPing, // trailing slash to avoid 302
             function(d) {
               if(VERBOSE) console.log(urlToPing + '-> ' + d.statusCode); // dontcare
               if(d.statusCode === 200) {
-                minispin.clear();
                 done();
               } else {
                 timeout = setTimeout(loopy, t);
@@ -192,7 +187,7 @@ describe('doc crud markdown', () => {
         languageId: 'en'
       }));
     // round trip test via lenient HTML comparison
-    expect(await gpTest.mdToHtml(r)).html.to.equal(await gpTest.mdToHtml(gpTest.testString(testmd)));
+    expect(await mdToHtml(r)).html.to.equal(await mdToHtml(gpTest.testString(testmd)));
   });
   it(`should let us list md docs`, async () => {
     const list = await client.getMdDocumentList();
@@ -210,7 +205,7 @@ describe('doc crud markdown', () => {
         languageId: 'en'
       }));
     // round trip test via lenient HTML comparison
-    expect(await gpTest.mdToHtml(r)).html.to.equal(await gpTest.mdToHtml(gpTest.testString('upd', testmd)));
+    expect(await mdToHtml(r)).html.to.equal(await mdToHtml(gpTest.testString('upd', testmd)));
   });
   it.skip(`should let us update and verify target langs ${testmd}`, async () => {
     const doc = client.MarkdownDocument(testmd);

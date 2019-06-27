@@ -21,7 +21,6 @@ require('./lib/localsetenv').applyLocal();
 
 //return true;
 
-var minispin = require('./lib/minispin');
 var randHex = require('./lib/randhex');
 var gaasTest = require ('./lib/gp-test');
 var GaasHmac = require('../lib/gp-hmac');
@@ -88,7 +87,7 @@ describe('Setting up GaaS test', function() {
   if ( urlEnv ) {
     var urlToPing = urlEnv.replace(/\/rest.*$/,'/');
     if(VERBOSE) console.dir(urlToPing);
-    it('should let us directly ping ' + urlToPing, function(done) {
+    it.skip('should let us directly ping ' + urlToPing, function(done) {
       var timeout;
       var http_or_https = require('./lib/byscheme')(urlEnv);
       var t = 200;
@@ -97,13 +96,11 @@ describe('Setting up GaaS test', function() {
           clearTimeout(timeout);
           timeout = undefined;
         }
-        minispin.step();
         try {
           http_or_https.get(urlToPing, // trailing slash to avoid 302
             function(d) {
               if(VERBOSE) console.log(urlToPing + '-> ' + d.statusCode); // dontcare
               if(d.statusCode === 200) {
-                minispin.clear();
                 done();
               } else {
                 timeout = setTimeout(loopy, t);
@@ -496,17 +493,18 @@ describe('gaasClient.bundle()', function() {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
     var entry = proj.entry({ languageId: gaasTest.CYRILLIC, resourceKey: 'key2'});
     var loopy = function() {
-      minispin.step();
       entry.getInfo({},
         function(err, data) {
-          if(err) {minispin.clear(); done(err); return; }
+          if(err) {
+            done(err);
+            return;
+          }
           if(VERBOSE) console.dir(data);
           if(data.translationStatus === 'IN_PROGRESS') {
             setTimeout(loopy, 1024);
           } else {
             expect(data.translationStatus).to.equal('TRANSLATED');
             expect(data.value).to.equal(qruData.key2);
-            minispin.clear();
             done();
           }
         });
@@ -584,7 +582,7 @@ describe('gaasClient.bundle()', function() {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
     proj.uploadStrings({ languageId: '123',
       strings: sourceData},
-    function(err){console.log(err); if(err){done(); return;} done(Error('should have failed')); });
+    function(err){/*console.log(err); */if(err){done(); return;} done(Error('should have failed')); });
   });
   it('should let us upload the language(tlh) not supported by MT', function(done) {
     var proj = gaasClient.bundle({id:projectId, serviceInstance: instanceName});
