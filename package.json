@@ -39,8 +39,7 @@
     "mocha": "^5.2.0",
     "mocha-eslint": "^4.1.0",
     "nyc": "^14.0.0",
-    "optional": "^0.1.4",
-    "request": "^2.87.0"
+    "optional": "^0.1.4"
   },
   "dependencies": {
     "bent": "^1.4.0",

@@ -173,6 +173,9 @@ function expectResNonCORSGET(res, done) {
  * Set up an 'options' block for the specified method.
  */
 function optionsCreate(swaggerUrl, method) {
+  if(typeof swaggerUrl === 'object') {
+    swaggerUrl = swaggerUrl.toString();
+  }
   var options = url.parse(swaggerUrl);
   options.url = swaggerUrl;
   options.method = method;
@@ -251,6 +254,7 @@ module.exports.verifySecurityHeaders = function verifySecurityHeaders(swaggerUrl
   if(!str) str = '';
   ['GET'].forEach(function (method) {
     var optionsGet = optionsCreate(swaggerUrl, method);
+    if(VERBOSE) console.dir(optionsGet);
     it('Sec: Should NOT let me ' + method + ' ' + swaggerUrl + ' w/ CORS' + (auth?' (auth) ':' ') + str, function (done) {
       var oreq = byscheme(swaggerUrl).get(optionsAuth(optionsGet, auth),
         function (res) {
