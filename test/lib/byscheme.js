@@ -14,10 +14,13 @@
 * limitations under the License.
 */
 
+const {URL} = require('url');
 
 module.exports = function (url) {
-// todo: parse scheme?
-  if (url.indexOf('https') === 0) {
+  if(typeof url === 'string') {
+    url = new URL(url);
+  }
+  if (url.protocol === 'https:') {
     return require('https');
   } else {
     return require('http');

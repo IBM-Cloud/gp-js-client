@@ -19,12 +19,19 @@
 // load locals
 require('./lib/localsetenv').applyLocal();
 
+const {URL} = require('url');
 var projectId = process.env.GP_PROJECT  || 'MyLLProject'+Math.random();
 var projectId2 = process.env.GP_PROJECT2 || 'MyOtherLLProject'+Math.random();
 var CLEANSLATE = false; // CLEANSLATE: assume no other projects
 var VERBOSE = process.env.GP_VERBOSE || false;
 var d = describe;
-// if(process.env.NO_REST_TEST) { describe = describe.skip; }
+const bent = require('bent');
+const getJson = bent('json');
+const retrier = require('./lib/retrier').getRetrier({
+  pause: 1000 * 9, // 9s
+  retries: 5, // ~50s + txn time
+  verbose: false
+});
 
 if(VERBOSE) console.dir(module.filename);
 var http = require('http');
@@ -38,10 +45,19 @@ var gaas = require('../lib/main.js'); // required, below
 var gaasTest = require ('./lib/gp-test');
 var opts = {credentials: gaasTest.getCredentials()};
 var isAdmin = opts.credentials.isAdmin; // admin creds available?
-var gaasClient = gaas.connect(opts);
 var basicOpts = {basicAuth: true, credentials: gaasTest.getCredentials()};
-var basicClient = gaas.connect(basicOpts); // not implemented
-var url = gaasClient.url;
+let _client;
+
+/**
+ * Helper for calling connect once…
+ */
+async function getClient() {
+  if(!_client) _client = await gaas.connect(opts);
+  return _client;
+}
+
+// url ending in `/translate/`
+const translateUrl = new URL(opts.credentials.url.replace(/\/rest.*$/,'/'));
 
 var sourceLoc = "en-US";
 var targLoc = "zh-Hans";
@@ -51,92 +67,34 @@ var sourceData = {
   "key2": "Second string to translate"
 };
 
-if ( ! url ) {
-  url = opts.credentials.url; // fetch the URL
-}
-
-if ( ! url ) {
-  console.dir(opts);
-  throw Error('Could not load url.');
-}
-
-// Trim off /rest here, so that we are working with the top level url
-url = url.replace(/\/rest.*$/,'');
-
-var http_or_https = require('./lib/byscheme')(url);
-
 var instanceName = randHex()+'-'+randHex();
 
-var httpUrl = undefined;
-
-if ( url.indexOf('https:') === 0 ) {
-  httpUrl = 'http:' + url.substring(6);
+let httpUrl;
+if ( translateUrl.protocol === 'https:') {
+  httpUrl = new URL('http:' + translateUrl.toString().substring(6));
 }
+const versionUrl = new URL('./version', translateUrl);
 
-describe('Check URL ' + url+'/', function() {
-  var urlToPing = url+'/';
-  if(VERBOSE) console.dir(urlToPing);
-  it('should let us eventually ping ' + urlToPing, function(done) {
-    var timeout;
-    var http_or_https = require('./lib/byscheme')(urlToPing);
-    var t = 200;
-    var loopy = function() {
-      if(timeout) {
-        clearTimeout(timeout);
-        timeout = undefined;
-      }
-      try {
-        http_or_https.get(urlToPing, // trailing slash to avoid 302
-          function(d) {
-            if(VERBOSE) console.log(urlToPing + '-> ' + d.statusCode); // dontcare
-            if(d.statusCode === 200) {
-              done();
-            } else {
-              timeout = setTimeout(loopy, t);
-            }
-          }).on('error', function(e) {
-          if(VERBOSE) console.dir(e, {color: true});
-          timeout = setTimeout(loopy, t);
-        });
-      } catch(e) {
-        if(VERBOSE) console.dir(e, {color: true});
-        timeout = setTimeout(loopy, t);
-      }
-    };
-    process.nextTick(loopy); // first run
+describe('Check URL ' + versionUrl, function() {
+  it('should let us eventually ping ' + versionUrl, async () => {
+    if(VERBOSE) console.dir(versionUrl);
+    await retrier(() => getJson(versionUrl));
   });
 
   // verify security headers on landing page
-  gaasTest.verifySecurityHeaders(url+'/');
+  gaasTest.verifySecurityHeaders(translateUrl.toString());
 
-  it('Should let me fetch landing page', function(done) {
-    http_or_https.get(url+'/', // trailing slash to avoid 302
-      function(d) {
-        if(VERBOSE) console.log('-> ' + d.statusCode); // dontcare
-        done();
-      })
-      .on('error', done);
-  });
-  var swaggerUrl = url+'/rest/swagger.json';
+  it('Should let me fetch landing page of ' + translateUrl.toString(), () => bent(translateUrl));
+  var swaggerUrl = new URL('./rest/swagger.json', translateUrl);
   gaasTest.expectCORSURL(swaggerUrl); // expect CORS here
-  var swaggerUIUrl = url+'/swagger/';
+  var swaggerUIUrl = new URL('./swagger/', translateUrl);
   gaasTest.verifySecurityHeadersSwagger(swaggerUIUrl); // expect CORS here
-  var otherUrl = url+'/';
-  gaasTest.expectNonCORSURL(otherUrl); // don't expect CORS here
-  it('Should let me fetch version page', function(done) {
-    http_or_https.get(url+'/version',
-      function(res) {
-        if(VERBOSE) console.log('-> ' + res.statusCode); // dontcare
-        res.on('data', function(d) {
-          var data = JSON.parse(d);
-          if(VERBOSE) console.dir(data.components[Object.keys(data.components)[0]], {color: true});
-          done();
-        });
-        res.on('error', function(d) {
-          done(d);
-        });
-      })
-      .on('error', done);
+  gaasTest.expectNonCORSURL(translateUrl); // don't expect CORS here
+  it('Should let me fetch version page at ' + versionUrl, async function() {
+    const data = await getJson(versionUrl);
+    if(VERBOSE) console.dir(data.components[Object.keys(data.components)[0]], {color: true});
+    expect (data).to.be.ok;
+    expect (data.components).to.be.ok;
   });
 });
 
@@ -145,52 +103,27 @@ describe('Check HTTP URL', function() {
     it('was not HTTPS - test skipped');
   } else {
     var urlToPing = httpUrl + '/rest/swagger.json';
-    it('Should not let me access ' + urlToPing, function(done) {
-      http.get(urlToPing,
-        function(res) {
-          expect([403, 301]).to.include(res.statusCode);
-          res.on('data', function(d) {
-            try {
-              if(res.statusCode === 403) {
-                // error status
-                var err = JSON.parse(d);
-                expect(err.status).to.equal("ERROR");
-                expect(err.message).to.contain('crypt');
-                expect(err.message).to.contain('HTTP');
-                done();
-              } else if(res.statusCode === 301) {
-                // it's a redirect, hopefully to the https location
-                expect(res.headers.location).to.be.ok;
-                expect(res.headers.location.substring(0,6)).to.equal('https:'); // redirect to HTTPS
-                done();
-              } else {
-                done(Error(`Don't know how to validate statusCode ${res.statusCode}`));
-              }
-            } catch(e) {
-              done();  // some other error, but the point is that swagger.json was not served over HTTP
-            }
-          });
-          res.on('error', function(d) {
-            done();
-          });
-        }).on('error', () => done()); // transport err
-    });
+    it('Should not let me access ' + urlToPing, () => bent(403, 301, urlToPing)); // not 200
   }
 });
 
 describe.skip('BASIC auth [not implemented]', function() { // TODO: not supported
   if(process.env.AUTHENTICATION_SCHEME === 'BASIC') {
-    it('is allowed, AUTHENTICATION_SCHEME=BASIC', function(done) {
+    it('is allowed, AUTHENTICATION_SCHEME=BASIC', async function(done) {
+      var basicClient = await gaas.connect(basicOpts); // not implemented
       basicClient.ready(null, done);
     });
   } else if(!isAdmin) {
-    it('is allowed to be ready, normal user.', function(done) {
+    it('is allowed to be ready, normal user.', async function(done) {
+      var basicClient = await gaas.connect(basicOpts); // not implemented
       basicClient.ready(null, done);
     });
-    it('is allowed, to ping as normal user.', function(done) {
+    it('is allowed, to ping as normal user.', async function(done) {
+      var basicClient = await gaas.connect(basicOpts); // not implemented
       basicClient.ping(null, done);
     });
-    it('is NOT allowed, to list bundles as normal user.', function(done) {
+    it('is NOT allowed, to list bundles as normal user.', async function(done) {
+      var basicClient = await gaas.connect(basicOpts); // not implemented
       basicClient.getBundleList({}, function(err, x) {
         if(err) done();
         else {
@@ -198,7 +131,8 @@ describe.skip('BASIC auth [not implemented]', function() { // TODO: not supporte
         }
       });
     });
-  } else it('should NOT become ready', function(done) {
+  } else it('should NOT become ready', async function(done) {
+    var basicClient = await gaas.connect(basicOpts); // not implemented
     basicClient.ready(null, function(err) {
       if(err) {
         done();
@@ -212,34 +146,29 @@ describe.skip('BASIC auth [not implemented]', function() { // TODO: not supporte
 // these are internals.
 // skip for now
 // TODO: re enable
-describe.skip('client.apis', function() {
-  it('should become ready', function(done) {
-    gaasClient.ready(null, done);
+describe('client.apis', function() {
+  it('should become ready', async function() {
+    const gaasClient = await getClient();
+    expect(gaasClient).to.be.ok;
   });
-  it('should have APIs', function(done) {
-    gaasClient.ready(done, function(err, done) {
-      if(err) { done(err); return; }
-      expect(gaasClient.apis()).to.include.keys('help');
-      // Verify the APIs are as expected.
-      if(isAdmin) {
-        expect(gaasClient.apis()).to.include.keys('bundle','config','instance','service','user','admin');
-      } else {
-        expect(gaasClient.apis()).to.include.keys('bundle','config','instance','service','user');
-      }
-      done();
-    });
+  it('should have APIs', async function() {
+    const gaasClient = await getClient();
+    const swaggerClient = await gaasClient.swaggerClient;
+    // Verify the APIs are as expected.
+    if(isAdmin) {
+      expect(swaggerClient.apis).to.include.keys('bundle','config','instance','service','user','admin');
+    } else {
+      expect(swaggerClient.apis).to.include.keys('bundle','config','instance','service','user');
+    }
   });
 
-  it('should let me get service info', function(done) {
-    gaasClient.ready(done, function(err, done, apis) {
-      if(err) { done(err); return; }
-      apis.service.getServiceInfo({}, function(o) {
-        // console.dir(o, {color:true, depth:null});
-        expect(o.status).to.equal(200);
-        expect(o.obj.status).to.equal('SUCCESS');
-        expect(o.obj.supportedTranslation).to.include.keys('en');
-        done();
-      });
-    });
+  it('should let me get service info', async function() {
+    const gaasClient = await getClient();
+    const swaggerClient = await gaasClient.swaggerClient;
+    const o = await swaggerClient.apis.service.getServiceInfo({});
+    // console.dir(o, {color:true, depth:null});
+    expect(o.status).to.equal(200);
+    expect(o.obj.status).to.equal('SUCCESS');
+    expect(o.obj.supportedTranslation).to.include.keys('en');
   });
 });
