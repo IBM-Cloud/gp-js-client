@@ -24,7 +24,6 @@ require('./lib/localsetenv').applyLocal();
 var randHex = require('./lib/randhex');
 var gaasTest = require ('./lib/gp-test');
 var GaasHmac = require('../lib/gp-hmac');
-
 var gaas = require('../lib/main.js'); // required, below
 var gaasClient;
 
@@ -37,6 +36,13 @@ const expect = chai.expect;
 var VERBOSE = process.env.GP_VERBOSE || false;
 var NO_DELETE = process.env.NO_DELETE || false;
 if(VERBOSE) console.dir(module.filename);
+
+const retrier = require('./lib/retrier').getRetrier({
+  pause: 1000 * 15, // 15s
+  retries: 4, // 1 minute
+  verbose: VERBOSE
+});
+
 
 var projectId = process.env.GP_PROJECT  || 'MyHLProject'+Math.random();
 const projectId_space = projectId+'_space';
@@ -83,51 +89,15 @@ function resterr(o) {
 }
 var urlEnv = gaas._normalizeUrl(opts.credentials.url); // use GaaS normalize
 
-describe('Setting up GaaS test', function() {
-  if ( urlEnv ) {
-    var urlToPing = urlEnv.replace(/\/rest.*$/,'/');
-    if(VERBOSE) console.dir(urlToPing);
-    it.skip('should let us directly ping ' + urlToPing, function(done) {
-      var timeout;
-      var http_or_https = require('./lib/byscheme')(urlEnv);
-      var t = 200;
-      var loopy = function() {
-        if(timeout) {
-          clearTimeout(timeout);
-          timeout = undefined;
-        }
-        try {
-          http_or_https.get(urlToPing, // trailing slash to avoid 302
-            function(d) {
-              if(VERBOSE) console.log(urlToPing + '-> ' + d.statusCode); // dontcare
-              if(d.statusCode === 200) {
-                done();
-              } else {
-                timeout = setTimeout(loopy, t);
-              }
-            }).on('error', function(e) {
-            if(VERBOSE) console.dir(e, {color: true});
-            timeout = setTimeout(loopy, t);
-          });
-        } catch(e) {
-          if(VERBOSE) console.dir(e, {color: true});
-          timeout = setTimeout(loopy, t);
-        }
-      };
-      process.nextTick(loopy); // first run
-    });
-
-
-    it('requiring gaas with options', async () => {
-      gaasClient = await gaas.connect(opts);
-      //if(VERBOSE) console.log( gaasClient._getUrl() );
-    });
-  } else {
-    // no creds
-    it('should have had credentials',  function(done) {
-      done('please create local-credentials.json or have GP_URL/GP_USER_ID/GP_PASSWORD/GP_INSTANCE set');
-    });
-  }
+describe('Setting up g11n-pipeline test', function() {
+  it('Should validate credentials', () => {
+    expect(opts).to.be.ok;
+    expect(opts.credentials).to.be.ok;
+    expect(opts.credentials.url).to.be.ok;
+  });
+  it('requiring gaas with options', () => retrier(async () => {
+    gaasClient = await gaas.connect(opts);
+  }));
 });
 
 // ping

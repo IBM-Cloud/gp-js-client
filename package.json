@@ -33,7 +33,6 @@
     "eslint": "^4.19.1",
     "eslint-plugin-chai-friendly": "^0.4.0",
     "github-markdown-css": "^2.8.0",
-    "istanbul": "^0.4.5",
     "jsdoc-to-markdown": "^5.0.0",
     "marked": "^0.6.2",
     "mocha": "^5.2.0",
@@ -42,8 +41,7 @@
     "optional": "^0.1.4"
   },
   "dependencies": {
-    "bent": "^1.4.0",
-    "minimist": "^1.2.0",
+    "bent": "1.5.13",
     "swagger-client": "^3.9.0"
   }
 }
